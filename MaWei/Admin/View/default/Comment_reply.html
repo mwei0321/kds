@@ -1,0 +1,56 @@
+<!-- include public templates -->
+<extend name="Public:Temp" />
+
+<!-- page title name -->
+<block name="PageName">
+    　评论回复理中心
+</block>
+
+<!-- user list content -->
+<block name="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="text-muted bootstrap-admin-box-title">
+                                                    评论回复列表 
+                    </div>
+                    <div class="pull-right">
+                        <span class="badge">{$count}</span>
+                    </div>
+                </div>
+                <div class="bootstrap-admin-panel-content">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox"  check='1' id="checkall"/>
+                                <th>ID</th>
+                                <th>UID</th>
+                                <th>评论ID</th>
+                                <th>回复内容</th>
+                                <th>评论时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <volist name="list" id="v">
+                                <tr>
+                                    <td><input type="checkbox" name="ids[]" value="{$u['id']}" class="checkalls"/></td>
+                                    <td>ID</td>
+                                    <td>{$v['uid']}</td>
+                                    <td>{$v['comment_id']}</td>
+                                    <td>{$v['content']}</td>
+                                    <td>{$v['utime']|date="Y-m-d H:m:s",###}</td>
+                                    <td>
+                                        <a href="javascript:void(0);" url="{:U('Admin/Comment/delreply')}" onclick="delall($(this),{$v['id']});"><i class="glyphicon glyphicon-trash"></i></a>
+                                    </td>
+                                </tr>
+                            </volist>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+

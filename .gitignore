@@ -1,0 +1,6 @@
+/Cache
+*~
+*tmp
+/Uploads/*
+.sett*
+PhPyRb/Common/Conf/dbcon*

@@ -1,0 +1,100 @@
+<!-- admin system menu edit -->
+<!--block name="PageName">后台系统菜单编辑页</block>
+<!-- stystem menu content -->
+<block name="content">
+    <div class="container" style="width:650px;">
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default bootstrap-admin-no-table-panel">
+
+            <div class="bootstrap-admin-no-table-panel-content bootstrap-admin-panel-content collapse in">
+                <form class="form-horizontal" method="post" action="{:U('Admin/System/add_updata',array('type'=>'menu'))}">
+                    <input type="hidden" name="id" value="{$info['id']}" />
+                    <fieldset>
+                        <legend>菜单编辑</legend>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label" for="selectError">父级菜单</label>
+                            <div class="col-lg-8">
+                                <script>
+                                    $('#menuct').change(function(e){
+                                        var v = $(this).val();
+                                        if(v > 1){
+                                           $('#posmenu').prop('selected',true);
+                                        }
+                                    });
+                                </script>
+                                <select class="form-control" name="pid" id="menuct" style="width:150px;">
+                                    <option value="0">顶级菜单</option>
+                                    <volist name="menu" id="m">
+                                        <if condition="$m['pid'] EQ 0">
+                                        <option value="{$m['id']}" <if condition="$info['pid'] EQ $m['id']">selected</if> >{$m['name']}</option>
+                                        </if>
+                                    </volist>
+                                </select>
+                                <p class="explain">顶级菜单为顶部菜单，顶级菜单下的分类菜单为左则菜单</p>
+                            </div>
+                        </div>
+                        <!--div class="form-group">
+                            <label class="col-lg-2 control-label" for="disabledInput">菜单位置</label>
+                            <div class="col-lg-3">
+                                <select class="form-control" name="position" id="posmenu">
+                                   <volist name="position" id="p">
+                                   <option value="{$key}" <if condition="$info['position'] EQ $key">selected</if>>{$p}</option>
+                                   </volist>
+                                </select>
+                            </div>
+                        </div -->
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label" for="focusedInput">菜单名</label>
+                            <div class="col-lg-3">
+                                <input class="form-control" name="name" id="focusedInput" type="text" placeholder="菜单名称" value="{$info['name']}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label" for="focusedInput">菜单别名</label>
+                            <div class="col-lg-10">
+                                <input class="form-control" type="text" name="key" style="width:120px;" placeholder="控制器名" value="{$info['key']}">
+                                <p class="explain">例；当前页为System，注意首字母大写</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label" for="focusedInput">菜单排序</label>
+                            <div class="col-lg-5">
+                                <input class="form-control" type="text" name="sort" placeholder="范围1~99，数字大排前面" value="{$info['sort']}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label" for="focusedInput">菜单地址</label>
+                            <div class="col-lg-10">
+                                <input class="form-control" type="text" name="url" placeholder="例：Admin/Index/index/name/value" value="{$info['url']}">
+                                <p class="explain">说明：模块名/控制器名/操作名/参数名/值,不支持直接网址,防止变url配置后无法用；</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label" for="focusedInput">菜单动作</label>
+                            <div class="col-lg-5">
+                                <input class="form-control" type="text" name="action" placeholder="控制器动作名" value="{$info['action']}">
+                                <p class="explain">用于菜单选中状态；例：当前页为　menu</p>
+                            </div>
+                        </div>
+                        <!--div class="form-group">
+                            <label class="col-lg-2 control-label" for="disabledInput">状态</label>
+                            <div class="col-lg-3">
+                                <select class="form-control" name="status">
+                                	<volist name="status" id="s">
+                                		<option value="{$key}" <if condition="($info['status'] EQ $key)">selected</if>>{$s}</option>
+                                	</volist>
+                                </select>
+                            </div>
+                        </div -->
+                       <div class="fr bntmr20">
+                        <button type="submit" class="btn btn-primary">确定</button>
+                        <button type="reset" class="btn btn-default" onclick="layer.close(0.3);">取消</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div></div>
+</block>

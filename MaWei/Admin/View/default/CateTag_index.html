@@ -1,0 +1,104 @@
+<!-- include public templates -->
+<extend name="Public:Temp" />
+
+<!-- include public templates http://www.phpyrb.com-->
+
+<!-- include public templates http://www.phpyrb.com-->
+
+<!-- page title name -->
+<block name="PageName">
+	{$type[$tp]}中心
+</block>
+
+<!-- user list content -->
+<block name="content">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<div class="text-muted bootstrap-admin-box-title">
+						{$type[$tp]}列表
+					</div>
+					<div class="clr"> </div>
+                    <if condition="$tp EQ 'cate'">
+                        <div class="seach_select">
+                            <form action="{:U('Admin/CateTag/index',array('type'=>'cate'))}" method="post">
+                                <input type="text" name="id" class="intext" value="{$seach['id']}" placeholder="分类ID"/>
+                                <input type="text" name="keyword" class="intext" value="{$seach['keyword']}" placeholder="用户名或邮箱"/>
+                                <input type="submit" class="btn btn-sm btn-primary" value="搜索"　/>
+                            </form>
+                        </div>
+                        <div class="seach_select">
+                            <input type="button" onclick="layer.load('分类编辑','{:U('Admin/CateTag/edit',array('type'=>'cate'))}');" class="btn btn-sm btn-success opn"  value="添加分类"/>
+                        </div>
+                    <else />
+                        <div class="seach_select">
+                            <form action="{:U('Admin/CateTag/index',array('type'=>'tag'))}" method="post">
+                                <input type="text" name="id" class="intext" value="{$seach['id']}" placeholder="标签ID"/>
+                                <input type="text" name="keyword" class="intext" value="{$seach['keyword']}" placeholder="用户名或邮箱"/>
+                                <input type="submit" class="btn btn-sm btn-primary" value="搜索"　/>
+                            </form>
+                        </div>
+                        <div class="seach_select">
+                            <input type="button" onclick="layer.load('标签编辑','{:U('Admin/CateTag/edit',array('type'=>'tag'))}');" class="btn btn-sm btn-success opn"  value="添加标签"/>
+                        </div>
+                    </if>
+                    <div class="pull-right flpostion">
+                        <span class="badge">{$count}</span>
+                    </div>
+				</div>
+				<div class="bootstrap-admin-panel-content">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th><input type="checkbox"  check='1' id="checkall"/>
+								<th>ID</th>
+								<if condition="$tp EQ 'cate'">
+								    <th>Pid</th>
+								</if>
+								<th>{$type[$tp]}名称</th>
+								<th>状态</th>
+								<if condition="$tp EQ 'cate'">
+								<th>层级</th>
+								</if>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+						    <volist name="list" id="u">
+    							<tr>
+    								<td><input type="checkbox" name="ids[]" value="{$u['id']}" class="checkalls"/></td>
+    								<td>{$u['id']}</td>
+    								<if condition="$tp EQ 'cate'">
+    								    <if condition="$u['pid'] EQ 0">
+    								        <td>顶级分类</td>
+    								    <else />
+    								        <td>{$catelist[$u['pid']]['name']}</td>
+    								    </if>
+                                       
+                                    </if>
+    								<td>{$u['levelstr']}{$u['name']}</td>
+    								<td class="upstat">{$status[$u['status']]}</td>
+    								<if condition="$tp EQ 'cate'">
+    								<td>{$u['path']}</td>
+    								</if>
+    								<td>
+    								    <a href="javascript:;" onclick="layer.load('标签编辑','{:U('Admin/CateTag/edit',array('id'=>$u['id'],'type'=>$tp))}')" ><i class="glyphicon glyphicon-pencil"></i></a>
+    								    <a href="javascript:void(0);" style="color:red;" url="{:U('Admin/CateTag/status',array('id'=>$u['id'],'type'=>$tp))}" onclick="setstatus($(this),{$u['status']});"><i class="glyphicon glyphicon-minus-sign"></i></a>
+    								    <if condition="$tp EQ 'cate'">
+    								    <a href="javascript:void(0);" url="{:U('Admin/CateTag/delect',array('type'=>'cate'))}" title="删除" onclick="delall($(this),{$u['id']});"><i class="glyphicon glyphicon-trash"></i></a>
+    								    <else />    
+    								     <a href="javascript:void(0);" url="{:U('Admin/CateTag/delect',array('type'=>'tag'))}" title="删除" onclick="delall($(this),{$u['id']});"><i class="glyphicon glyphicon-trash"></i></a>
+    								    </if>
+    								</td>
+    							</tr>
+							</volist>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- include public js-->
+</block>
+

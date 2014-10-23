@@ -1,0 +1,65 @@
+<!-- include public templates -->
+<extend name="Public:Temp" />
+
+<!-- page title name -->
+<block name="PageName">
+	系统管理中心
+</block>
+
+<!-- user list content -->
+<block name="content">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<div class="text-muted bootstrap-admin-box-title">
+						列表
+					</div>
+					<div class="pull-right">
+						<span class="badge">{$count}</span>
+					</div>
+				</div>
+				<div class="bootstrap-admin-panel-content">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th><input type="checkbox" name="" onclick="checkedall();" class="allcheck"/></th>
+								<th>ID</th>
+								<th>会员名称</th>
+								<th>邮箱地址</th>
+								<th>会员头像</th>
+								<th>状态</th>
+								<th>性别</th>
+								<th>最后登入时间</th>
+								<th>注册时间</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+						    <volist name="ulist" id="u">
+    							<tr>
+    								<td><input type="checkbox" name="ids[]" value="{$u['id']}"　class="mulicheck"/></td>
+    								<td>ID</td>
+    								<td>{$u['uname']}</td>
+    								<td>{$u['email']}</td>
+    								<td><img src="{$u['avatar']}" style="width:40px;height:40px;"/></td>
+    								<td class="upstat">{$status[$u['status']]}</td>
+    								<td>{$sex[$u['sex']]}</td>
+    								<td>{$u['lasttime']|date="Y-m-d H:m:s",###}</td>
+    								<td>{$u['registertime']|date="Y-m-d H:m:s",###}</td>
+    								<td>
+    								    <a href="{:U('Admin/UserManage/edit',array('uid'=>$u['id']))}" ><i class="glyphicon glyphicon-pencil"></i></a>
+    								    <a href="javascript:void(0);" style="color:red;" url="{:U('Admin/UserManage/desable',array('uid'=>$u['id']))}" onclick="setstatus($(this),{$u['status']});"><i class="glyphicon glyphicon-minus-sign"></i></a>
+    								    <a href="javascript:void(0);" url="{:U('Admin/UserManage/deluser')}" onclick="delall($(this),{$u['id']});"><i class="glyphicon glyphicon-trash"></i></a>
+    								</td>
+    							</tr>
+							</volist>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- include public js-->
+</block>
+
