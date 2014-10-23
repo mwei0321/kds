@@ -1,0 +1,61 @@
+<!-- include public templates -->
+<extend name="Public:Temp" />
+
+<!-- page title name -->
+<block name="PageName">
+	会员积分类型列表
+</block>
+
+<!-- user list content -->
+<block name="content">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<div class="text-muted bootstrap-admin-box-title">
+					积分类型列表&nbsp;&nbsp;&nbsp;
+					</div>
+                    <div class="clr"> </div>
+                    <div class="seach_select">
+                        <input type="button" onclick="layer.load('积分类型编辑','{:U('Admin/Member/gradeTypeEdit')}');" class="btn btn-sm btn-success opn"  value="积分类型编辑"/>
+                    </div>
+                    <div class="pull-right flpostion">
+                        <span class="badge">{$count}</span>
+                    </div>
+				</div>
+				<div class="bootstrap-admin-panel-content">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th><input type="checkbox"  check='1' id="checkall"/>
+								</th>
+								<th>ID</th>
+								<th>积分类型名称</th>
+								<th>积分类型别名</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+						    <volist name="list" id="lt">
+    							<tr>
+    								<td><input type="checkbox" name="ids[]" value="{$lt['id']}" class="checkalls"/></td>
+    								<td>{$lt['id']}</td>
+    								<td>{$lt['name']}</td>
+    								<td>{$lt['alias']}</td>
+    								<td class="bnt-pl3">
+    								    <a href="javascript:;" onclick="layer.load('积分类型编辑','{:U('Admin/Member/gradeTypeEdit',array('id'=>$lt['id']))}');" ><i class="glyphicon glyphicon-pencil"></i></a>
+    								    <a href="javascript:void(0);" url="{:U('Admin/Member/delete',array('type'=>'gradeType'))}" onclick="delall($(this),{$lt['id']});"><i style="color:#b00;" class="glyphicon glyphicon-trash"></i></a>
+    								</td>
+    							</tr>
+							</volist>
+						</tbody>
+					</table>
+					<div class="pagination-container">{$page}</div>
+					<div class="clr"> </div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- include public js-->
+</block>
+

@@ -14,13 +14,15 @@
 	namespace Admin\Controller;
 	use Admin\Controller\IniController;
 	use Library\Member;
+	use Library\Grade;
 	use Vendor\Page;
 		
 	class MemberController extends  IniController{
-		protected $member;
+		protected $member,$grade;
 		function _init(){
 			parent::_init();
 			$this->member = new Member();
+			$this->grade = new Grade();
 			$this->assign('status',array('已禁用','已启用'));
 		}
 		
@@ -47,6 +49,56 @@
 			$this->display();
 		}
 		
+		function grade(){
+			$list = $this->grade->getGrade();
+			$gradetype = $this->grade->getGradeType();
+			$this->assign('gradetype',fieldtokey($gradetype,'id'));
+			$this->assign('list',$list);
+			$this->display();
+		}
+		
+		/**
+		* 积分类型列表
+		* @author MaWei (http://www.phpyrb.com)
+		* @date 2014-9-20  下午5:09:52
+		*/
+		function gradeType(){
+			$list = $this->grade->getGradeType();
+			$this->assign('list',$list);
+			$this->assign('count',count($list));
+			$this->display();
+		}
+		
+		/**
+		* 积分等级编辑
+		* @author MaWei (http://www.phpyrb.com)
+		* @date 2014-9-20  下午4:33:19
+		*/
+		function gradeEdit(){
+			$id = intval($_REQUEST['id']);
+			if($id){
+				$info = $this->grade->getGrade();
+				$this->assign($info);
+			}
+			$gradetype = $this->grade->getGradeType();
+			$this->assign('list',$gradetype);
+			$this->display();
+		}
+		
+		/**
+		* 会员积分类型编辑
+		* @author MaWei (http://www.phpyrb.com)
+		* @date 2014-9-20  下午4:32:48
+		*/
+		function gradeTypeEdit(){
+			$id = intval($_REQUEST['id']);
+			if($id){
+				$info = $this->grade->getGradeType($id);
+				$this->assign('info',$info[0]);
+			}
+			$this->display();
+		}
+		
 		/**
 		 * 会员添加修改编辑页
 		 * @author MaWei (http://www.phpyrb.com)
@@ -69,26 +121,81 @@
 		 */
 		function addupdata(){
 			$data = array();
-			$_REQUEST['id'] && $data['id'] = intval($_REQUEST['id']);
-			$data['uname'] = text($_REQUEST['name']);
-			$data['email'] = text($_REQUEST['email']);
-			$_REQUEST['passwd'] && $data['passwd'] = sha1_encrypt(text($_REQUEST['passwd']));
-			$data['home'] = text($_REQUEST['home']);
-			$data['status'] = intval($_REQUEST['status']);
-			$data['qq'] = intval($_REQUEST['qq']);
-			$data['sex'] = intval($_REQUEST['sex']);
-			if($_FILES['file']['name']){
-				$avatar = uploads(array('path'=>'avatar','ImgWidth'=>150,'ImgHeight'=>150),true);
-				$data['avatar'] = $avatar['thumb'];
+			$table = null;
+			$type = $_REQUEST['type'];
+			switch ($type){
+				case 'member' :
+					$_REQUEST['id'] && $data['id'] = intval($_REQUEST['id']);
+					$data['uname'] = text($_REQUEST['name']);
+					$data['email'] = text($_REQUEST['email']);
+					$_REQUEST['passwd'] && $data['passwd'] = sha1_encrypt(text($_REQUEST['passwd']));
+					$data['home'] = text($_REQUEST['home']);
+					$data['status'] = intval($_REQUEST['status']);
+					$data['qq'] = intval($_REQUEST['qq']);
+					$data['sex'] = intval($_REQUEST['sex']);
+					$data['grade'] = intval($_REQUEST['grade']);
+					if($_FILES['file']['name']){
+						$avatar = uploads(array('path'=>'avatar','ImgWidth'=>150,'ImgHeight'=>150),true);
+						$data['avatar'] = $avatar['thumb'];
+					}
+					$data['lasttime'] = time();
+					empty($_REQUEST['uid']) && $data['registertime'] = time();
+					$data['lastip'] = get_client_ip();
+					$table = 'Member';
+					$jumpUrl = U('Admin/Member/index');
+					break;
+				case 'grade' :
+					if(intval($_REQUEST['is_muti'])){
+						$name = $_REQUEST['name'];
+						$grade = intval($_REQUEST['grade']);
+						$type = intval($_REQUEST['gradetype']);
+						if(strpos($name,',') !== false){
+							$name = explode(',', $name);
+							$data['type'] = $type;
+							$i = 1;
+							$reid = null;
+							foreach ($name as $k => $v){
+								$data['name'] = text($v);
+								$data['level'] = $i;
+								$data['grade'] = $i * $grade;
+								$reid = add_updata($data,'Grade');
+								$i++;
+							}
+							if($reid === false){
+								$this->error('保存失败！',U('Admin/Member/grade'));
+							}else{
+								$this->success('保存成功！',U('Admin/Member/grade'));
+							}
+							exit();
+						}else{
+							$data['name'] = text($name);
+							$data['level'] = 1;
+							$data['grade'] = $grade;
+						}
+					}else{
+						$data['name'] = text($_REQUEST['name']);
+						$data['level'] = intval($_REQUEST['level']);
+						$data['grade'] = intval($_REQUEST['grade']);
+						$data['type'] = intval($_REQUEST['gradetype']);
+					}
+					$table = 'Grade';
+					$jumpUrl = U('Admin/Member/grade');
+ 					break;
+				case 'gradeType':
+					$data['name'] = text($_REQUEST['name']);
+					$data['alias'] = text($_REQUEST['alias']);
+					$table = 'GradeType';
+					$jumpUrl = U('Admin/Member/gradeType');
+					break;
+				default:
+					$this->error('非法操作！',U('Admin/Member/index'));
+					exit;
 			}
-			$data['lasttime'] = time();
-			empty($_REQUEST['uid']) && $data['registertime'] = time();
-			$data['lastip'] = get_client_ip();
-			$reid = add_updata($data,'Member');
+			$reid = add_updata($data,$table);
 			if($reid === false){
-				$this->error('保存失败！',U('Admin/Member/index'));
+				$this->error('保存失败！',$jumpUrl);
 			}else{
-				$this->success('保存成功！',U('Admin/Member/index'));
+				$this->success('保存成功！',$jumpUrl);
 			}
 		}
 		
@@ -98,9 +205,8 @@
 		 * @date 2014-8-5 下午1:17:29
 		 */
 		function desable(){
-			$uid = intval($_REQUEST['uid']);
 			$status = intval($_REQUEST['status']) == '1' ? 0 : 1;
-			$reid = $this->member->setUserStatus($uid,$status);
+			$reid = $this->member->setUserStatus($_REQUEST['ids'],$status);
 			if($reid === false){
 				$msg['status'] = null;
 				$msg['msg'] = $status ? '启用失败！' : '禁用失败！';
@@ -117,15 +223,32 @@
 		* @author MaWei (http://www.phpyrb.com)
 		* @date 2014-8-6  下午9:55:13
 		*/
-		function deluser(){
+		function delete(){
 			$ids = $_REQUEST['ids'];
-			$m = M('Member');
+			$m = null;
+			$type = $_REQUEST['type'];
+			switch ($type) {
+				case 'member'://会员删除
+					$m = M('Member');
+					break;
+				case 'grade'://会员积分等级删除
+					$m = M('Grade');
+					break;
+				case 'gradeType'://会员积分类型删除
+					$m = M('GradeType');
+					break;
+				default:
+					echo null;
+					exit;
+			}
 			$reid = $m->delete("$ids");
 			if($reid === false){
 				echo null;
 			}else{
 				echo 1;
 			}
-			exti;
+			exit();
 		}
+		
+		
 	}

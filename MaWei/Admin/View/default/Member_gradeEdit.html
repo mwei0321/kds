@@ -1,0 +1,100 @@
+<!-- admin system menu edit -->
+
+<!-- stystem menu content -->
+<div class="container" style="width:650px;">
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default bootstrap-admin-no-table-panel">
+            <div class="bootstrap-admin-no-table-panel-content bootstrap-admin-panel-content collapse in">
+                <div id="rootwizard">
+                    <div class="navbar">
+                        <div class="container">
+                            <ul class="nav nav-pills">
+                                <li class="active"><a href="#tab1" data-toggle="tab">单个等级编辑</a></li>
+                                <li><a href="#tab2" data-toggle="tab">批量生成等级</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--div id="bar" class="progress progress-striped active">
+                        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div -->
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab1">
+                            <form class="form-horizontal" method="post" action="{:U('Admin/Member/addupdata',array('type'=>'grade'))}" enctype="multipart/form-data">
+                                <input type="hidden" name="id" value="{$info['id']}" />
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="focusedInput">等级名称</label>
+                                        <div class="col-lg-3">
+                                            <input class="form-control" name="name"  type="text" placeholder="等级名称" value="{$info['name']}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="focusedInput">等级</label>
+                                        <div class="col-lg-3">
+                                            <input class="form-control" type="text"　onkeyup="value=value.replace(/[^\d]/,'');"  name="level" placeholder="等级" value="{$info['level']}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="focusedInput">等级分数</label>
+                                        <div class="col-lg-3">
+                                            <input class="form-control" type="text" name="grade" onkeyup="value=value.replace(/[^\d]/,'');" placeholder="等级分类" value="{$info['grade']}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="disabledInput">等级类型</label>
+                                        <div class="col-lg-3">
+                                            <select class="form-control" name="gradetype">
+                                               <volist name="list" id="lt">
+                                                <option value="{$lt['id']}" <if condition="$info['type'] EQ $lt['id']">selected</if>>{$lt['name']}</option>
+                                               </volist>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="fr bntmr20">
+                                        <button type="submit" class="btn btn-primary">确定</button>
+                                        <button type="reset" class="btn btn-default" onclick="layer.close(0.3);">取消</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                        <div class="tab-pane" id="tab2">
+                            <form class="form-horizontal" method="post" action="{:U('Admin/Member/addupdata',array('type'=>'grade'))}" enctype="multipart/form-data">
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="focusedInput">等级名称</label>
+                                        <div class="col-lg-10">
+                                            <input class="form-control" name="name"  type="text" placeholder="多个用“,”分割,如：农民,士兵,排长(切记用户英文‘,’分割)" value="{$info['name']}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="focusedInput">积分基数</label>
+                                        <div class="col-lg-7">
+                                            <input class="form-control" name="grade"  type="text" onkeyup="value=value.replace(/[^\d]/,'');" placeholder="积分底数，如1级为1X100,2级2X100" value="{$info['name']}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label" for="disabledInput">等级类型</label>
+                                        <div class="col-lg-3">
+                                            <select class="form-control" name="gradetype">
+                                               <volist name="list" id="lt">
+                                                <option value="{$lt['id']}" <if condition="$info['type'] EQ $lt['id']">selected</if>>{$lt['name']}</option>
+                                               </volist>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="fr bntmr20">
+                                        <input type="hidden" name="is_muti" value="1" />
+                                        <button type="submit" class="btn btn-primary">确定</button>
+                                        <button type="reset" class="btn btn-default" onclick="layer.close(0.3);">取消</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

@@ -3,7 +3,7 @@
 
 <!-- page title name -->
 <block name="PageName">
-	会员管理中心
+	会员等级列表
 </block>
 
 <!-- user list content -->
@@ -13,7 +13,7 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<div class="text-muted bootstrap-admin-box-title">
-						会员列表&nbsp;&nbsp;&nbsp;
+					会员等级列表&nbsp;&nbsp;&nbsp;
 					</div>
                     <div class="clr"> </div>
                     <div class="seach_select">
@@ -24,7 +24,7 @@
                         </form>
                     </div>
                     <div class="seach_select">
-                        <input type="button" onclick="layer.load('会员编辑','{:U('Admin/Member/edit')}');" class="btn btn-sm btn-success opn"  value="会员编辑"/>
+                        <input type="button" onclick="layer.load('积分等级编辑','{:U('Admin/Member/gradeEdit')}');" class="btn btn-sm btn-success opn"  value="积分等级编辑"/>
                     </div>
                     <div class="pull-right flpostion">
                         <span class="badge">{$count}</span>
@@ -37,46 +37,31 @@
 								<th><input type="checkbox"  check='1' id="checkall"/>
 								</th>
 								<th>ID</th>
-								<th>会员名称</th>
-								<th>邮箱地址</th>
-								<th>会员头像</th>
-								<th>会员积分</th>
-								<th>状态</th>
-								<th>性别</th>
-								<th>最后登入时间</th>
-								<th>注册时间</th>
+								<th>等级名称</th>
+								<th>等级分数</th>
+								<th>等级</th>
+								<th>类型</th>
 								<th>操作</th>
 							</tr>
 						</thead>
 						<tbody>
-						    <volist name="ulist" id="u">
-    							<tr id="deleid_{$u['id']}">
+						    <volist name="list" id="u">
+    							<tr>
     								<td><input type="checkbox" name="ids[]" value="{$u['id']}" class="checkalls"/></td>
     								<td>{$u['id']}</td>
-    								<td>{$u['uname']}</td>
-    								<td>{$u['email']}</td>
-    								<td><img src="{$u['avatar']}" style="width:40px;height:40px;"/></td>
+    								<td>{$u['name']}</td>
     								<td>{$u['grade']}</td>
-    								<td class="upstat">{$status[$u['status']]}</td>
-    								<td>{$sex[$u['sex']]}</td>
-    								<td>{$u['lasttime']|date="Y-m-d H:m:s",###}</td>
-    								<td>{$u['registertime']|date="Y-m-d H:m:s",###}</td>
+    								<td>{$u['level']}</td>
+    								<td>{$gradetype[$u['type']]['name']}</td>
     								<td class="bnt-pl3">
-    								    <a href="javascript:;" onclick="layer.load('会员编辑','{:U('Admin/Member/edit',array('uid'=>$u['id']))}');" ><i class="glyphicon glyphicon-pencil"></i></a>
-    								    <a href="javascript:void(0);" url="{:U('Admin/Member/desable')}" onclick="setstatus($(this),{$u['id']});" status="{$u['status']}">
-    								        <if condition="$u['status'] EQ 1">
-    								        <i class="glyphicon glyphicon-minus-sign" style="color:red;"></i>
-    								        <else />
-    								        <i class="glyphicon glyphicon-ok" style="color:green;"></i>
-    								        </if>
-    								    </a>
-    								    <a href="javascript:void(0);" url="{:U('Admin/Member/deluser',array('type'=>'member'))}" onclick="delall($(this),{$u['id']});"><i style="color:#a00;" class="glyphicon glyphicon-trash"></i></a>
+    								    <a href="javascript:;" onclick="layer.load('积分等级编辑','{:U('Admin/Member/gradeEdit',array('id'=>$u['id']))}');" ><i class="glyphicon glyphicon-pencil"></i></a>
+    								    <a href="javascript:void(0);" url="{:U('Admin/Member/delete',array('type'=>'grade'))}" onclick="delall($(this),{$u['id']});"><i style="color:#b00;" class="glyphicon glyphicon-trash"></i></a>
     								</td>
     							</tr>
 							</volist>
 						</tbody>
 					</table>
-					<div id="page">{$page}</div>
+					<div class="pagination-container">{$page}</div>
 					<div class="clr"> </div>
 				</div>
 			</div>

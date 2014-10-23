@@ -12,8 +12,8 @@
 	**/
 
 	$iniconfig = array(
-			'MODULE_ALLOW_LIST'     => array('Home','Admin','Member',''),
-			'DEFAULT_MODULE'     	=> 'Home', //默认模块
+			'MODULE_ALLOW_LIST'     => array('Book','Admin','Member',''),
+			'DEFAULT_MODULE'     	=> 'Book', //默认模块
 			'SESSION_AUTO_START' 	=> true, //是否开启session
 			//自定义命名空间
 			'AUTOLOAD_NAMESPACE' => array(

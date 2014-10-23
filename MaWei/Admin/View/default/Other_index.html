@@ -1,9 +1,11 @@
 <!-- include public templates -->
 <extend name="Public:Temp" />
 
-<!-- page title name -->
-<block name="PageName">
-	后台菜单管理中心
+<block name="controller">
+    <a href="{:U('Admin/System/adminmenu')}">系统管理</a>
+</block>
+<block name="action">
+    前台导航菜单管理
 </block>
 
 <!-- user list content -->
@@ -13,7 +15,7 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<div class="text-muted bootstrap-admin-box-title">
-						菜单列表
+						前台导航菜单列表
 					</div>
 					<div class="clr"> </div>
                     <div class="seach_select">
@@ -23,8 +25,8 @@
                         <input type="submit" class="btn btn-sm btn-primary" value="搜索"　/>
                         </form>
                     </div>
-                    <div class="seach_select">
-                    	<input type="button" onclick="layer.load('菜单编辑','{:U('Admin/System/edit',array('type'=>'menu'))}');" class="btn btn-sm btn-success opn"  value="添加菜单"/>
+                    <div class="ml20 seach_select">
+                    	<input type="button" onclick="layer.load('菜单编辑','{:U('Admin/Operation/edit',array('type'=>'homemenu'))}');" class="btn btn-sm btn-success opn"  value="添加菜单"/>
 					</div>
 					<div class="pull-right flpostion">
 						<span class="badge">{$count}</span>
@@ -39,7 +41,7 @@
 								<th>菜单名</th>
 								<th>菜单别名</th>
 								<th>菜单地址</th>
-								<th>菜单位置</th>
+								<!--th>菜单位置</th -->
 								<th>菜单状态</th>
 								<th>菜单动作</th>
 								<th>菜单排序</th>
@@ -48,19 +50,19 @@
 						</thead>
 						<tbody>
 						    <volist name="list" id="m">
-    							<tr>
+    							<tr id="deleid_{$m['id']}">
     								<td><input type="checkbox" name="ids[]" value="{$m['id']}"/></td>
     								<td>{$m['id']}</td>
     								<td>{$m['str']}{$m['name']}</td>
     								<td>{$m['str']}{$m['key']}</td>
     								<td><a href="{:U($m['url'])}">{$m['url']}</a></td>
-    								<td>{$position[$m['position']]}</td>
+    								<!--td>{$position[$m['position']]}</td-->
     								<td>{$status[$m['status']]}</td>
     								<td>{$m['action']}</td>
     								<td>{$m['sort']}</td>
-    								<td>
-    								    <a href="javascript:;" onclick="layer.load('菜单编辑','{:U('Admin/System/edit',array('type'=>'menu','id'=>$m['id']))}');" ><i class="glyphicon glyphicon-pencil"></i></a>
-    								    <a href="javascript:void(0);" url="{:U('Admin/System/delete',array('type'=>'menu'))}" title="删除" onclick="delall($(this),{$m['id']});"><i class="glyphicon glyphicon-trash"></i></a>
+    								<td class="bnt-pl3">
+    								    <a href="javascript:;" onclick="layer.load('菜单编辑','{:U('Admin/Operation/edit',array('type'=>'homemenu','id'=>$m['id']))}');" ><i class="glyphicon glyphicon-pencil"></i></a>
+    								    <a href="javascript:void(0);" url="{:U('Admin/Operation/delete',array('type'=>'homemenu'))}" title="删除" onclick="delall($(this),{$m['id']});"><i style="color:#b00;" class="glyphicon glyphicon-trash"></i></a>
     								</td>
     							</tr>
 							</volist>

@@ -12,14 +12,12 @@
 	**/
 	namespace Admin\Controller;
 	use Think\Controller;
-	use Library\Book;
-	use Library\BookCateTag;
 	use Library\SystemConfig;
 	
-	class IniController extends Controller{
-		protected $Book,$uid,$CateTag,$System;
+	class PubAdminController extends Controller{
+		protected $Sourc,$uid,$CateTag,$System;
 		function _init(){
-			$this->uid = $_SESSION['NovelNid'] = 1;
+			$this->uid = $_SESSION['AdminID'] = 1;
 			if(! $this->uid){
 				header("Location:".U('Login/index'));
 			}
@@ -29,11 +27,14 @@
 				$menu = $this->System->getAdminMenu();
 				S('Menu',$this->System->_menu($menu));
 			}
+			$this->diy_menu();
+			dump(S('Menu'));
 			$this->assign('menu',S('Menu'));
 			$this->diy_menu();
 		}
 		
-			/**
+		
+		/**
 		 * 菜单设置
 		 * @return array
 		 * @author MaWei (http://www.phpyrb.com)

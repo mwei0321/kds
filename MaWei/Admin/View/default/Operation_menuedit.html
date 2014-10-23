@@ -7,7 +7,7 @@
     <div class="col-lg-12">
         <div class="panel panel-default bootstrap-admin-no-table-panel">
             <div class="bootstrap-admin-no-table-panel-content bootstrap-admin-panel-content collapse in">
-                <form class="form-horizontal" method="post" action="{:U('Admin/System/add_updata',array('type'=>$type))}">
+                <form class="form-horizontal" method="post" action="{:U('Admin/Operation/add_updata',array('type'=>$type))}">
                     <input type="hidden" name="id" value="{$info['id']}" />
                     <fieldset>
                         <legend>菜单编辑</legend>
@@ -47,7 +47,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-lg-2 control-label" for="focusedInput">菜单控制器</label>
+                            <label class="col-lg-2 control-label" for="focusedInput">菜单控制</label>
                             <div class="col-lg-10">
                                 <input class="form-control" type="text" name="key" style="width:120px;" placeholder="控制器名" value="{$info['key']}">
                                 <p class="explain">例；当前页为System，注意首字母大写</p>

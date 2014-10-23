@@ -12,14 +12,16 @@
 	**/
 
 	namespace Admin\Controller;
-	use Admin\Controller\IniController;
+	use Admin\Controller\PubAdminController;
 	use Library\SystemConfig;
+	use Library\App;
 	
-	class SystemController extends IniController{
-		protected $system;
+	class SystemController extends PubAdminController{
+		protected $system,$app;
 		function _init(){
 			parent::_init();
 			$this->system = new SystemConfig();
+			$this->app = new App();
 			$this->assign('position',array('顶部','左则'));
 		}
 		
@@ -27,12 +29,17 @@
 			$this->display();
 		}
 		
-		function menu(){
-			$menu = $this->system->getMenu();
+		/**
+		* 后台菜单设置
+		* @author MaWei (http://www.phpyrb.com)
+		* @date 2014-10-5  上午10:53:46
+		*/
+		function adminmenu(){
+			$menu = $this->system->getAdminMenu();
 			$this->assign('list',$menu);
 			$this->display();
 		}
-		
+
 		/**
 		* 添加，修改编辑页
 		* @author MaWei (http://www.phpyrb.com)
@@ -41,16 +48,23 @@
 		function edit(){
 			$type = $_REQUEST['type'] ? text($_REQUEST['type']) : exit(null);
 			$id = intval($_REQUEST['id']);
-			$info = array();
+			$info = $pmenu = array();
+			$template = null;
 			switch ($type){
-				case 'menu':
+				case 'AdminMenu':
 					if($id){
 						$info = $this->system->getMenuInfo($id);
-						$this->assign('info',$info);
 					}
-					$this->display('menuedit');
+					$pmenu = $this->system->getAdminMenu(array('position'=>0,'status'=>1));
+					$template = 'menuedit';
+					$this->assign('pmenu',$pmenu);
 					break;
+				default:
+					exit();
 			}
+			$this->assign('type',$type);
+			$this->assign('info',$info);
+			$this->display($template);
 		}
 		
 		/**
@@ -74,6 +88,26 @@
 		}
 		
 		/**
+		 * 已安装APP列表
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-10-8 下午4:52:13
+		 */
+		function installapp(){
+			$list = $this->app->getAppList();
+			$this->assign('list',$list);
+			$this->display();
+		}
+		
+		/**
+		 * 未安装APP列表
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-10-8 下午4:52:31
+		 */
+		function uninstallapp(){
+
+		}
+		
+		/**
 		* 更新到数据库操作
 		* @author MaWei (http://www.phpyrb.com)
 		* @date 2014-9-7  下午8:47:33
@@ -82,25 +116,29 @@
 			$type = $_REQUEST['type'] ? text($_REQUEST['type']) : exit(null);
 			$data = array();
 			$_REQUEST['id'] && $id = $data['id'] = intval($_REQUEST['id']);
+			$reid = $url = false;
 			switch ($type) {
-				case 'menu' :
+				case 'AdminMenu' :
 					$data['pid'] = intval($_REQUEST['pid']);
 					$data['name'] = text($_REQUEST['name']);
 					$data['key'] = text($_REQUEST['key']);
 					$data['position'] = $data['pid'] == 0 ? 0 : 1;
 // 					$data['position'] = intval($_REQUEST['position']);
 					$data['sort'] = intval($_REQUEST['sort']);
-					$data['action'] = intval($_REQUEST['action']);
+					$data['action'] = text($_REQUEST['action']);
 					$data['url'] = $_REQUEST['url'];
 					$data['status'] = $_REQUEST['status'] ? intval($_REQUEST['status']) : 1;
 					$reid = add_updata($data,'AdminSystemMenu');
-					if($reid === false){
-						$this->error('添加失败！',U('Admin/System/menu',array('id'=>$id)));
-					}else{
-						$this->success('添加成功！',U('Admin/System/menu'));
-					}
+					$url = U('Admin/System/adminmenu');
+					S('Menu',null);
 					break;
+				default:
+					exit();
+			}	
+			if($reid === false){
+				$this->error('添加修改失败！');
+			}else{
+				$this->success('添加修改成功！');
 			}
-			
 		}
 	}

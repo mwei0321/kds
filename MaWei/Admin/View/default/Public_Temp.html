@@ -40,7 +40,7 @@
                                 <li><a class="size-changer large active">Large</a></li> -->
                             </ul>
                             <ul class="nav navbar-nav navbar-right">
-                                <li><a href="{:U('Books/Index/index')}">返回前台</a></li>
+                                <li><a href="{:U('Home/Index/index')}">返回前台</a></li>
                                 <li><a href="{:U('Admin/System')}">用户设置</a></li>
                                 
                                 <li>
@@ -83,6 +83,7 @@
                             </button>
                             <!--a class="navbar-brand" href="{:U('Admin/Index/index')}">小说管理</a -->
                         </div>
+                        <!-- 顶部菜单　-->
                         <div class="collapse navbar-collapse main-navbar-collapse">
                             <ul class="nav navbar-nav">
                                 <li class="<if condition="CONTROLLER_NAME EQ 'System'">active</if>"><a href="{:U('Admin/System/index')}">系统管理</a></li>
@@ -114,41 +115,42 @@
                 <!-- left, vertical navbar -->
                 <div class="col-md-2 bootstrap-admin-col-left">
                     <ul class="nav navbar-collapse collapse bootstrap-admin-navbar-side">
+                        <block name="leftmenu">
                         <if condition="CONTROLLER_NAME NEQ 'System'">
                             <volist name="menu['leftmenu'][CONTROLLER_NAME]" id="t">
                             <li class="<if condition="(ACTION_NAME EQ $t['action']) || ($action EQ $t['action'])"> active </if> ">
-                                <a href="{:U($t['url'])}"><i class="glyphicon glyphicon-chevron-right"></i>{$t['name']}</a>
+                                <a href="{:U($t['url'])}">{$t['name']}</a>
                             </li>
                             </volist>
                         <else />
-                            <li class='<if condition="ACTION_NAME EQ 'index'"> active </if>'>
-                                <a href="{:U('Admin/System/index')}"><i class="glyphicon glyphicon-chevron-right"></i>系统信息</a>
-                            </li>
-                            <li class='<if condition="ACTION_NAME EQ 'menu'"> active </if>'>
-                                <a href="{:U('Admin/System/menu')}"><i class="glyphicon glyphicon-chevron-right"></i>菜单设置</a>
-                            </li>                        
+                            <volist name="diymenu['leftmenu'][CONTROLLER_NAME]" id="d">
+                                <li class='<if condition="ACTION_NAME EQ $d['2']"> active </if>'>
+                                <a href="{$d['1']}">{$d['0']}</a>
+                                </li>
+                            </volist>
                         </if>
+                        </block>
                     </ul>
                 </div>
 
                 <!-- content -->
                 <div class="col-md-10">
-                    <div class="row">
+                    <!--div class="row">
                         <div class="col-lg-12">
                             <div class="page-header">
                                 <h1><block name="PageName"></block></h1>
                             </div>
                         </div>
-                    </div>
+                    </div -->
 					<block name="notify">
                     <div class="row">
-                        <div class="col-lg-12">
+                        <!--div class="col-lg-12">
                             <div class="alert alert-success bootstrap-admin-alert">
                                 <button type="button" class="close" data-dismiss="alert">×</button>
                                 <h4>消息通知</h4>
                                 	暂无新的消息通知
                             </div>
-                        </div>
+                        </div -->
                     </div>
 					</block>
                     <div class="row">
@@ -156,12 +158,18 @@
                             <div class="navbar navbar-default bootstrap-admin-navbar-thin">
                                 <ol class="breadcrumb bootstrap-admin-breadcrumb">
                                     <li>
-                                        <a href="#">Dashboard</a>
+                                        <a href="{:U('Admin/Index/index')}">后台首页</a>
                                     </li>
                                     <li>
-                                        <a href="#">Settings</a>
+                                    <block name="controller">
+                                        <a href="{:U($menu['topmenu']['CONTROLLER_NAME']['url'])}">{$menu['topmenu'][CONTROLLER_NAME]['name']}</a>
+                                    </block>
                                     </li>
-                                    <li class="active">Tools</li>
+                                    <li class="active"><block name="action">
+                                        <volist name="menu['leftmenu'][CONTROLLER_NAME]" id="act">
+                                            <if condition="$act['action'] EQ ACTION_NAME">{$act['name']}</if>
+                                        </volist></block>
+                                    </li>
                                 </ol>
                             </div>
                         </div>
@@ -228,7 +236,7 @@
 
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script type="text/javascript" src="/Public/admin/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="/Public/admin/js/twitter-bootstrap-hover-dropdown.min.js"></script>
+        <!--script type="text/javascript" src="/Public/admin/js/twitter-bootstrap-hover-dropdown.min.js"></script -->
         <script type="text/javascript" src="/Public/js/layer.js"></script>
         <script type="text/javascript" src="./Public/admin/js/admin.js"></script>
         <!-- script type="text/javascript" src="/Public/js/aa.js"></script>

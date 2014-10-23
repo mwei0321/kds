@@ -12,17 +12,21 @@
 	**/
 
 	namespace Admin\Controller;
-	use Admin\Controller\IniController;
+	use Admin\Controller\PubAdminController;
 	use Vendor\Page;
 	use Library\CateTag;
 			
-	class CateTagController extends IniController{
-		protected $catetag;
+	class CateTagController extends PubAdminController{
+		protected $type;
 		function _init(){
 			parent::_init();
-			$type = array('cate'=>'分类','tag'=>'标签');
-			$this->assign('type',$type);
+			$name = array('cate'=>'分类','tag'=>'标签','type'=>'类型');
+			$this->assign('name',$name);
+			
+			$this->type = $_REQUEST['type'];
+			$this->assign('type',$this->type);
 			$this->leftmenu();
+			$this->assign('recomm',array('未推荐','已推荐'));
 		}
 		
 		/**
@@ -34,27 +38,33 @@
 		* @date 2014-8-12  下午11:02:42
 		*/
 		function index(){
-			$tp = $_REQUEST['type'] == 'cate' || empty($_REQUEST['type']) ? 'cate' : 'tag';
+			$tp = empty($_REQUEST['type']) ? 'cate' : $_REQUEST['type'];
 			switch ($tp){
 				case 'cate' :
-					$list = $this->catetag->level();
+					$list = $this->CateTag->level();
+					$count = count($list);
 					break;
 				case 'tag' :
 					$where = array();
 					$_REQUEST['tid'] && $where['id'] = intval($_REQUEST['tid']);
 					$_REQUEST['keyword'] && $where['name'] = array('LIKE','%'.text($_REQUEST['keyword']).'%');
-					$count = $this->catetag->taglist('count',$where);
+					$count = $this->CateTag->taglist('count',$where);
 					$page = new Page($count,50);
-					$list = $this->catetag->taglist("$page->firstRow,$page->listRows",$where);
+					$list = $this->CateTag->taglist("$page->firstRow,$page->listRows",$where);
 					$this->assign('page',$page->show());
 					break;
-				default:break;
+				case 'type' :
+					$list = $this->CateTag->sourctype();
+					$count = count($list);
+					break;
+				default:
+					exit;
 			}
 			$this->assign('search',array('tid'=>$_REQUEST['tid'],'keyword'=>$_REQUEST['keyword']));
 			$this->assign('list',$list);
 			$this->assign('tp',$tp);
 			$this->assign('count',$count);
-			$this->assign('action',$tp == 'cate' ? 'cate' : 'tag');
+			$this->assign('action',$tp  ? $tp : 'cate');
 			$this->display();
 		}
 		
@@ -82,14 +92,22 @@
 		* @date 2014-8-7  上午12:10:18
 		*/
 		function edit(){
-			$type = $_REQUEST['type'];
-			if($_REQUEST['id']){
-				$info = $type == 'cate' ? $this->catetag->catelist('0,1',array('id'=>intval($_REQUEST['id']))) : $this->catetag->taglist('0,1',array('id'=>intval($_REQUEST['id'])));
-				$this->assign('info',array_shift($info));
+			switch ($this->type){
+				case 'cate' :
+					$info = $this->CateTag->catelist('0,1',array('id'=>intval($_REQUEST['id'])));
+					break;
+				case 'tag'  :
+					$info = $this->CateTag->taglist('0,1',array('id'=>intval($_REQUEST['id'])));
+					break;
+				case 'type' :
+					$info = $this->CateTag->sourctype(array('id'=>intval($_REQUEST['id'])));
+					break;
+				default:
+					exit;
 			}
+			$this->assign('info',array_shift($info));
 			$this->assign('catelist',S('CateList'));
-			$this->assign('tp',$type);
-			$this->assign('action',$type == 'cate' ? 'ecate' : 'etag');
+			$this->assign('tp',$this->type);
 			$this->display();
 		}
 		
@@ -100,20 +118,33 @@
 		*/
 		function addupdata(){
 			$data = array();
-			if($_REQUEST['type'] == 'cate'){
-				if($_REQUEST['pid'] == 0){
-					$data['path'] = 0;
-				}else{
-					$path = M('SourcCategory')->where(array('id'=>intval($_REQUEST['pid'])))->getField('path');
-					$data['path'] = $path.','.$_REQUEST['pid'];
-				}
-			}
-			$data['name'] = h(text($_REQUEST['name']));
-			$data['status'] = $_REQUEST['status'] ? intval($_REQUEST['status']) : 1;
-			$_REQUEST['id'] && $data['id'] = intval($_REQUEST['id']);
-			$_REQUEST['type'] == 'cate' && $data['pid'] = intval($_REQUEST['pid']);
+			$model = null;
 			
-			$model = $_REQUEST['type'] == 'cate' ? 'SourcCategory' : 'SourcTag';
+			$_REQUEST['id'] && $data['id'] = intval($_REQUEST['id']);
+			$data['status'] = intval($_REQUEST['status']);
+			$data['name'] = text($_REQUEST['name']);
+			switch ($this->type){
+				case 'cate' :
+					if($_REQUEST['pid'] == 0){
+						$data['path'] = 0;
+					}else{
+						$path = M('SourcCategory')->where(array('id'=>intval($_REQUEST['pid'])))->getField('path');
+						$data['path'] = $path.','.$_REQUEST['pid'];
+					}
+					$data['pid'] = intval($_REQUEST['pid']);
+					$data['icon'] = text($_REQUEST['icon']);
+					$model = 'SourcCategory';
+					break;
+				case 'tag' :
+					$model = 'SourcTag';
+					break;
+				case 'type':
+					$model = 'SourcType';
+					break;
+				default:
+					break;
+			}
+			
 			$reid = add_updata($data,"$model");
 			if($reid === false){
 				$this->error('添加修改失败',U('Admin/CateTag/edit',array('type'=>$_REQUEST['type'],'id'=>intval($_REQUEST['id']))));
@@ -129,17 +160,43 @@
 		*/
 		function status(){
 			$status = intval($_REQUEST['status']) == '1' ? 0 : 1;
-			if($_REQUEST['type'] == 'cate'){
-				$reid = status('SourcCategory', intval($_REQUEST['id']),$status);
-			}else{
-				$reid = status('SourcTag', intval($_REQUEST['id']),$status);
+			switch ($this->type){
+				case 'cate' :
+					$reid = status('SourcCategory', $_REQUEST['ids'],$status);
+				case 'tag'  :
+					$reid = status('SourcTag', $_REQUEST['ids'],$status);
+				case 'type' :
+					$reid = status('SourcType', $_REQUEST['ids'],$status);
+				default:
+					exit;
 			}
+			//状态更新返回
 			if($reid === false){
 				$msg['status'] = null;
 				$msg['msg'] = $status ? '显示失败！' : '隐藏失败！';
 			}else{
 				$msg['status'] = $status ? 1 : 2;
-				$msg['msg'] = $status ? '显示' : '隐藏';
+				$msg['msg'] = $status ? '已显示' : '已隐藏';
+			}
+			echo json_encode($msg);
+			exit;
+		}
+		
+		/**
+		* 推荐
+		* @author MaWei (http://www.phpyrb.com)
+		* @date 2014-10-4  下午10:39:37
+		*/
+		function recommend(){
+			$recomm = intval($_REQUEST['recomm']) == 1 ? 0 : 1;
+			$reid = recommend('SourcCategory',$_REQUEST['ids'],$recomm);
+			if($reid === false){
+				$msg['status'] = null;
+				$msg['msg'] = '推荐失败';
+			}else{
+				$msg['status'] = 1;
+				$msg['msg'] = '推荐设置成功';
+				$msg['text'] = intval($_REQUEST['recomm']) ==0 ? '已推荐' : '未推荐';
 			}
 			echo json_encode($msg);
 			exit;

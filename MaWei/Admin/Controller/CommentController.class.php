@@ -12,16 +12,15 @@
 	**/
 
 	namespace Admin\Controller;
-	use Admin\Controller\IniController;
-	use Library\Comment;
+	use Admin\Controller\PubAdminController;
 	use Vendor\Page;
-	
-	class CommentController extends IniController{
+		
+	class CommentController extends PubAdminController{
 		protected $comment;
 		
 		function _init(){
 			parent::_init();
-			$this->comment = new Comment();
+			
 		}
 		
 		/**
@@ -33,9 +32,9 @@
 		* @date 2014-8-12  下午9:58:27
 		*/
 		function index(){
-			$count = $this->comment->comment();
+			$count = $this->Sourc->comment();
 			$page = new Page($count, 30);
-			$list = $this->comment->comment("$page->firstRow,$page->listRows");
+			$list = $this->Sourc->comment("$page->firstRow,$page->listRows");
 			
 			$this->assign('list',$list);
 			$this->assign('count',$count);
@@ -52,9 +51,9 @@
 		* @date 2014-8-12  下午10:15:51
 		*/
 		function reply(){
-			$count = $this->comment->reply();
+			$count = $this->Sourc->reply();
 			$page = new Page($count, 20);
-			$list = $this->comment->reply("$page->firstRow,$page->listRows");
+			$list = $this->Sourc->reply("$page->firstRow,$page->listRows");
 			$this->assign('list',$list);
 			$this->assign('page',$page->show());
 			$this->assign('count',$count);

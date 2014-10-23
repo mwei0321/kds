@@ -1,27 +1,26 @@
 <?php
 	/**
 	*  +----------------------------------------------------------------------------------------------+
-	*   | Explain:  后台首页
+	*   | Explain: 后台管理
 	*  +----------------------------------------------------------------------------------------------+
-	*   | Author: ONLY <1123265518@qq.com>
+	*   | Author: MaWei <1123265518@qq.com>
+	*	+----------------------------------------------------------------------------------------------+
+	*   | Creater Time : 2014-10-23 下午5:06:23
 	*  +----------------------------------------------------------------------------------------------+
-	*   | Creater Time : 2014-7-31 	
-	*  +----------------------------------------------------------------------------------------------+
-	*   | Link :	http://www.phpyrb.com	     
+	*   | Link :		http://www.phpyrb.com	     
 	*  +----------------------------------------------------------------------------------------------+
 	**/
-	
-	namespace Admin\Controller;
-	use Admin\Controller\IniController;
 
-	class IndexController extends IniController{
+	namespace Book\Controller;
+	use Admin\Controller\PubAdminController;
+	
+	class AdminController extends PubAdminController{
 		
 		function _init(){
+			parent::_init();
 		}
 		
 		function index(){
-			dump($_FILES);
-			dump(uploads());
 			$this->display();
 		}
 	}

@@ -12,10 +12,10 @@
 	**/
 	
 	namespace Admin\Controller;
-	use Admin\Controller\IniController;
+	use Admin\Controller\PubAdminController;
 	use Library\AdminMenu;
 		
-	class AdminMenuController extends IniController{
+	class AdminMenuController extends PubAdminController{
 		protected $adminmenu;
 		
 		function _init(){

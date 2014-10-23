@@ -7,7 +7,7 @@
 
 <!-- page title name -->
 <block name="PageName">
-	{$type[$tp]}中心
+	{$name[$tp]}中心
 </block>
 
 <!-- user list content -->
@@ -17,30 +17,34 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<div class="text-muted bootstrap-admin-box-title">
-						{$type[$tp]}列表
+						{$name[$tp]}列表
 					</div>
 					<div class="clr"> </div>
                     <if condition="$tp EQ 'cate'">
-                        <div class="seach_select">
+                        <!--div class="seach_select">
                             <form action="{:U('Admin/CateTag/index',array('type'=>'cate'))}" method="post">
                                 <input type="text" name="id" class="intext" value="{$seach['id']}" placeholder="分类ID"/>
                                 <input type="text" name="keyword" class="intext" value="{$seach['keyword']}" placeholder="用户名或邮箱"/>
                                 <input type="submit" class="btn btn-sm btn-primary" value="搜索"　/>
                             </form>
-                        </div>
+                        </div -->
                         <div class="seach_select">
                             <input type="button" onclick="layer.load('分类编辑','{:U('Admin/CateTag/edit',array('type'=>'cate'))}');" class="btn btn-sm btn-success opn"  value="添加分类"/>
                         </div>
-                    <else />
+                    <elseif condition="$tp EQ 'tag'" />
                         <div class="seach_select">
                             <form action="{:U('Admin/CateTag/index',array('type'=>'tag'))}" method="post">
                                 <input type="text" name="id" class="intext" value="{$seach['id']}" placeholder="标签ID"/>
-                                <input type="text" name="keyword" class="intext" value="{$seach['keyword']}" placeholder="用户名或邮箱"/>
+                                <input type="text" name="keyword" class="intext" value="{$seach['keyword']}" placeholder="名称"/>
                                 <input type="submit" class="btn btn-sm btn-primary" value="搜索"　/>
                             </form>
                         </div>
                         <div class="seach_select">
                             <input type="button" onclick="layer.load('标签编辑','{:U('Admin/CateTag/edit',array('type'=>'tag'))}');" class="btn btn-sm btn-success opn"  value="添加标签"/>
+                        </div>
+                    <else />
+                        <div class="seach_select">
+                            <input type="button" onclick="layer.load('资源类型编辑','{:U('Admin/CateTag/edit',array('type'=>'type'))}');" class="btn btn-sm btn-success opn"  value="添加资源类型"/>
                         </div>
                     </if>
                     <div class="pull-right flpostion">
@@ -56,10 +60,12 @@
 								<if condition="$tp EQ 'cate'">
 								    <th>Pid</th>
 								</if>
-								<th>{$type[$tp]}名称</th>
+								<th>{$name[$tp]}名称</th>
 								<th>状态</th>
 								<if condition="$tp EQ 'cate'">
 								<th>层级</th>
+								<th>推荐</th>
+								<th>图标</th>
 								</if>
 								<th>操作</th>
 							</tr>
@@ -73,23 +79,40 @@
     								    <if condition="$u['pid'] EQ 0">
     								        <td>顶级分类</td>
     								    <else />
-    								        <td>{$catelist[$u['pid']]['name']}</td>
+    								        <td>{$u['levelstr']}{$list[$u['pid']]['name']}</td>
     								    </if>
                                        
                                     </if>
     								<td>{$u['levelstr']}{$u['name']}</td>
     								<td class="upstat">{$status[$u['status']]}</td>
     								<if condition="$tp EQ 'cate'">
-    								<td>{$u['path']}</td>
+        								<td>{$u['path']}</td>
+        								<td class="recomm">{$recomm[$u['recommend']]}</td>
+        								<td><i style="background-position:{$u['icon']};"></i></td>
     								</if>
-    								<td>
-    								    <a href="javascript:;" onclick="layer.load('标签编辑','{:U('Admin/CateTag/edit',array('id'=>$u['id'],'type'=>$tp))}')" ><i class="glyphicon glyphicon-pencil"></i></a>
-    								    <a href="javascript:void(0);" style="color:red;" url="{:U('Admin/CateTag/status',array('id'=>$u['id'],'type'=>$tp))}" onclick="setstatus($(this),{$u['status']});"><i class="glyphicon glyphicon-minus-sign"></i></a>
-    								    <if condition="$tp EQ 'cate'">
-    								    <a href="javascript:void(0);" url="{:U('Admin/CateTag/delect',array('type'=>'cate'))}" title="删除" onclick="delall($(this),{$u['id']});"><i class="glyphicon glyphicon-trash"></i></a>
-    								    <else />    
-    								     <a href="javascript:void(0);" url="{:U('Admin/CateTag/delect',array('type'=>'tag'))}" title="删除" onclick="delall($(this),{$u['id']});"><i class="glyphicon glyphicon-trash"></i></a>
-    								    </if>
+    								<td class="bnt-pl3">
+    								    <a href="javascript:;" onclick="layer.load('{$name[$type]}编辑','{:U('Admin/CateTag/edit',array('id'=>$u['id'],'type'=>$type))}')" ><i class="glyphicon glyphicon-pencil"></i></a>
+                                        <!-- set recommend -->
+                                        <if condition="$type EQ 'cate'">
+                                            <a href="javascript:void(0);" url="{:U('Admin/CateTag/recommend')}" recomm="{$u['recommend']}" onclick="recommend($(this),{$u['id']});">
+                                                <if condition="$u['recommend'] EQ 1">
+                                                    <i class="glyphicon glyphicon-flag" style="color:green;"></i>
+                                                <else />
+                                                    <i class="glyphicon glyphicon-flag" style="color:red;"></i>
+                                                </if>
+                                            </a>
+                                        </if>
+    								    <!-- set status -->
+    								    <php>$st = $u['status'] ? 0 : 1;</php>
+    								    <a href="javascript:void(0);" url="{:U('Admin/CateTag/status',array('type'=>$tp))}" status="{$u['status']}" onclick="setstatus($(this),{$u['id']});">
+    								        <if condition="$u['status'] EQ 1">
+                                            <i class="glyphicon glyphicon-minus-sign" style="color:red;"></i>
+                                            <else />
+                                            <i class="glyphicon glyphicon-ok" style="color:green;"></i>
+                                            </if>
+    								    </a>
+    								    <!-- delete -->
+    								    <a href="javascript:void(0);" url="{:U('Admin/CateTag/delect',array('type'=>$type))}" title="删除" onclick="delall($(this),{$u['id']});"><i class="glyphicon glyphicon-trash"></i></a>
     								</td>
     							</tr>
 							</volist>

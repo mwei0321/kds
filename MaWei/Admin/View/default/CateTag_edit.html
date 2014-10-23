@@ -11,9 +11,9 @@
                     <input type="hidden" name="type" value="{$tp}" />
                     <fieldset>
                         <div class="form-group">
-                            <label class="col-lg-3 control-label" for="focusedInput">{$type[$tp]}名称</label>
+                            <label class="col-lg-3 control-label" for="focusedInput">{$name[$tp]}名称</label>
                             <div class="col-lg-6">
-                                <input class="form-control" name="name" id="focusedInput" type="text" placeholder="{$type[$tp]}名称" value="{$info['name']}">
+                                <input class="form-control" name="name" id="focusedInput" type="text" placeholder="{$name[$tp]}名称" value="{$info['name']}">
                             </div>
                         </div>
                         <if condition="$tp EQ 'cate'">
@@ -32,18 +32,26 @@
                                 </select>
                                 </div>
                         </div>
-                        </if>　
-                        <if condition="$info['id']">
                         <div class="form-group">
-                            <label class="col-lg-3 control-label" for="disabledInput">状态</label>
+                            <label class="col-lg-3 control-label" for="focusedInput">分类图标</label>
                             <div class="col-lg-6">
-                                <select class="form-control" name="status">
-                                    <volist name="status" id="s">
-                                        <option value="{$key}" <if condition="$info['status'] EQ $key">selected</if>>{$s}</option>
-                                    </volist>
-                                </select>
+                                <input class="form-control" name="icon" id="focusedInput" type="text" placeholder="分类图标的位置坐标" value="{$info['icon']}">
+                                <p class="explain">/Public/image/cate_icon.png，背景图片坐标；例：-10px 0px</p>
                             </div>
                         </div>
+                        </if>　
+                        <if condition="$info['id']">
+                            <div class="form-group">
+                                <label class="col-lg-3 control-label" for="disabledInput">状态</label>
+                                <div class="col-lg-6">
+                                    <select class="form-control" name="status">
+                                        <option value="0" <if condition="$info['status'] EQ 0">selected</if>>隐藏</option>
+                                        <option value="1" <if condition="$info['status'] EQ 1">selected</if>>显示</option>
+                                    </select>
+                                </div>
+                            </div>
+                        <else />
+                            <input type="hidden" value="1" name="status" />
                         </if>
                         <div class="fr bntmr20">
                         <button type="submit" class="btn btn-primary">确定</button>
