@@ -12,14 +12,17 @@
 	**/
 	
 	namespace Admin\Controller;
-	use Admin\Controller\IniController;
+	use Admin\Controller\PubAdminController;
 	use Vendor\Page;
 	use Library\Edit;
+	use Library\Book;
 		
-	class SourcController extends IniController{
+	class BookController extends PubAdminController{
+		protected $book;
 		function _init(){
 			parent::_init();
 			$this->assign('recomm',array('未推荐','已推荐'));
+			$this->book = new Book();
 		}
 		
 		/**
@@ -31,10 +34,9 @@
 			$where = array();
 			$_REQUEST['bid'] && $where['id'] = $search['bid'] = intval($_REQUEST['bid']);
 			$_REQUEST['keyword'] && $where['name'] = $search['keyword'] = text($_REQUEST['keyword']);
-			$count = $this->Sourc->sourc('count',$where);
+			$count = $this->book->book('count',$where);
 			$page = new Page($count, 30);
-			$list = $this->Sourc->sourc("$page->firstRow,$page->listRows",$where);
-			$list = $this->Sourc->tagtoarrray($list);
+			$list = $this->book->book("$page->firstRow,$page->listRows",$where);
 
 			$this->assign('list',$list);
 			$this->assign('count',$count);

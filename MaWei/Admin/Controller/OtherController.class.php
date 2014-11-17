@@ -12,10 +12,10 @@
 	**/
 
 	namespace Admin\Controller;
-	use Admin\Controller\IniController;
+	use Admin\Controller\PubAdminController;
 	use Library\Other;
 	
-	class OtherController extends IniController{
+	class OtherController extends PubAdminController{
 		protected $other;
 		function _init(){
 			parent::_init();

@@ -17,13 +17,6 @@
                     </div>
                     <div class="clr"> </div>
                     <div class="seach_select">
-                        <form action="{:U('Admin/Sourc/index')}" method="post">
-                            <input type="text" name="id" class="intext" value="{$seach['uid']}" placeholder="用户ID"/>
-                            <input type="text" name="keyword" class="intext" value="{$seach['keyword']}" placeholder="用户名或邮箱"/>
-                            <input type="submit" class="btn btn-sm btn-primary" value="搜索"　/>
-                        </form>
-                    </div>
-                    <div class="seach_select">
                         <input type="button" onclick="layer.load('会员编辑','{:U('Admin/Operation/edit',array('type'=>'friendurl'))}');" class="btn btn-sm btn-success opn"  value="友链编辑"/>
                         <input type="button" url="{:U('Admin/Sourc/delete')}" class="btn btn-sm btn-primary" value="批量删除" onclick="delall($(this))"　/>
                     </div>

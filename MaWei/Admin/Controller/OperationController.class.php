@@ -12,10 +12,10 @@
 	**/
 
 	namespace Admin\Controller;
-	use Admin\Controller\IniController; 
+	use Admin\Controller\PubAdminController; 
 	use Library\Other;
 	
-	class OperationController extends IniController{
+	class OperationController extends PubAdminController{
 		protected $type,$ids,$other;
 
 		function _init(){

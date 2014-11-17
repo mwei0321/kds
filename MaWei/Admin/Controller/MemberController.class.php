@@ -12,12 +12,12 @@
 	**/
 
 	namespace Admin\Controller;
-	use Admin\Controller\IniController;
+	use Admin\Controller\PubAdminController;
 	use Library\Member;
 	use Library\Grade;
 	use Vendor\Page;
 		
-	class MemberController extends  IniController{
+	class MemberController extends  PubAdminController{
 		protected $member,$grade;
 		function _init(){
 			parent::_init();
@@ -108,7 +108,7 @@
 			$uid = intval($_REQUEST['uid']);
 			if($uid){
 				$info = $this->member->getMemberInfo($uid);
-				$this->assign('info',$info);
+				$this->assign('info',array_shift($info));
 			}
 			$this->assign('action','edit');
 			$this->display();
@@ -124,11 +124,11 @@
 			$table = null;
 			$type = $_REQUEST['type'];
 			switch ($type){
-				case 'member' :
+				case 'member' ://会员添加修改
 					$_REQUEST['id'] && $data['id'] = intval($_REQUEST['id']);
 					$data['uname'] = text($_REQUEST['name']);
 					$data['email'] = text($_REQUEST['email']);
-					$_REQUEST['passwd'] && $data['passwd'] = sha1_encrypt(text($_REQUEST['passwd']));
+					$_REQUEST['passwd'] && $data['passwd'] = $this->member->encrypt(text($_REQUEST['passwd']));
 					$data['home'] = text($_REQUEST['home']);
 					$data['status'] = intval($_REQUEST['status']);
 					$data['qq'] = intval($_REQUEST['qq']);
