@@ -28,9 +28,7 @@
 				S('Menu',$this->System->_menu($menu));
 			}
 			$this->diy_menu();
-			dump(S('Menu'));
 			$this->assign('menu',S('Menu'));
-			$this->diy_menu();
 		}
 		
 		

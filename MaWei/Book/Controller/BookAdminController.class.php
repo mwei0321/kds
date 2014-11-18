@@ -14,13 +14,14 @@
 	namespace Book\Controller;
 	use Admin\Controller\PubAdminController;
 	
-	class AdminController extends PubAdminController{
+	class BookAdminController extends PubAdminController{
 		
 		function _init(){
 			parent::_init();
 		}
 		
 		function index(){
+			
 			$this->display();
 		}
 	}
