@@ -29,19 +29,18 @@
 		* @author MaWei (http://www.phpyrb.com)
 		* @date 2014-11-16  下午9:04:55
 		*/
-		function readfile($_file,$_chapter = '/(第[一|二|三|四|五|六|七|八|九|十|百|千|万]+[章|节]{1})(.*)/',$_filter = array(),$_replace = ''){
-		    ini_set('memory_limit','150M');
+		function readfile($_file,$_chapter = null,$_filter = array(),$_replace = ''){
 		    $data = file($_file);
 			$content = array();
 			$i = $init = 0;
+			!$_chapter && $_chapter = '/(第.*章)(.*)/';
 			foreach ($data as $k => $v){
 				$v = trim($v);
 				if(preg_match_all($_chapter, $v , $title)){
-					$content[$i]['title'] = $title[2][0];
-					$content[$i]['chapter_name'] = $title[1][0];
-					$content[$i]['book_id'] = 1;
-					$content[$i]['ctime'] = time();
 					$init && $i ++;
+					$content[$i]['title'] = $title[2][0];
+					$content[$i]['chapter'] = $title[1][0];
+					$content[$i]['uptime'] = time();
 					$init = 1;
 				}else{
 					$txt = $_filter ? preg_replace($_filter, $_replace, $v) : $v;
