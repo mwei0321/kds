@@ -3,7 +3,7 @@
 
 <!-- page title name -->
 <block name="PageName">
-    资源管理中心
+    小说管理中心
 </block>
 
 <!-- user list content -->
@@ -13,7 +13,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="text-muted bootstrap-admin-box-title">
-                                                    资源列表
+                                                    小说列表
                     </div>
                     <div class="clr"> </div>
                     <div class="seach_select">
@@ -24,7 +24,7 @@
                         </form>
                     </div>
                     <div class="seach_select">
-                        <a href="{:U('Admin/Sourc/edit')}" class="btn btn-sm btn-success opn">资源编辑</a>
+                        <a href="{:U('Admin/Book/edit')}" class="btn btn-sm btn-success opn">小说编辑</a>
                         <input type="button" url="{:U('Admin/Sourc/delete')}" class="btn btn-sm btn-primary" value="批量删除" onclick="delall($(this))"　/>
                     </div>
                     <div class="pull-right flpostion">
@@ -38,7 +38,7 @@
                                 <th><input type="checkbox"  check='1' id="checkall"/>
                                 <th>ID</th>
                                 <th>分类ID</th>
-                                <th>书籍名称</th>
+                                <th>小说名称</th>
                                 <th>封面</th>
                                 <th>状态</th>
                                 <th>评论数</th>

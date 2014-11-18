@@ -13,6 +13,7 @@
 	namespace Admin\Controller;
 	use Think\Controller;
 	use Library\SystemConfig;
+	use Library\BookCateTag;
 	
 	class PubAdminController extends Controller{
 		protected $Sourc,$uid,$CateTag,$System;
@@ -21,14 +22,24 @@
 			if(! $this->uid){
 				header("Location:".U('Login/index'));
 			}
+			$this->CateTag = new BookCateTag();
 			//后台菜单列表
-			if(!S('Menu')){
+// 			if(!S('Menu')){
 				$this->System = new SystemConfig();
 				$menu = $this->System->getAdminMenu();
 				S('Menu',$this->System->_menu($menu));
+// 			}
+			
+			if(!S('CateList')){
+				$catelist = $this->CateTag->level();
+				S('CateList',$catelist);
 			}
 			$this->diy_menu();
+			
+// 			dump(S('Menu'));
 			$this->assign('menu',S('Menu'));
+			$this->diy_menu();
+			$this->assign('catelist',S('CateList'));
 		}
 		
 		

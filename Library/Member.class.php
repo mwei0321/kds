@@ -100,6 +100,45 @@
 		}
 		
 		/**
+		 * 用户的收藏书集
+		 * @param int $_uid 用户ID
+		 * @param string $_limit 条数
+		 * @param string $_order 排序
+		 * @param array $_where 附加条件
+		 * @return array 用户的收藏书集
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-7-30 下午6:00:53
+		 */
+		function userCollect($_uid,$_limit = 'count',$_order = 'point DESC',$_where = array()){
+			$m = M('NovelCollect');
+			$where = array();
+			$where = empty($_where) ? array('status'=>1) : array_merge($where,$_where);
+			if($_limit == 'count'){
+				$count = $m->field('id')->where($where)->count();
+			}
+			$colloect = $m->where($where)->order('count DESC')->select();
+			return $colloect;
+		}
+		
+		/**
+		 * 收藏该书的用户
+		 * @param int $_uid 用户ID
+		 * @param string $_limit 条数
+		 * @param string $_order 排序
+		 * @param array $_where 附加条件
+		 * @return array 用户的收藏书集
+		 * @date 2014-7-30 下午6:09:15
+		 */
+		function collectBookUser($_bookid,$_limit = 'count',$_order = 'point DESC',$_where = array()){
+			$m = M('NovelCollect');
+			$where = array();
+			$where['book_id'] = $_bookid;
+			$where = empty($_where) ? array('status'=>1) : array_merge($where,$_where);
+			$colloect = $m->where($where)->order('count DESC')->select();
+			return $colloect;
+		}
+		
+		/**
 		 * 密码加密
 		 * @param string $_passwd
 		 * @return string

@@ -42,10 +42,6 @@
                         <div class="seach_select">
                             <input type="button" onclick="layer.load('标签编辑','{:U('Admin/CateTag/edit',array('type'=>'tag'))}');" class="btn btn-sm btn-success opn"  value="添加标签"/>
                         </div>
-                    <else />
-                        <div class="seach_select">
-                            <input type="button" onclick="layer.load('资源类型编辑','{:U('Admin/CateTag/edit',array('type'=>'type'))}');" class="btn btn-sm btn-success opn"  value="添加资源类型"/>
-                        </div>
                     </if>
                     <div class="pull-right flpostion">
                         <span class="badge">{$count}</span>
@@ -55,7 +51,7 @@
 					<table class="table table-striped">
 						<thead>
 							<tr>
-								<th><input type="checkbox"  check='1' id="checkall"/>
+								<!-- <th><input type="checkbox"  check='1' id="checkall"/> -->
 								<th>ID</th>
 								<if condition="$tp EQ 'cate'">
 								    <th>Pid</th>
@@ -72,8 +68,8 @@
 						</thead>
 						<tbody>
 						    <volist name="list" id="u">
-    							<tr>
-    								<td><input type="checkbox" name="ids[]" value="{$u['id']}" class="checkalls"/></td>
+    							<tr id="deleid_{$u['id']}">
+    								<!-- <td><input type="checkbox" name="ids[]" value="{$u['id']}" class="checkalls"/></td> -->
     								<td>{$u['id']}</td>
     								<if condition="$tp EQ 'cate'">
     								    <if condition="$u['pid'] EQ 0">
@@ -103,7 +99,6 @@
                                             </a>
                                         </if>
     								    <!-- set status -->
-    								    <php>$st = $u['status'] ? 0 : 1;</php>
     								    <a href="javascript:void(0);" url="{:U('Admin/CateTag/status',array('type'=>$tp))}" status="{$u['status']}" onclick="setstatus($(this),{$u['id']});">
     								        <if condition="$u['status'] EQ 1">
                                             <i class="glyphicon glyphicon-minus-sign" style="color:red;"></i>

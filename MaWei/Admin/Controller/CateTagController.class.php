@@ -14,12 +14,13 @@
 	namespace Admin\Controller;
 	use Admin\Controller\PubAdminController;
 	use Vendor\Page;
-	use Library\CateTag;
+	use Library\BookCateTag;
 			
 	class CateTagController extends PubAdminController{
-		protected $type;
+		protected $type,$CateTag;
 		function _init(){
 			parent::_init();
+			$this->CateTag = new BookCateTag();
 			$name = array('cate'=>'分类','tag'=>'标签','type'=>'类型');
 			$this->assign('name',$name);
 			
@@ -27,6 +28,7 @@
 			$this->assign('type',$this->type);
 			$this->leftmenu();
 			$this->assign('recomm',array('未推荐','已推荐'));
+			$this->assign('status',array('已隐藏','已显示'));
 		}
 		
 		/**
@@ -41,7 +43,7 @@
 			$tp = empty($_REQUEST['type']) ? 'cate' : $_REQUEST['type'];
 			switch ($tp){
 				case 'cate' :
-					$list = $this->CateTag->level();
+					$list = S('CateList');
 					$count = count($list);
 					break;
 				case 'tag' :
@@ -128,24 +130,21 @@
 					if($_REQUEST['pid'] == 0){
 						$data['path'] = 0;
 					}else{
-						$path = M('SourcCategory')->where(array('id'=>intval($_REQUEST['pid'])))->getField('path');
+						$path = M('BookCategory')->where(array('id'=>intval($_REQUEST['pid'])))->getField('path');
 						$data['path'] = $path.','.$_REQUEST['pid'];
 					}
 					$data['pid'] = intval($_REQUEST['pid']);
 					$data['icon'] = text($_REQUEST['icon']);
-					$model = 'SourcCategory';
+					$model = 'BookCategory';
 					break;
 				case 'tag' :
-					$model = 'SourcTag';
-					break;
-				case 'type':
-					$model = 'SourcType';
+					$model = 'BookTag';
 					break;
 				default:
 					break;
 			}
-			
 			$reid = add_updata($data,"$model");
+			S('CateList',null);
 			if($reid === false){
 				$this->error('添加修改失败',U('Admin/CateTag/edit',array('type'=>$_REQUEST['type'],'id'=>intval($_REQUEST['id']))));
 			}else{
@@ -162,11 +161,9 @@
 			$status = intval($_REQUEST['status']) == '1' ? 0 : 1;
 			switch ($this->type){
 				case 'cate' :
-					$reid = status('SourcCategory', $_REQUEST['ids'],$status);
+					$reid = status('BookCategory', $_REQUEST['ids'],$status);
 				case 'tag'  :
-					$reid = status('SourcTag', $_REQUEST['ids'],$status);
-				case 'type' :
-					$reid = status('SourcType', $_REQUEST['ids'],$status);
+					$reid = status('BookTag', $_REQUEST['ids'],$status);
 				default:
 					exit;
 			}
@@ -189,7 +186,7 @@
 		*/
 		function recommend(){
 			$recomm = intval($_REQUEST['recomm']) == 1 ? 0 : 1;
-			$reid = recommend('SourcCategory',$_REQUEST['ids'],$recomm);
+			$reid = recommend('BookCategory',$_REQUEST['ids'],$recomm);
 			if($reid === false){
 				$msg['status'] = null;
 				$msg['msg'] = '推荐失败';
@@ -208,7 +205,7 @@
 		* @date 2014-8-10  下午5:16:04
 		*/
 		function delect(){
-			$model = $_REQUEST['type'] == 'cate' ? 'SourcCategory' : 'SourcTag';
+			$model = $_REQUEST['type'] == 'cate' ? 'BookCategory' : 'BookTag';
 			$reid = delall($_REQUEST['ids'],"$model");
 			if($reid === false){
 				echo null;

@@ -95,11 +95,11 @@
 		$path = $upload -> savePath;
 		// 设置上传文件规则
 		$upload -> saveRule = 'uniqid';
-		$upload -> diyname = $config['diyname'] ? $config['diyname'] : C('UPLOAD_DIY_NAME').date(YmdHms).uniqid();
+		$upload -> diyname = $config['diyname'] ? $config['diyname'] : C('UPLOAD_DIY_NAME');
 		$upload -> uploadReplace = true;
 		$config['filename'] && $upload -> filename = $config['filename'];
 		if($thumb){
-			$pathname = $config['path'] ? 'Uploads/Thumb/'.$config['path'].'/'.$pathd : 'Uploads/Thumb/Photo/'.$pathd;
+			$pathname = $config['path'] ? 'Uploads/'.$config['path'].'/'.$pathd : 'Uploads/Photo/'.$pathd;
 			createDir($pathname);
 			$upload -> thumb = TRUE; //是否保存缩略图
 			// 			$upload -> thumbRemoveOrigin = TRUE; //是否移除原图

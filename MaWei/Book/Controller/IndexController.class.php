@@ -21,6 +21,6 @@
 		}
 		
 		function index(){
-			echo 111;
+			$this->display();		
 		}
 	}

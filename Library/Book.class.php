@@ -15,10 +15,11 @@
 	
 	class Book{
 		static $tree;
-		protected $treecate;
+		protected $treecate,$chapter;
 		function __construct(){
 			self::$tree = array();
 			$this->treecate = array();
+			$this->chapter = null;
 		}
 		
 		/**
@@ -30,14 +31,15 @@
 		* @author MaWei (http://www.phpyrb.com)
 		* @date 2014-7-30  下午10:48:05
 		*/
-		function book($_limit = 'count',$_where = array(),$_order = 'id DESC'){
+		function book($_limit = 'count',$_where = array(),$_field = '*',$_order = 'id DESC'){
 			$m = M('Book');
 			if($_limit == 'count'){
 				$count = $m->where($_where)->count();
 				return $count;
 			}
 			$book = $m->where($_where)->order($_order)->limit($_limit)->select();
-			$m->getlastsql();
+// 			echo $m->getlastsql();
+			$book = $this->_togToArray($book);
 			return $book;
 		}
 		
@@ -49,107 +51,74 @@
 		* @author MaWei (http://www.phpyrb.com)
 		* @date 2014-8-9  下午1:28:33
 		*/
-		function bookinfo($_bookid){
+		function bookInfo($_bookid){
 			$m = M('Book');
 			$info = $m->where(array('id'=>$_bookid))->find();
 			return $info;
 		}
 		
 		/**
-		 * 分类列表
-		 * @param int $_pid 父ID
-		 * @param array $_where 附加条件  
-		 * @return array 分类列表
-		 * @author MaWei (http://www.phpyrb.com)
-		 * @date 2014-7-30 下午5:33:07
-		 */
-		function category($_pid = NULL,$_where = array()){
-			$m = M('BookCategory');
-			$where = array();
-			$where['_string'] = 'FIND_IN_SET('.$_pid.',path)';
-			$where = empty($_where) ? array('status'=>1) : array_merge($where,$_where);
-			$cate = $m->where($where)->order('count DESC')->select();
-			echo $m->getlastsql();
-			return $cate;
-		}
-		
-		/**
-		* 返回分类层次
-		* @param  array $_cate　分类列表
-		* @param  int $_pid 父ID
-		* @param  int $_level 层次
-		* @return array self::$tree
+		* 返回小说章节
+		* @param  int $_id 小说ID 
+		* @param  string $_limit 条数
+		* @return array $list
 		* @author MaWei (http://www.phpyrb.com)
-		* @date 2014-7-30  下午8:46:24
+		* @date 2014-11-1  下午7:55:15
 		*/
-		function level($_cate,$_pid = '0',$_level = 1){
-			foreach ($_cate as $k => $v){
-				if($v['pid'] == $_pid){
-					$this->treecate[$k] = $v;
-					$this->treecate[$k]['level'] = $_level;
-					$pid = $v['id'];
-					unset($_cate[$k]);
-// 					dump(self::$tree);
-					$this->level($_cate, $pid,$_level+1);
-				}
-			}
-			return $this->treecate;
-		}
-		
-		/**
-		 * 标签列表
-		 * @param int $_cateid 分类ID
-		 * @param array $_where 附加条件  
-		 * @return array 标签列表
-		 * @author MaWei (http://www.phpyrb.com)
-		 * @date 2014-7-30 下午5:37:09
-		 */
-		function tags($_cateid = null,$_where = array()){
-			$m = M('BookTag');
-			$where = array();
-			$_cateid && $where['cateid'] = $_cateid;
-			$where = empty($_where) ? array('status'=>1) : array_merge($where,$_where);
-			$tags = $m->where($where)->order('count DESC')->select();
-			return $tags;
-		}
-		
-		/**
-		 * 用户的收藏书集
-		 * @param int $_uid 用户ID
-		 * @param string $_limit 条数
-		 * @param string $_order 排序
-		 * @param array $_where 附加条件 
-		 * @return array 用户的收藏书集
-		 * @author MaWei (http://www.phpyrb.com)
-		 * @date 2014-7-30 下午6:00:53
-		 */
-		function userCollect($_uid,$_limit = 'count',$_order = 'point DESC',$_where = array()){
-			$m = M('NovelCollect');
-			$where = array();
-			$where = empty($_where) ? array('status'=>1) : array_merge($where,$_where);
+		function getBookChapter($_id,$_limit = 'count',$_field = '*'){
+			$this->_getChapterTable($_id);
 			if($_limit == 'count'){
-				$count = $m->field('id')->where($where)->count();
+				$count = $this->chapter->where(array('book_id'=>$_id))->count();
+				return $count;
 			}
-			$colloect = $m->where($where)->order('count DESC')->select();
-			return $colloect;
+			$list = $this->chapter->field($_field)->where(array('book_id'=>$_id))->order('id DESC')->limit($_limit)->select();
+			return $list;
 		}
-
+		
 		/**
-		 * 收藏该书的用户
-		 * @param int $_uid 用户ID
-		 * @param string $_limit 条数
-		 * @param string $_order 排序
-		 * @param array $_where 附加条件
-		 * @return array 用户的收藏书集
-		 * @date 2014-7-30 下午6:09:15
-		 */
-		function collectBookUser($_bookid,$_limit = 'count',$_order = 'point DESC',$_where = array()){
-			$m = M('NovelCollect');
-			$where = array();
-			$where['book_id'] = $_bookid;
-			$where = empty($_where) ? array('status'=>1) : array_merge($where,$_where);
-			$colloect = $m->where($where)->order('count DESC')->select();
-			return $colloect;
+		* 根据小说返回章节表名
+		* @param  int $_id 小说ID
+		* @return array 
+		* @author MaWei (http://www.phpyrb.com)
+		* @date 2014-11-1  下午7:57:13
+		*/
+		function _getChapterTable($_id){
+			if ($_id < 1000){
+				$this->chapter = M('BookChapterT1');
+			}elseif ($_id < 2000){
+				$this->chapter = M('BookChapterT2');
+			}elseif ($_id < 3000){
+				$this->chapter = M('BookChapterT3');
+			}elseif ($_id < 4000){
+				$this->chapter = M('BookChapterT4');
+			}elseif ($_id < 5000){
+				$this->chapter = M('BookChapterT5');
+			}elseif ($_id < 6000){
+				$this->chapter = M('BookChapterT6');
+			}elseif ($_id < 7000){
+				$this->chapter = M('BookChapterT7');
+			}elseif ($_id < 8000){
+				$this->chapter = M('BookChapterT8');
+			}elseif ($_id < 9000){
+				$this->chapter = M('BookChapterT9');
+			}elseif ($_id < 10000){
+				$this->chapter = M('BookChapterT10');
+			}
+			return $this->chapter;
+		}
+		
+		/**
+		* 把小说的标签字符变数组
+		* @param  array $_list
+		* @return array $_list
+		* @author MaWei (http://www.phpyrb.com)
+		* @date 2014-11-1  下午7:08:32
+		*/
+		function _togToArray($_list = array()){
+			foreach ($_list as $k => $v){
+				$_list[$k]['tagid'] = explode(',', $v);
+			}
+			return $_list;
 		}
 		
 	}

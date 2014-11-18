@@ -43,10 +43,10 @@
                                 <li><a href="{:U('Home/Index/index')}">返回前台</a></li>
                                 <li><a href="{:U('Admin/System')}">用户设置</a></li>
                                 
-                                <li>
+                                <!-- <li>
                                     <a href="#">Reminders <i class="glyphicon glyphicon-bell"></i></a>
                                 </li>
-                                <!--li>
+                                <li>
                                     <a href="#">Settings <i class="glyphicon glyphicon-cog"></i></a>
                                 </li>
                                 <li>
@@ -61,7 +61,7 @@
                                         <li role="presentation" class="divider"></li>
                                         <li><a href="index.html">Logout</a></li>
                                     </ul>
-                                </li -->
+                                </li> -->
                             </ul>
                         </div>
                     </div>
@@ -90,7 +90,7 @@
                                 <volist name="menu['topmenu']" id="m">
                                 <li class="<if condition="CONTROLLER_NAME EQ $key">active</if>"><a href="{:U($m['url'])}">{$m['name']}</a></li>
                                 </volist>
-                                <!--li class="dropdown">
+                                <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-hover="dropdown">Dropdown <b class="caret"></b></a>
                                     <ul class="dropdown-menu">
                                         <li role="presentation" class="dropdown-header">Dropdown header</li>
@@ -102,7 +102,7 @@
                                         <li><a href="#">Separated link</a></li>
                                         <li><a href="#">One more separated link</a></li>
                                     </ul>
-                                </li -->
+                                </li>
                             </ul>
                         </div><!-- /.navbar-collapse -->
                     </div>
@@ -236,7 +236,7 @@
 
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script type="text/javascript" src="/Public/admin/js/bootstrap.min.js"></script>
-        <!--script type="text/javascript" src="/Public/admin/js/twitter-bootstrap-hover-dropdown.min.js"></script -->
+        <script type="text/javascript" src="/Public/admin/js/twitter-bootstrap-hover-dropdown.min.js"></script>
         <script type="text/javascript" src="/Public/js/layer.js"></script>
         <script type="text/javascript" src="./Public/admin/js/admin.js"></script>
         <!-- script type="text/javascript" src="/Public/js/aa.js"></script>

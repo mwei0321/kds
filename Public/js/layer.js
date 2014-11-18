@@ -69,6 +69,7 @@ var layer = {};
 			$('body').prepend(html);
 			var h = ajx ? '<iframe>'+cont+'</iframe>' : cont;
 			$('#box_content').append(h);
+			$('#mwbg').click(function () {layer.close(0.3);});
 			layer._center();
 		},
 		//消息提示
