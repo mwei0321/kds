@@ -1,23 +1,27 @@
 <?php
 	/**
 	*  +----------------------------------------------------------------------------------------------+
-	*   | Explain: 
+	*   | Explain: 后台管理
 	*  +----------------------------------------------------------------------------------------------+
 	*   | Author: MaWei <1123265518@qq.com>
 	*	+----------------------------------------------------------------------------------------------+
-	*   | Creater Time : 2014-10-23 下午5:32:14
+	*   | Creater Time : 2014-10-23 下午5:06:23
 	*  +----------------------------------------------------------------------------------------------+
 	*   | Link :		http://www.phpyrb.com	     
 	*  +----------------------------------------------------------------------------------------------+
 	**/
 
-	namespace Book\Controller;
-	use Book\Controller\IniController;
+	namespace Novel\Controller;
+	use Admin\Controller\PubAdminController;
 	
-	class ContentController extends IniController{
+	class NovelAdminController extends PubAdminController{
 		
 		function _init(){
 			parent::_init();
 		}
+		
+		function index(){
+			
+			$this->display();
+		}
 	}
-	

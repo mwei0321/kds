@@ -29,8 +29,9 @@
 		* @author MaWei (http://www.phpyrb.com)
 		* @date 2014-11-16  下午9:04:55
 		*/
-		function readfile($_file,$_filter = array(),$_replace = '',$_chapter = '/(第[一|二|三|四|五|六|七|八|九|十|百|千|万]+节)(.*)/'){
-			$data = file($_file);
+		function readfile($_file,$_chapter = '/(第[一|二|三|四|五|六|七|八|九|十|百|千|万]+[章|节]{1})(.*)/',$_filter = array(),$_replace = ''){
+		    ini_set('memory_limit','150M');
+		    $data = file($_file);
 			$content = array();
 			$i = $init = 0;
 			foreach ($data as $k => $v){
@@ -50,4 +51,17 @@
 			return $content;
 		}
 		
+		/**
+		 * 根据小说ID返回章节列表
+		 * @param int $_bid novel id
+		 * @return array
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-11-18 下午2:42:23
+		 */
+		function getNovelList($_bid = null){
+		    $m = M('BookGatherTmp');
+		    $where = $_bid ? array('book_id'=>$_bid) : array();
+		    $list = $m->where()->order('id ASC')->select();
+		    return $list;
+		}
 	}

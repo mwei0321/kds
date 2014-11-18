@@ -188,6 +188,7 @@ class UploadFile {//类定义开始
                 if(!isset($file['key']))   $file['key']    =   $key;
                 $file['extension']  =   $this->getExt($file['name']);
                 $file['savepath']   =   $savePath;
+                $file['sourcname']  = $file['name'];
 //                 $file['savename']   =   basename($file['name'],'.'.$file['extension']).'.'.$file['extension'];
                 $file['savename']   =   $this->filename ? $this->filename.'.'.$file['extension'] : $this->getdiyname($file);
                 $file['path'] = $savePath.$file['savename'];
@@ -266,6 +267,7 @@ class UploadFile {//类定义开始
                 //登记上传文件的扩展信息
                 $file['extension']  = $this->getExt($file['name']);
                 $file['savepath']   = $savePath;
+                $file['sourcname']       = $file['name'];
                 $file['savename']   =   $this->filename ? $this->filename.'.'.$file['extension'] : $this->getdiyname($file);
                 $file['path'] = $file['savepath'].$file['savename'];
                 // 自动检查附件

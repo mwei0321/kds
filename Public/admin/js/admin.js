@@ -8,6 +8,14 @@ $(function (){
    $("#checkall").click(function (){
    		$('.checkalls').prop('checked',$(this).prop('checked'));
    });
+   
+   //标签页切换
+   $('.tabnavigtion').find('.tabnavit').click(function () {
+        $('.tabnavit').removeClass('cur');
+        $(this).addClass('cur');
+        $('.tabnavcont').hide();
+        $('.tabnavcont').eq($(this).index()).show();
+    });
 });
 //设置状态
 var setstatus = function (Obj,id){
