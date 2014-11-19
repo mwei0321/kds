@@ -15,12 +15,18 @@
 	use Admin\Controller\PubAdminController;
 	use Library\Book;
 	use Library\Gather;
-	
+use Vendor\Page;
+		
 	class GatherController extends PubAdminController{
-		protected $gather;
+		protected $gather,$keyword;
 		function _init(){
 			parent::_init();
 			$this->gather = new Gather();
+			
+			//关键字
+			$this->keyword = text($_REQUEST['keyword']);
+			$this->assign('keyword',$this->keyword);
+			$this->assign('status',array('已隐藏','已显示'));
 		}
 		
 		function index(){
@@ -36,53 +42,114 @@
 			$this->display();
 		}
 		
+		/**
+		 * txtfile列表
+		 * @return array
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-11-19 下午2:21:04
+		 */
+		function txtfile(){
+		    //搜索条件处理
+		    $id = $_REQUEST['id'];
+		    $where = array();
+		    $id && $where['id'] = $id;
+		    $this->keyword && $where['name'] = array('LIKE',"%$this->keyword%");
+		    //列表数据处理
+		    $count = $this->gather->txtFile('count',$where);
+		    $page = new Page($count, 50,array('keyword'=>$this->keyword));
+		    $list = $this->gather->txtFile("$page->firstRow,$page->listRows",$where);
+		    
+		    $this->assign('id',$id);
+		    $this->assign('list',$list);
+		    $this->assign('count',$count);
+		    $this->display();
+		}
+		
+		/**
+		 * 生成章节
+		 * @return array
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-11-19 下午3:28:57
+		 */
+		function chapter(){
+		    $id = $_REQUEST['id'];
+		    $info = $this->gather->txtFile(1,array('id'=>$id));
+		    $info = array_shift($info);
+		    $list = $this->gather->readfile($info['path'],$info['chapter'],$info['filter']);
+		    $m = M('BookChapterTmp');
+		    $i = 0;
+		    $count = count($list);
+		    foreach ($list as $k => $v){
+		        $v['txtid'] = $id;
+		        $reid = $m->add($v);
+// 		        echo $m->getLastSql();exit;
+		        $reid !== false && $i++;
+		    }
+		    echo '小说 《'.$info['name'].'》共导入 '. $count. ' 章,其中导入成功有  '.$i.' 章';
+		}
+		
+		/**
+		 * 文件导入处理
+		 * @return array
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-11-19 下午2:21:46
+		 */
 		function dispose(){
-			$method = $_REQUEST['method'];
+			$method = text($_REQUEST['method']);
+			$bookid = intval($_REQUEST['id']);
 			switch ($method) {
-				case 'txt' :
+				case 'txt' : //txt文件导入处理
 				    $_FILES['file']['name'] && $file = fileUpload('Novel');
 				    $name = substr($file['name'],0,strrpos($file['name'],'.'));
 				    if($file['savename']){
-// 				        //插入小说基本信息
-// 				        $data = array();
-// 				        $data['cateid'] = intval($_REQUEST['cateid']);
-// 				        $data['title'] = text($_REQUEST['title']);
-// 				        $data['author'] = text($_REQUEST['author']);
-// 				        $data['status'] = 0;
-// 				        $data['end_status'] = intval($_REQUEST['end_status']);
-// 				        $data['uptime'] = time();
-// 				        $data['title'] = $_REQUEST['title'] ? text($_REQUEST['title']) : $name;
-// 				        $reid = add_updata($data,'Book');
-// 				        //插入到附件，及全本文件
-// 				        $attach = array();
-// 				        $attach['book_id'] = $reid;
-// 				        $attach['size'] = $file['size'] * 0.001;
-// 				        $attach['name'] = $_REQUEST['title'] ? text($_REQUEST['title']) : $name;
-// 				        $attach['path'] = $file['path'];
-// 				        $attach['uptime'] = time();
-// 				        $is_ok = add_updata($attach,'BookAttach');
-// 				        //保存正则
-// 				        $grep = array();
-// 				        $grep['chapter'] = $_REQUEST['chapter'] ? text($_REQUEST['chapter']) : '/(第[一|二|三|四|五|六|七|八|九|十|百|千|万]+[章|节]{1})(.*)/';
-// 				        $grep['filter'] = text($_REQUEST['filter']);
-// 				        $grep['book_id'] = $reid;
-// 				        $is_ok = add_updata($grep,'TxtFilter');
-				        //生成章节，
-				        $filter = text($_REQUEST['filter']);
-				        $chapter = '/(第.*节{1})(.*)/';
-				        $list = $this->gather->readfile($file['path'],$chapter,$filter);
-				        $m = M('BookGatherTmp');
-				        foreach ($list as $k => $v){
-				        	$v['book_id'] = 1;
-				        	$reid = $m->add($v);
-				        }
-				        dump($list);
+				        //保存正则
+				        $grep = array();
+				        $grep['chapter'] = $_REQUEST['chapter'] ? text($_REQUEST['chapter']) : '//(第.*章{1})(.*)/';
+				        $grep['filter'] = text($_REQUEST['filter']);
+				        $grep['name'] = $_REQUEST['title'] ? text($_REQUEST['title']) : $name;
+				        $grep['path'] = $file['path'];
+				        $grep['cateid'] = intval($_REQUEST['cateid']);
+				        $grep['uptime'] = time();
+				        $is_ok = add_updata($grep,'TxtFile');
 				    }
+				    break;
+				case 'novel' :
+				    //插入小说基本信息
+				    $data = array();
+				    $data['cateid'] = intval($_REQUEST['cateid']);
+				    $data['title'] = text($_REQUEST['title']);
+				    $data['author'] = text($_REQUEST['author']);
+				    $data['status'] = 0;
+				    $data['end_status'] = intval($_REQUEST['end_status']);
+				    $data['uptime'] = time();
+				    $data['title'] = $_REQUEST['title'] ? text($_REQUEST['title']) : $name;
+				    $reid = add_updata($data,'Book');
+				    //插入到附件，及全本文件
+				    $attach = array();
+				    $attach['book_id'] = $reid;
+				    $attach['size'] = $file['size'] * 0.001;
+				    $attach['name'] = $_REQUEST['title'] ? text($_REQUEST['title']) : $name;
+				    $attach['path'] = $file['path'];
+				    $attach['uptime'] = time();
+				    $is_ok = add_updata($attach,'BookAttach');
+				    break;
 			}
+			$this->success('处理成功');
 		}
 		
+		//编辑页
 		function edit(){
-		    $this->display();
+		    $method = text($_REQUEST['method']);
+		    $id = intval($_REQUEST['id']);
+		    $info = null;
+		    switch ($method){
+		        case 'txt' :
+		            $id && $info = $this->gather->txtFile('0,1',array('id'=>$id));
+		            break;
+		    }
+		    $this->assign('info',$info);
+		    $this->assign('method',$method);
+		    $this->display($method);
 		}
 		
 		function _addall($_bid =1){

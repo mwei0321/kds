@@ -88,7 +88,8 @@
                             <ul class="nav navbar-nav">
                                 <li class="<if condition="CONTROLLER_NAME EQ 'System'">active</if>"><a href="{:U('Admin/System/index')}">系统管理</a></li>
                                 <volist name="menu['topmenu']" id="m">
-                                <li class="<if condition="CONTROLLER_NAME EQ $key">active</if>"><a href="{:U($m['url'])}">{$m['name']}</a></li>
+                                <li class="<if condition="CONTROLLER_NAME EQ $key">active</if> dropdown"><a href="{:U($m['url'])}" class="dropdown-toggle" data-hover="dropdown">{$m['name']}</a>
+                                </li>
                                 </volist>
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-hover="dropdown">Dropdown <b class="caret"></b></a>

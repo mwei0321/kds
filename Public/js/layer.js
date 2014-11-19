@@ -74,6 +74,7 @@ var layer = {};
 		},
 		//消息提示
 		_message : function (msg,type,time) {
+			layer.close(0.01);
 			var clas = type ? 'success' : 'error';
 			var html = '<span class="' + clas + '">' + msg + '</span>';
 			layer._html(html);

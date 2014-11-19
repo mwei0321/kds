@@ -29,7 +29,6 @@
 				$menu = $this->System->getAdminMenu();
 				S('Menu',$this->System->_menu($menu));
 // 			}
-			
 			if(!S('CateList')){
 				$catelist = $this->CateTag->level();
 				S('CateList',$catelist);

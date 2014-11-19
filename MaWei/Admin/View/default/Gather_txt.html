@@ -1,0 +1,158 @@
+<!-- include public templates -->
+
+<!-- stystem menu content -->
+<div class="container" style="width:600px;max-height: 800px;">
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default bootstrap-admin-no-table-panel">
+            <div class="bootstrap-admin-no-table-panel-content bootstrap-admin-panel-content collapse in">
+                <div class="tabnavcont">
+                    <form class="form-horizontal" method="post" action="{:U('Admin/Gather/dispose',array('method'=>'txt'))}" enctype="multipart/form-data">
+                        <input type="hidden" name="id" value="{$info['id']}" />
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label" for="selectError">小说分类</label>
+                                <div class="col-lg-3">
+                                    <select class="form-control" name="cateid">
+                                        <volist name="catelist" id="c">
+                                            <option value="{$key}" <if condition="$info['cateid'] EQ $key">selected="selected"</if> >{$c['levelstr']}{$c['name']}</option>
+                                        </volist>
+                                    </select>
+                                    <!--span class="help-block">Woohoo!</span -->
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label" for="focusedInput">小说标题</label>
+                                <div class="col-lg-5">
+                                    <input class="form-control" name="title" id="focusedInput" type="text" placeholder="书籍名称" value="{$info['title']}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label" for="focusedInput">小说作者</label>
+                                <div class="col-lg-5">
+                                    <input class="form-control" name="author" id="focusedInput" type="text" placeholder="书籍作者" value="{$info['author']}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label" for="focusedInput">小说txt文件</label>
+                                <div class="col-lg-3">
+                                    <input name="file" id="focusedInput" type="file" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label" for="focusedInput">章节正则</label>
+                                <div class="col-lg-7">
+                                    <input class="form-control" name="chapter" id="focusedInput" type="text" placeholder="默认为：/(第.*章)(.*)/" value="{$info['keyword']}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label" for="focusedInput">字符过滤正则</label>
+                                <div class="col-lg-7">
+                                    <input class="form-control" name="filter" id="focusedInput" type="text" placeholder="字符过滤正则" value="{$info['keyword']}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label" for="disabledInput">完节状态</label>
+                                <div class="col-lg-3">
+                                    <select class="form-control" name="end_status">
+                                        <option value="1" selected="selected">已完结</option>
+                                        <option value="0">连载中……</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="fr bntmr20">
+                                <button type="submit" class="btn btn-primary">确定</button>
+                                <button type="reset" class="btn btn-default" onclick="layer.close(0.3);">取消</button>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+                
+                <div class="tabnavcont" style="display: none;">
+                    <form class="form-horizontal" method="post" action="{:U('Admin/Sourc/add_updata')}" enctype="multipart/form-data">
+                        <input type="hidden" name="id" value="{$info['id']}" />
+                        <input type="hidden" name="method" value="txt" />
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label" for="selectError">小说分类</label>
+                                <div class="col-lg-3">
+                                    <select class="form-control" name="cateid">
+                                        <volist name="catelist" id="c">
+                                            <option value="{$key}" <if condition="$info['cateid'] EQ $key">selected="selected"</if> >{$c['levelstr']}{$c['name']}</option>
+                                        </volist>
+                                    </select>
+                                    <!--span class="help-block">Woohoo!</span -->
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label" for="focusedInput">小说txt文件</label>
+                                <div class="col-lg-3">
+                                    <input name="file" id="focusedInput" type="file" />
+                                </div>
+                            </div>
+                            <!-- <div class="form-group">
+                                <label class="col-lg-2 control-label" for="focusedInput">资源标签</label>
+                                <div class="col-lg-10">
+                                    <volist name="taglist" id="t">
+                                        <input type="checkbox"　<if condition="in_array($t['id'],$info['tagid'])"> checked="checked" </if>　class="uniform_on" value="{$t['id']}" name="tagids[]" />{$t['name']}
+                                    </volist>
+                                </div>
+                            </div> -->
+                            <if condition="$info['id']">
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label" for="disabledInput">状态</label>
+                                <div class="col-lg-3">
+                                    <select class="form-control" name="status">
+                                        <volist name="status" id="s">
+                                            <option value="{$key}" <if condition="$info['status'] EQ $key">selected</if>>{$s}</option>
+                                        </volist>
+                                    </select>
+                                </div>
+                            </div>
+                            </if>
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label" for="focusedInput">消耗积分</label>
+                                <div class="col-lg-3">
+                                    <input class="form-control" name="grade" id="focusedInput" type="text" placeholder="下载时消耗积分" value="{$info['grade']}">
+                                </div>
+                            </div>
+                            <!-- <div class="form-group" style="position: relative;">
+                                <label class="col-lg-2 control-label" for="focusedInput">封面</label>
+                                <div class="col-lg-5">
+                                    <input class="" type="file" name="cover" placeholder="最好的英文名" value="">
+                                </div>
+                                <img src="{$info['cover']}" alt="封面" style="position: absolute;top:-150px;right:100px;float: right;z-index: 200"/>
+                            </div> -->
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label" for="focusedInput">推荐</label>
+                                <div class="col-lg-4">
+                                    <input type="checkbox"　<if condition="$info['recommend']"> checked="checked" </if>　class="uniform_on" value="1" name="recommend" />　推荐
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label" for="focusedInput">关键字</label>
+                                <div class="col-lg-7">
+                                    <input class="form-control" name="keyword" id="focusedInput" type="text" placeholder="关键字" value="{$info['keyword']}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label" for="focusedInput">描述</label>
+                                <div class="col-lg-7">
+                                    <textarea name="discription" placeholder="用于头部SEO" class="form-control">{$info['discription']}</textarea>
+                                </div>
+                            </div>
+                            <div class="fr bntmr20">
+                                <button type="submit" class="btn btn-primary">确定</button>
+                                <button type="reset" class="btn btn-default" onclick="layer.close(0.3);">取消</button>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+            <div class="clr"></div>
+        </div>
+        <div class="clr"></div>
+    </div>
+    <div class="clr"></div>
+</div>
+</div>

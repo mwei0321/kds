@@ -30,10 +30,11 @@
 		* @date 2014-11-16  下午9:04:55
 		*/
 		function readfile($_file,$_chapter = null,$_filter = array(),$_replace = ''){
-		    $data = file($_file);
+		    ini_set('memory', '200M');
+		    $data = file($_file,FILE_SKIP_EMPTY_LINES);
 			$content = array();
 			$i = $init = 0;
-			!$_chapter && $_chapter = '/(第.*章)(.*)/';
+			!$_chapter && $_chapter = '/(第[一|二|三|四|五|六|七|八|九|十|百|千|万]+章{1})(.*)/';
 			foreach ($data as $k => $v){
 				$v = trim($v);
 				if(preg_match_all($_chapter, $v , $title)){
@@ -46,6 +47,7 @@
 					$txt = $_filter ? preg_replace($_filter, $_replace, $v) : $v;
 					$content[$i]['content'] .= '<p>'.$txt.'</p>';
 				}
+				unset($data[$k]);
 			}
 			return $content;
 		}
@@ -61,6 +63,25 @@
 		    $m = M('BookGatherTmp');
 		    $where = $_bid ? array('book_id'=>$_bid) : array();
 		    $list = $m->where()->order('id ASC')->select();
+		    return $list;
+		}
+		
+		/**
+		 * 返回txtfile文件列表
+		 * @param String $_limit 条数
+		 * @param array $_where 条件
+		 * @return array $list
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-11-19 下午2:00:39
+		 */
+		function txtFile($_limit = 'count',$_where = array()){
+		    $m = M('TxtFile');
+		    if($_limit == 'count'){
+		        $count = $m->where($_where)->count();
+		        return $count;
+		    }
+		    $list = $m->where($_where)->order('id DESC')->select();
+// 		    echo $m->getlastsql();
 		    return $list;
 		}
 	}
