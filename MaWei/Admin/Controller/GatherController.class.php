@@ -37,9 +37,13 @@
 		function index(){
 		    $where = array();
 		    $count = $this->gather->getNovelList($where);
-		    $page = new Page();
+		    $page = new Page($count,50);
 		    $list = $this->gather->getNovelList($where,"$page->firstRow,$page->listRows");
-			$this->display();
+			
+		    $this->assign('list',$list);
+		    $this->assign('page',$page->show());
+		    $this->assign('count',$count);
+		    $this->display();
 		}
 		
 		/**
@@ -81,6 +85,7 @@
 		    $count = count($list);
 		    foreach ($list as $k => $v){
 		        $v['txtid'] = $id;
+		        $v['name'] = $info['name'];
 		        $reid = $m->add($v);
 // 		        echo $m->getLastSql();exit;
 		        $reid !== false && $i++;

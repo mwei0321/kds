@@ -34,7 +34,7 @@
 		    $data = file($_file,FILE_SKIP_EMPTY_LINES);
 			$content = array();
 			$i = $init = 0;
-			!$_chapter && $_chapter = '/(第[一|二|三|四|五|六|七|八|九|十|百|千|万]+章{1})(.*)/';
+			!$_chapter && $_chapter = '/(第[\d|一|二|三|四|五|六|七|八|九|十|百|千|万]+章{1})(.*)/';
 			foreach ($data as $k => $v){
 				$v = trim($v);
 				if(preg_match_all($_chapter, $v , $title)){
@@ -60,12 +60,13 @@
 		 * @date 2014-11-18 下午2:42:23
 		 */
 		function getNovelList($_where = array(),$_limit = 'count'){
-		    $m = M('BookchapterTmp');
+		    $m = M('BookChapterTmp');
 		    if($_limit == 'count'){
 		        $count = $m->where($_where)->count();
 		        return $count;
 		    }
 		    $list = $m->where($_where)->order('id ASC')->limit($_limit)->select();
+//             echo $m->getLastSql();
 		    return $list;
 		}
 		
