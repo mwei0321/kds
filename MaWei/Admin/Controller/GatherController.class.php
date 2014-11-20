@@ -15,7 +15,7 @@
 	use Admin\Controller\PubAdminController;
 	use Library\Book;
 	use Library\Gather;
-use Vendor\Page;
+    use Vendor\Page;
 		
 	class GatherController extends PubAdminController{
 		protected $gather,$keyword;
@@ -29,16 +29,16 @@ use Vendor\Page;
 			$this->assign('status',array('已隐藏','已显示'));
 		}
 		
+		/**
+		 * 临时章节列表
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-11-20 下午3:28:01
+		 */
 		function index(){
-			$file = UPLOAD_PATH.'novel/201.txt';
-// 			$_filter = array('/\|經.*Ｔ\|/','/【.*】/');
-			$content = Gather::readfile($file);
-			$m = M('BookChapterT1');
-			foreach ($content as $k => $v){
-				if($v['content'] != '<p></p>'){
-					$reid = $m->add($v);
-				}
-			}
+		    $where = array();
+		    $count = $this->gather->getNovelList($where);
+		    $page = new Page();
+		    $list = $this->gather->getNovelList($where,"$page->firstRow,$page->listRows");
 			$this->display();
 		}
 		

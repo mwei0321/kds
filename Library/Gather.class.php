@@ -59,10 +59,13 @@
 		 * @author MaWei (http://www.phpyrb.com)
 		 * @date 2014-11-18 下午2:42:23
 		 */
-		function getNovelList($_bid = null){
-		    $m = M('BookGatherTmp');
-		    $where = $_bid ? array('book_id'=>$_bid) : array();
-		    $list = $m->where()->order('id ASC')->select();
+		function getNovelList($_where = array(),$_limit = 'count'){
+		    $m = M('BookchapterTmp');
+		    if($_limit == 'count'){
+		        $count = $m->where($_where)->count();
+		        return $count;
+		    }
+		    $list = $m->where($_where)->order('id ASC')->limit($_limit)->select();
 		    return $list;
 		}
 		
