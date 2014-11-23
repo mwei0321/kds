@@ -754,10 +754,9 @@ pre code {
     width: 1170px;
   }
 }
-@media (min-width: 1200px) {
+@media (min-width: 1700px) {
     .container{
-        min-width:1170px;
-        max-width:85px;
+        min-width:1550px;
         margin:0 auto;
     }
 }

@@ -51,7 +51,7 @@ var layer = {};
 		//关闭窗口
 		close : function (time) {
 			var t = time ? time : 1.5;
-			setTimeout(function() {
+			var setmsg = setTimeout(function() {
 				$('#outsidebox').fadeOut('1000', function() {
 					$(this).remove();
 					$('#mwbg').remove();
@@ -74,7 +74,6 @@ var layer = {};
 		},
 		//消息提示
 		_message : function (msg,type,time) {
-			layer.close(0.01);
 			var clas = type ? 'success' : 'error';
 			var html = '<span class="' + clas + '">' + msg + '</span>';
 			layer._html(html);
@@ -87,8 +86,8 @@ var layer = {};
 			var oboxh = $('#outsidebox').height();
 			var oboxl = $('#outsidebox').css({
 				'left' : (SreenW - oboxw) / 2 + 'px',
-				'top' : (SreenH - oboxh) / 2 + 'px'
-			});
+				'top' : (SreenH - oboxh) / 2 + 'px',
+			}).fadeTo('slow',0.99);
 		},
 		_iframe : function (){
 			
@@ -105,7 +104,7 @@ var layer = {};
 		},
 		_style : function (){
 			var style = '<style>#mwbg{width:' + SreenW + 'px;height:' + SreenH + 'px;display:block;position:fixed;z-index:900;opacity: 0.8;filter:Alpha(Opacity=90);postion:fixed;background:' + Options.bgColor + ';top:0;left:0;}' + 
-			'#outsidebox{border:5px solid #666;background:#fff;border-radius:10px;z-index:900;position:fixed;padding:10px;} #outsidebox h3{height:35px;line-height:35px;border-bottom:1px solid #ccc;background:#efefef;}' +
+			'#outsidebox{border:5px solid #666;background:#fff;border-radius:10px;z-index:900;position:fixed;padding:10px;display:none;} #outsidebox h3{height:35px;line-height:35px;border-bottom:1px solid #ccc;background:#efefef;}' +
 			 '#outsidebox {} #outsidebox .error{color:red;font-size:14px;} #outsidebox .success{color:green;font-size:14px;} ' + '#outsidebox .clr{clear:both;padding:0;margin:0;}' + 
 			 '#outsidebox #box_content{padding:0 10px;max-height:800px;overflow:hidden;overflow-y:auto;}'+
 			 '#outsidebox #lytitle{height:30px;margin-bottom:20px;} #outsidebox #lytitle h3{height:40px;line-height:40px;color:#999;padding:0 15px;border:1px solid #ccc;font-size:18px;margin:0;linear-gradient(to bottom, #f5f5f5 0%, #e8e8e8 100%);border-radius:5px;color:#666;font-family:微软雅黑} '+ 

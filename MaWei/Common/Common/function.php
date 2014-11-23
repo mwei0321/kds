@@ -620,7 +620,7 @@
 	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2014-11-20 下午4:32:24
 	 */
-	function strCutOut($str, $length = 50, $ext = '……') {
+	function strCutOut($str, $length = 40, $ext = '……') {
 	    $str    =   strip_tags($str);
 	    $strlenth   =   0;
 	    $out        =   '';

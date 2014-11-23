@@ -101,6 +101,7 @@ var delall = function (Obj,id){
 		}).done(function (e){
 			if(e == 1){
 				layer.success('删除成功！');
+				if(ids == -1){location.reload();};
 				if(!$('#checkall').prop('checked')){
 					// var list = ids.split(',');
 					if(typeof(ids) == 'number'){

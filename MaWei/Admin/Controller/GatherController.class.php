@@ -16,6 +16,7 @@
 	use Library\Book;
 	use Library\Gather;
     use Vendor\Page;
+    use Library\Edit;
 		
 	class GatherController extends PubAdminController{
 		protected $gather,$keyword;
@@ -36,13 +37,17 @@
 		 */
 		function index(){
 		    $where = array();
+		    $_REQUEST['txtid'] && $txtid = intval($_REQUEST['txtid']);
+		    $txtid && $where['txtid'] = $txtid;
+		    $this->keyword && $where['title'] = array('LIKE',"%$this->keyword%");
 		    $count = $this->gather->getNovelList($where);
-		    $page = new Page($count,50);
+		    $page = new Page($count,50,array('txtid'=>$txtid,'keyword'=>$this->keyword));
 		    $list = $this->gather->getNovelList($where,"$page->firstRow,$page->listRows");
 			
 		    $this->assign('list',$list);
 		    $this->assign('page',$page->show());
 		    $this->assign('count',$count);
+		    $this->assign('txtid',$txtid);
 		    $this->display();
 		}
 		
@@ -62,7 +67,7 @@
 		    $count = $this->gather->txtFile('count',$where);
 		    $page = new Page($count, 50,array('keyword'=>$this->keyword));
 		    $list = $this->gather->txtFile("$page->firstRow,$page->listRows",$where);
-		    
+
 		    $this->assign('id',$id);
 		    $this->assign('list',$list);
 		    $this->assign('count',$count);
@@ -84,11 +89,13 @@
 		    $i = 0;
 		    $count = count($list);
 		    foreach ($list as $k => $v){
-		        $v['txtid'] = $id;
-		        $v['name'] = $info['name'];
-		        $reid = $m->add($v);
+		    	if(text($v['content'])){
+		    		$v['txtid'] = $id;
+		    		$v['name'] = $info['name'];
+		    		$reid = $m->add($v);
 // 		        echo $m->getLastSql();exit;
-		        $reid !== false && $i++;
+		    		$reid !== false && $i++;
+		    	}
 		    }
 		    echo '小说 《'.$info['name'].'》共导入 '. $count. ' 章,其中导入成功有  '.$i.' 章';
 		}
@@ -109,12 +116,13 @@
 				    if($file['savename']){
 				        //保存正则
 				        $grep = array();
-				        $grep['chapter'] = $_REQUEST['chapter'] ? text($_REQUEST['chapter']) : '//(第.*章{1})(.*)/';
+				        $grep['chapter'] = $_REQUEST['chapter'] ? text($_REQUEST['chapter']) : '/(^第[\d|一|二|三|四|五|六|七|八|九|十|百|千|万]+章{1})(.*)/';
 				        $grep['filter'] = text($_REQUEST['filter']);
 				        $grep['name'] = $_REQUEST['title'] ? text($_REQUEST['title']) : $name;
 				        $grep['path'] = $file['path'];
 				        $grep['cateid'] = intval($_REQUEST['cateid']);
 				        $grep['uptime'] = time();
+				        $grep['size'] = $file['size'];
 				        $is_ok = add_updata($grep,'TxtFile');
 				    }
 				    break;
@@ -138,23 +146,104 @@
 				    $attach['uptime'] = time();
 				    $is_ok = add_updata($attach,'BookAttach');
 				    break;
+				case 'addinfo' :
+					$data = array();
+					$info = $this->gather->txtFile(1,array('id'=>intval($_REQUEST['id'])));
+					$info = array_shift($info);
+					$data['name'] = $info['name'];
+					$data['cateid'] = $info['cateid'];
+					$data['status'] = 0;
+					$data['uptime'] = time();
+					$reid = add_updata($data,'Book');
+					$attach['book_id'] = $reid;
+					$attach['path'] = $info['path'];
+					$attach['size'] = $info['size'];
+					$attach['uptime'] = time();
+					$attach['name'] = $info['name'];
+ 					$reid = add_updata($attach,'BookAttach');
+					if($reid){
+						$reid = M('TxtFile')->where(array('id'=>intval($_REQUEST['id'])))->setField(array('status'=>1));
+						echo $reid ? 1 : null;exit;
+					}
+					echo null;
+					break;
+ 				case 'tmpchapter' :
+					$data = array();
+					$_REQUEST['id'] && $data['id'] = intval($_REQUEST['id']);
+					$data['name'] = text($_REQUEST['name']);
+					$data['chapter'] = text($_REQUEST['chapter']);
+					$data['title'] = text($_REQUEST['title']);
+					$data['content'] = $_REQUEST['content'];
+					$data['uptime'] = time();
+					$is_ok = add_updata($data,'BookChapterTmp');
 			}
 			$this->success('处理成功');
 		}
 		
-		//编辑页
+		
+		/**
+		* //编辑页
+		* @return array 
+		* @author MaWei (http://www.phpyrb.com)
+		* @date 2014-11-22  下午12:09:19
+		*/
 		function edit(){
 		    $method = text($_REQUEST['method']);
-		    $id = intval($_REQUEST['id']);
+		    $id = $_REQUEST['id'];
 		    $info = null;
 		    switch ($method){
 		        case 'txt' :
-		            $id && $info = $this->gather->txtFile('0,1',array('id'=>$id));
+		            $id && $info = array_shift($this->gather->txtFile('0,1',array('id'=>$id)));
 		            break;
+		        case 'tmpchapter' :
+		        	$id && $info = array_shift($this->gather->getNovelList(array('id'=>$id),1));
+		        	break;
+		        case 'chapter' :
+		        	
 		    }
 		    $this->assign('info',$info);
 		    $this->assign('method',$method);
 		    $this->display($method);
+		}
+		
+		/**
+		* 删除
+		* @return array 
+		* @author MaWei (http://www.phpyrb.com)
+		* @date 2014-11-22  下午12:38:03
+		*/
+		function delete(){
+			$ids = $_REQUEST['ids'];
+			$method = text($_REQUEST['method']);
+			$model = $m = null;
+			switch ($method){
+				case 'chapter' :
+					$model = 'BookChapterTmp';
+					break;
+			}
+			if($ids < 0){
+				$m = M("$model")->where(1)->delete();
+			}else{
+				$m = M("$model")->delete($ids);
+			}
+// 			echo M("$model")->getLastSql();
+			if($m === false){
+				echo null;
+			}else{
+				echo 1;
+			}
+			exit;
+		}
+		
+		/**
+		 * 编辑器
+		 * @return array
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-9-22  下午11:11:05
+		 */
+		function editer(){
+			$editer = new Edit();
+			echo $editer->output();
 		}
 		
 		function _addall($_bid =1){

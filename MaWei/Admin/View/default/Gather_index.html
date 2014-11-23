@@ -13,19 +13,20 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="text-muted bootstrap-admin-box-title">
-                                                    小说列表
+                                                    小说临时章节列表
                     </div>
                     <div class="clr"> </div>
                     <div class="seach_select">
-                        <form action="{:U('Admin/Sourc/index')}" method="post">
-                            <input type="text" name="id" class="intext" value="{$seach['uid']}" placeholder="用户ID"/>
-                            <input type="text" name="keyword" class="intext" value="{$seach['keyword']}" placeholder="用户名或邮箱"/>
+                        <form action="{:U('Admin/Gather/index')}" method="post">
+                            <input type="text" name="txtid" class="intext" value="{$txtid}" placeholder="txtid" onkeyup="value=value.replace(/[^\d]/,'');"/>
+                            <input type="text" name="keyword" class="intext" value="{$keyword}" placeholder="章节名称"/>
                             <input type="submit" class="btn btn-sm btn-primary" value="搜索"　/>
                         </form>
                     </div>
                     <div class="seach_select">
-                        <a href="{:U('Admin/Book/edit')}" class="btn btn-sm btn-success opn">小说编辑</a>
-                        <input type="button" url="{:U('Admin/Sourc/delete')}" class="btn btn-sm btn-primary" value="批量删除" onclick="delall($(this))"　/>
+                        <input type="button" class="btn btn-sm btn-primary" value="添加章节" onclick="layer.load('章节编辑','{:U('Admin/Gather/edit',array('method'=>'chapter'))}');"　/>
+                        <input type="button" url="{:U('Admin/Gather/delete',array('method'=>'chapter'))}" class="btn btn-sm btn-danger" value="批量删除" onclick="delall($(this))"　/>
+                         <input type="button" url="{:U('Admin/Gather/delete',array('method'=>'chapter'))}" class="btn btn-sm btn-danger" value="清空" onclick="delall($(this),-1)"　/>
                     </div>
                     <div class="pull-right flpostion">
                         <span class="badge">{$count}</span>
@@ -58,10 +59,12 @@
                                     <td>{$v['content']|strCutOut}</td>
                                     <td>{$v['uptime']|date="Y-m-d H:m:s",###}</td>
                                     <td class="bnt-pl3">
-                                        <a href="{:U('Admin/Gather/edit',array('type'=>'chapter','id'=>$v['id']))}" ><i class="glyphicon glyphicon-pencil"></i></a>
-                                        <!-- set recommend -->
+                                        <a href="javascript:;" onclick="layer.load('章节编辑','{:U('Admin/Gather/edit',array('method'=>'tmpchapter','id'=>$v['id']))}');" ><i class="glyphicon glyphicon-pencil"></i></a>
+                                        <!-- add chapter -->
+                                        <a href="javascript:;" onclick="layer.load('发布章节','{:U('Admin/Gather/edit',array('method'=>'chapter','id'=>$v['id']))}');" ><i class="glyphicon glyphicon-pencil"></i></a>
+                                        
                                         <!-- delete -->
-                                        <a href="javascript:void(0);" url="{:U('Admin/Sourc/delete')}" onclick="delall($(this),{$v['id']});"><i style="color:#b00;"  class="glyphicon glyphicon-trash"></i></a>
+                                        <a href="javascript:void(0);" url="{:U('Admin/Gather/delete',array('method'=>'chapter'))}" onclick="delall($(this),{$v['id']});"><i style="color:#b00;"  class="glyphicon glyphicon-trash"></i></a>
                                     </td>
                                 </tr>
                             </volist>

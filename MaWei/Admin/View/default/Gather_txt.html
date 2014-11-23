@@ -1,8 +1,7 @@
 <!-- include public templates -->
 
 <!-- stystem menu content -->
-<div class="container" style="width:600px;max-height: 800px;">
-<div class="row">
+<div class="row" style="width:700px;">
     <div class="col-lg-12">
         <div class="panel panel-default bootstrap-admin-no-table-panel">
             <div class="bootstrap-admin-no-table-panel-content bootstrap-admin-panel-content collapse in">
@@ -28,12 +27,6 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-lg-2 control-label" for="focusedInput">小说作者</label>
-                                <div class="col-lg-5">
-                                    <input class="form-control" name="author" id="focusedInput" type="text" placeholder="书籍作者" value="{$info['author']}"/>
-                                </div>
-                            </div>
-                            <div class="form-group">
                                 <label class="col-lg-2 control-label" for="focusedInput">小说txt文件</label>
                                 <div class="col-lg-3">
                                     <input name="file" id="focusedInput" type="file" />
@@ -42,7 +35,7 @@
                             <div class="form-group">
                                 <label class="col-lg-2 control-label" for="focusedInput">章节正则</label>
                                 <div class="col-lg-7">
-                                    <input class="form-control" name="chapter" id="focusedInput" type="text" placeholder="默认为：/(第.*章)(.*)/" value="{$info['keyword']}">
+                                    <input class="form-control" name="chapter" id="focusedInput" type="text" placeholder="/(^第[\d|一|二|三|四|五|六|七|八|九|十|百|千|万]+章{1})(.*)/" value="{$info['chapter']}">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -154,5 +147,4 @@
         <div class="clr"></div>
     </div>
     <div class="clr"></div>
-</div>
 </div>

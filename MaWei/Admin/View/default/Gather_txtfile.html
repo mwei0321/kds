@@ -8,7 +8,7 @@
 
 <!-- user list content -->
 <block name="content">
-    <div class="row">
+    <div class="row>
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -57,7 +57,8 @@
                                     <td>{$v['uptime']|date="Y-m-d H:m:s",###}</td>
                                     <td class="bnt-pl3">
                                         <!-- chapter -->
-                                        <a href="javascript:;" onclick="cchapter($(this));" url="{:U('Admin/Gather/chapter',array('id'=>$v['id']))}" ><i class="glyphicon glyphicon-pencil"></i></a>
+                                        <a href="javascript:;" onclick="cchapter($(this));" url="{:U('Admin/Gather/chapter',array('id'=>$v['id']))}" title="生成章节"><i class="glyphicon glyphicon-download-alt"></i></a>
+                                        <a href="javascript:;" <if condition="!$v['status']">onclick="cchapter($(this));" url="{:U('Admin/Gather/dispose',array('id'=>$v['id'],'method'=>'addinfo'))}"</if> <if condition="$v['status']"> onclick="layer.error('已添加！');"  style="color:red"</if>  title="添加小说基本信息" ><i class="glyphicon glyphicon-ok"></i></a>
                                         <!-- edit -->
                                         <a href="{:U('Admin/Gather/edit',array('id'=>$v['id']))}" ><i class="glyphicon glyphicon-pencil"></i></a>
                                         <!-- delete -->
@@ -74,7 +75,7 @@
     </div>
     <script>
         var cchapter = function (Obj) {
-            layer.error('导入中……请稍后',300);
+            layer.error('导入中……请稍后',600);
             $.ajax({
                 url : Obj.attr('url')
             }).done(function (e){
