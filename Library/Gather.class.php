@@ -66,7 +66,7 @@
 		        return $count;
 		    }
 		    $list = $m->where($_where)->order('id ASC')->limit($_limit)->select();
-//             echo $m->getLastSql();
+            echo $m->getLastSql();
 		    return $list;
 		}
 		

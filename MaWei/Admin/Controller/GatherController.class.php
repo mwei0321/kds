@@ -126,6 +126,24 @@
 				        $is_ok = add_updata($grep,'TxtFile');
 				    }
 				    break;
+				case 'chapter' :
+				    $data = array();
+				    $ids = $_REQUEST['ids'];
+				    $bookid = intval($_REQUEST['bookid']);
+				    $list = $this->gather->getNovelList(array('id'=>array('IN',$ids)),'0,10000');
+				    foreach ($list as $k => $v){
+				        $data[$k]['chapter'] = $v['chapter'];
+				        $data[$k]['content'] = $v['content'];
+				        $data[$k]['title'] = $v['title'];
+				        $data[$k]['ctime'] = time();
+				        $data[$k]['book_id'] = $bookid;
+// 				        $reid = add_updata($data,'BookChapterT1');
+				    }
+				    $m = Book::_getChapterTable($bookid);
+				    dump($data);
+				    $m->addAll($data);
+				    echo $m->getLastSql();
+				    break;
 				case 'novel' :
 				    //插入小说基本信息
 				    $data = array();
@@ -199,6 +217,7 @@
 		        	$id && $info = array_shift($this->gather->getNovelList(array('id'=>$id),1));
 		        	break;
 		        case 'chapter' :
+		            break;
 		        	
 		    }
 		    $this->assign('info',$info);

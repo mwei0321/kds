@@ -93,7 +93,8 @@ var layer = {};
 			
 		},
 		_load : function (url,title,param){
-			jQuery.ajax({url:url,
+			jQuery.ajax({
+				url:url,
 	  	   	    type:'post',
 	  	   	    data:param,
 	  	   	    cache:false,

@@ -22,11 +22,12 @@
                             <input type="text" name="keyword" class="intext" value="{$keyword}" placeholder="章节名称"/>
                             <input type="submit" class="btn btn-sm btn-primary" value="搜索"　/>
                         </form>
-                    </div>
-                    <div class="seach_select">
-                        <input type="button" class="btn btn-sm btn-primary" value="添加章节" onclick="layer.load('章节编辑','{:U('Admin/Gather/edit',array('method'=>'chapter'))}');"　/>
                         <input type="button" url="{:U('Admin/Gather/delete',array('method'=>'chapter'))}" class="btn btn-sm btn-danger" value="批量删除" onclick="delall($(this))"　/>
                          <input type="button" url="{:U('Admin/Gather/delete',array('method'=>'chapter'))}" class="btn btn-sm btn-danger" value="清空" onclick="delall($(this),-1)"　/>
+                    </div>
+                    <div class="seach_select">
+                        <input type="text" id="bookid" name="bookid" class="intext" placeholder="小说ID" onkeyup="value=value.replace(/[^\d]/,'');" style="float:none;margin-right:0;width:70px;"/>
+                        <input type="button" class="btn btn-sm btn-primary" value="发布章节" onclick="sendChapter();"　/>
                     </div>
                     <div class="pull-right flpostion">
                         <span class="badge">{$count}</span>
@@ -75,5 +76,26 @@
             </div>
         </div>
     </div>
+    <script>
+        var sendChapter = function (id){
+            var ids = id ? id : getallval();
+            var bookid = $('#bookid').val();
+            if(!bookid){
+                layer.error('请输入要发布到小说ID！');
+                return false;
+            }
+            if(ids.length < 1){
+                layer.error('请选择要发布的章节！');
+                return false;
+            }
+            //layer.load('发布章节','{:U('Admin/Gather/edit',array('method'=>'chapter'))}','ids='+ids.toString());
+            $.ajax({
+                url: '{:U('Admin/Gather/dispose',array('method'=>'chapter'))}',
+                data : 'bookid='+bookid+'&ids='+ids.toString(),
+            }).done(function (e) {
+                layer.success(e);
+            });
+        }
+    </script>
 </block>
 

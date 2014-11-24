@@ -51,7 +51,7 @@ var recommend = function (Obj,id){
 	var url = Obj.attr('url');
 	var recomm = Obj.attr('recomm');
 	var ids = id ? id : getallval();
-	if(!ids){
+	if(ids.length < 1){
 		layer.error('请选择要推荐ID');
 	}
 	$.ajax({
@@ -88,12 +88,12 @@ function getallval(){
 
 //全局删除
 var delall = function (Obj,id){
+	var ids = id ? id : getallval();
+	if(ids.length < 1){
+		layer.error('请选择要删除ID');
+	}
 	if(confirm('你确定要删除吗？')){
 		var url = Obj.attr('url');
-		var ids = id ? id : getallval();
-		if(!ids){
-			layer.error('请选择要删除ID');
-		}
 		$.ajax({
 			type : 'post',
 			url  : url,
