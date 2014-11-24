@@ -131,6 +131,7 @@
 				    $ids = $_REQUEST['ids'];
 				    $bookid = intval($_REQUEST['bookid']);
 				    $list = $this->gather->getNovelList(array('id'=>array('IN',$ids)),'0,10000');
+				    $count = count($list);
 				    foreach ($list as $k => $v){
 				        $data[$k]['chapter'] = $v['chapter'];
 				        $data[$k]['content'] = $v['content'];
@@ -140,9 +141,10 @@
 // 				        $reid = add_updata($data,'BookChapterT1');
 				    }
 				    $m = Book::_getChapterTable($bookid);
-				    dump($data);
-				    $m->addAll($data);
-				    echo $m->getLastSql();
+				    $reid = $m->addAll($data);
+// 				    echo $m->getLastSql();
+                    echo '共选择了 '.$count.' 条，其中插入成功的有    '.$reid.'条记录';
+                    exit;
 				    break;
 				case 'novel' :
 				    //插入小说基本信息
