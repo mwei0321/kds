@@ -119,6 +119,7 @@
 				        $grep['chapter'] = $_REQUEST['chapter'] ? text($_REQUEST['chapter']) : '/(^第[\d|一|二|三|四|五|六|七|八|九|十|百|千|万]+章{1})(.*)/';
 				        $grep['filter'] = text($_REQUEST['filter']);
 				        $grep['name'] = $_REQUEST['title'] ? text($_REQUEST['title']) : $name;
+				        $grep['author'] = text($_REQUEST['author']);
 				        $grep['path'] = $file['path'];
 				        $grep['cateid'] = intval($_REQUEST['cateid']);
 				        $grep['uptime'] = time();

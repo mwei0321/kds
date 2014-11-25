@@ -45,12 +45,37 @@
 		}
 		
 		/**
+		 * 小说章节
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-11-25 上午10:38:22
+		 */
+		function chapter(){
+		    $bookid = intval($_REQUEST['bookid']);
+		    $count = $this->book->getBookChapter($bookid);
+		    $page = new Page($count,20,array(),array('ajax'=>1));
+		    $list = $this->book->getBookChapter($bookid,"$page->firstRow,$page->listRows");
+		    
+		    $this->assign('list',$list);
+		    $this->assign('page',$page->show());
+		    if($_REQUEST['ajaxPage']){
+		        $this->assign('html',1);
+		        $data = array();
+		        $data['show'] = $page->show();
+		        $html = $this->fetch();
+		        $data['html'] = $html;
+		        echo json_encode($data);
+		        exit;
+		    }
+		    $this->display();
+		}
+		
+		/**
 		* 删除书籍
 		* @author MaWei (http://www.phpyrb.com)
 		* @date 2014-8-9  下午2:35:18
 		*/
 		function delete(){
-			$reid = delall($_REQUEST['ids'],'Sourc');
+			$reid = delall($_REQUEST['ids'],'Book');
 			if($reid === false){
 				echo null;
 			}else{
@@ -66,7 +91,7 @@
 		*/
 		function status (){
 			$status = intval($_REQUEST['status']) == '1' ? 0 : 1;
-			$reid = status('Sourc',$_REQUEST['ids'],$status);
+			$reid = status('book',$_REQUEST['ids'],$status);
 			if($reid === false){
 				$msg['status'] = null;
 				$msg['msg'] = $status ? '显示设置失败！' : '隐藏设置失败！';
@@ -88,7 +113,7 @@
 			$data = array();
 			$data['id'] = intval($_REQUEST['id']);
 			$data['recommend'] = intval($_REQUEST['recomm']) == 1 ? 0 : 1;
-			$reid = add_updata($data,'Sourc');
+			$reid = add_updata($data,'Book');
 			if($reid === false){
 				$msg['status'] = null;
 				$msg['msg'] = '推荐失败';
@@ -108,7 +133,7 @@
 		*/
 		function edit(){
 			if($_REQUEST['id']){
-				$info = $this->Sourc->Sourcinfo(intval($_REQUEST['id']));
+				$info = $this->book->bookinfo(intval($_REQUEST['id']));
 // 				dump($info);
 				$this->assign('info',$info[0]);
 			}
@@ -150,19 +175,19 @@
 				$avatar = uploads(array('path'=>'cover','ImgWidth'=>105,'ImgHeight'=>160,'filename'=>'cover'),true);
 				$data['cover'] = $avatar['thumb'];
 			}
-			$reid = add_updata($data,'Sourc');
+			$reid = add_updata($data,'Book');
 			if($reid === false){
-				$this->error('添加修改失败',U('Admin/Sourc/edit'));
+				$this->error('添加修改失败',U('Admin/Book/edit'));
 			}else{
 				$temp = array();
-				$temp['sourc_id'] = $_REQUEST['id'] ? intval($_REQUEST['id']) : $reid;
+				$temp['book_id'] = $_REQUEST['id'] ? intval($_REQUEST['id']) : $reid;
 				$temp['intro'] = $intro;
 				$temp['content'] = $_REQUEST['content'];
-				$reid = add_updata($temp,'SourcContent','sourc_id');
+				$reid = add_updata($temp,'bookContent','book_id');
 // 				if($reid === false){
-// 					$this->error('添加修改失败',U('Admin/Sourc/index'));
+// 					$this->error('添加修改失败',U('Admin/book/index'));
 // 				}
-// 				$this->success('添加修改成功',U('Admin/Sourc/index'));
+// 				$this->success('添加修改成功',U('Admin/book/index'));
 			}
 			}
 		}

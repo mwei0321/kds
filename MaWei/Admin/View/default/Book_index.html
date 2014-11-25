@@ -62,9 +62,9 @@
                                     <td class="recomm">{$recomm[$v['recommend']]}</td>
                                     <td>{$v['uptime']|date="Y-m-d H:m:s",###}</td>
                                     <td class="bnt-pl3">
-                                        <a href="{:U('Admin/Sourc/edit',array('id'=>$v['id']))}" ><i class="glyphicon glyphicon-pencil"></i></a>
+                                        <a href="{:U('Admin/Book/edit',array('id'=>$v['id']))}" ><i class="glyphicon glyphicon-pencil"></i></a>
                                         <!-- set recommend -->
-                                        <a href="javascript:void(0);" url="{:U('Admin/Sourc/recommend',array('id'=>$v['id']))}" recomm="{$v['recommend']}" onclick="recommend($(this));">
+                                        <a href="javascript:void(0);" url="{:U('Admin/Book/recommend',array('id'=>$v['id']))}" recomm="{$v['recommend']}" onclick="recommend($(this));">
                                             <if condition="$v['recommend'] EQ 1">
                                                 <i class="glyphicon glyphicon-flag" style="color:green;"></i>
                                             <else />
@@ -72,7 +72,7 @@
                                             </if>
                                         </a>
                                         <!-- set status -->
-                                        <a href="javascript:void(0);" url="{:U('Admin/Sourc/status')}" style="color:red;" status="{$v['status']}" onclick="setstatus($(this),{$v['id']});">
+                                        <a href="javascript:void(0);" url="{:U('Admin/Book/status')}" style="color:red;" status="{$v['status']}" onclick="setstatus($(this),{$v['id']});">
                                             <if condition="$v['status'] EQ 1">
                                                 <i class="glyphicon glyphicon-minus-sign" style="color:red;"></i>
                                             <else />
@@ -80,7 +80,8 @@
                                             </if>
                                         </a>
                                         <!-- delete -->
-                                        <a href="javascript:void(0);" url="{:U('Admin/Sourc/delete')}" onclick="delall($(this),{$v['id']});"><i style="color:#b00;"  class="glyphicon glyphicon-trash"></i></a>
+                                        <a href="javascript:void(0);" url="{:U('Admin/Book/delete')}" onclick="delall($(this),{$v['id']});"><i style="color:#b00;"  class="glyphicon glyphicon-trash"></i></a>
+                                        <a href="javascript:void(0);" onclick="layer.load('章节列表','{:U('Admin/Book/chapter',array('bookid'=>$v['id']))}');"><i style="color:#b00;"  class="glyphicon glyphicon-trash"></i></a>
                                     </td>
                                 </tr>
                             </volist>

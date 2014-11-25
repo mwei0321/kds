@@ -7,9 +7,9 @@ var layer = {};
 ;(function($, window, document, underfined) {
 	//
 	//浏览器宽度
-	var SreenW = $(window).width();
+	var SreenW = $(document).width();
 	// //浏览器高度
-	var SreenH = $(window).height();
+	var SreenH = $(document).height();
 	 //alert(SreenH +'=>'+SreenW);
 	//初始化配置
 	var Options = {
@@ -20,6 +20,10 @@ var layer = {};
 		ThumbW : 100,
 		ThumbH : 100,
 	}
+	
+	$(window).resize(function () {
+		layer._center();
+	});
 	
 	$.fn.extend(layer, {
 		
@@ -59,6 +63,18 @@ var layer = {};
 			}, t * 1000);
 		},
 		
+		_move : function () {
+			$('#outsidebox').mousedown(function (eve) {
+				var Obj = $(this);
+				var Eve = eve;
+				var left = eve.pageX - Obj.offset().left;
+				var top = eve.pageY - Obj.offset().top;
+				Obj.mousemove(function (){
+					Obj.css({'left':(Eve.pageX - left)+'px','top':(Eve.pageY - top)+'px'});
+				});
+			});
+		},
+		
 		_html : function (cont,title,ajx) {
 			layer._style();
 			var t = title ? '<div id="lytitle"><h3>'+title+'<a href="javascript:;" onclick="layer.close(0.4);" title="关闭">X</a></h3></div>' : '';
@@ -71,6 +87,7 @@ var layer = {};
 			$('#box_content').append(h);
 			$('#mwbg').click(function () {layer.close(0.3);});
 			layer._center();
+			layer._move();
 		},
 		//消息提示
 		_message : function (msg,type,time) {
@@ -82,12 +99,20 @@ var layer = {};
 		},
 		//居中
 		_center : function (){
+			//浏览器宽度
+			var W = $(document).width();
+			// //浏览器高度
+			var H = $(document).height();
 			var oboxw = $('#outsidebox').width();
 			var oboxh = $('#outsidebox').height();
 			var oboxl = $('#outsidebox').css({
-				'left' : (SreenW - oboxw) / 2 + 'px',
-				'top' : (SreenH - oboxh) / 2 + 'px',
+				'left' : (W - oboxw) / 2 + 'px',
+				'top' : (H - oboxh) / 2 + 'px',
 			}).fadeTo('slow',0.99);
+			var bg = $('#mwbg').css({
+				'width':W+'px',
+				'height':H+'px',
+			});
 		},
 		_iframe : function (){
 			
@@ -104,7 +129,7 @@ var layer = {};
 	     	});
 		},
 		_style : function (){
-			var style = '<style>#mwbg{width:' + SreenW + 'px;height:' + SreenH + 'px;display:block;position:fixed;z-index:900;opacity: 0.8;filter:Alpha(Opacity=90);postion:fixed;background:' + Options.bgColor + ';top:0;left:0;}' + 
+			var style = '<style>#mwbg{display:block;position:fixed;z-index:900;opacity: 0.8;filter:Alpha(Opacity=90);postion:fixed;background:' + Options.bgColor + ';top:0;left:0;}' + 
 			'#outsidebox{border:5px solid #666;background:#fff;border-radius:10px;z-index:900;position:fixed;padding:10px;display:none;} #outsidebox h3{height:35px;line-height:35px;border-bottom:1px solid #ccc;background:#efefef;}' +
 			 '#outsidebox {} #outsidebox .error{color:red;font-size:14px;} #outsidebox .success{color:green;font-size:14px;} ' + '#outsidebox .clr{clear:both;padding:0;margin:0;}' + 
 			 '#outsidebox #box_content{padding:0 10px;max-height:800px;overflow:hidden;overflow-y:auto;}'+
