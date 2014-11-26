@@ -23,4 +23,5 @@
 		function index(){
 			$this->display();		
 		}
+		
 	}

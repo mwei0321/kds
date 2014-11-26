@@ -43,6 +43,10 @@
 			return $book;
 		}
 		
+		function cateToBook($_cateid,$_time = 1){
+		    
+		}
+		
 		/**
 		* 书籍详细信息
 		* @param  array 
@@ -52,7 +56,8 @@
 		* @date 2014-8-9  下午1:28:33
 		*/
 		function bookInfo($_bookid){
-			$m = M('Book');
+			$m = M();
+			$sql = "SELECT * FROM `mw_book` b LEFT JOIN `mw_book_extend_info` e ON b.id = e.book_id LEFT JOIN mw_book_extend_field f ON f.id = e.extend_id ";
 			$info = $m->where(array('id'=>$_bookid))->find();
 			return $info;
 		}

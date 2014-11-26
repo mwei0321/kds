@@ -1638,6 +1638,7 @@ table th[class*="col-"] {
 fieldset {
   min-width: 0;
   padding: 0;
+  padding-top:20px;
   margin: 0;
   border: 0;
 }
@@ -5794,6 +5795,8 @@ a:hover{text-decoration:none}
 .fl{float:left;}
 .bntmr20{margin:10px 0 20px;} 
 .bntmr20 input,.bntmr20 button{margin-right:20px;}
+.bntml500{margin-left:500px;}
+.bntml500 button{margin-left:50px;}
 .flpostion{position:relative;top:-20px;}
 .ml20{margin-left:20px;}
 .seach_select{height:35px;position:relative;top:-25px;left:90px;float:left;font-size:13px;margin-left:35px;overflow:hidden;} 

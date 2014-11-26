@@ -1,33 +1,34 @@
 //公共函数库
 
 ;(function ($,window,document) {
-	
 	$.fn.tabnav = function (Obj){
 		//初始化设置
 		var options = {
-			'init'		: true,　//是否初始化
-			'tabtclass' : 'tabnavtitle', //切换标题class
-			'tabcclass' : 'tabnavcont', //切换内容class
-			'tabstyle'  : 'cur'	
+			'init'		: 0,　//是否初始化
+			'tabtitle' : 'tabtitle', //切换标题对象
+			'tabcont' : 'tabcont', //切换内容class
+			'tabcur'  : 'cur'
 		}
-		
+		if(Obj && typeof(Obj) === 'object'){
+			$.extend(Obj,options);
+		}
 		var Obj = $(this);
-		var tab = Obj.find('.'+options.tabtclass);
-		if(options.init){
-			_init();
+		var tab = Obj.find('.'+options.tabtitle);
+		if(options.init >= 0){
+			_init(options.init);
 		}
 		tab.click(function (e) {
-			tab.removeClass(options.tabstyle);
-			$(this).addClass(options.tabstyle);
-			var tabcont = Obj.find('.'+options.tabcclass);
+			tab.removeClass(options.tabcur);
+			$(this).addClass(options.tabcur);
+			var tabcont = Obj.find('.'+options.tabcont);
 			tabcont.hide().eq($(this).index()).show();
 		});
-		
-		function _init () {
-			tab.removeClass(options.tabstyle);
-			tab.eq(0).addClass(options.tabstyle);
-			var tabcont = Obj.find('.'+options.tabcclass);
-			tabcont.hide().eq(0).show();
+		//初始化选择
+		function _init (num) {
+			tab.removeClass(options.tabcur);
+			tab.eq(num).addClass(options.tabcur);
+			var tabcont = Obj.find('.'+options.tabcont);
+			tabcont.hide().eq(num).show();
 		}
 	}
 })(jQuery,window,document);
