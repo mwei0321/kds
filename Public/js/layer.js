@@ -7,9 +7,9 @@ var layer = {};
 ;(function($, window, document, underfined) {
 	//
 	//浏览器宽度
-	var SreenW = $(document).width();
+	var SreenW = $(window).width();
 	// //浏览器高度
-	var SreenH = $(document).height();
+	var SreenH = $(window).height();
 	 //alert(SreenH +'=>'+SreenW);
 	//初始化配置
 	var Options = {

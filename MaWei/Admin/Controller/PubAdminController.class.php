@@ -34,8 +34,7 @@
 				S('CateList',$catelist);
 			}
 			$this->diy_menu();
-			
-// 			dump(S('Menu'));
+
 			$this->assign('menu',S('Menu'));
 			$this->diy_menu();
 			$this->assign('catelist',S('CateList'));

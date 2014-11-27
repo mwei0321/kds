@@ -60,7 +60,7 @@
                                     <td>{$v['content']|strCutOut}</td>
                                     <td>{$v['uptime']|date="Y-m-d H:m:s",###}</td>
                                     <td class="bnt-pl3">
-                                        <a href="javascript:;" onclick="layer.load('章节编辑','{:U('Admin/Gather/edit',array('method'=>'tmpchapter','id'=>$v['id']))}');" ><i class="glyphicon glyphicon-pencil"></i></a>
+                                        <a href="javascript:;" onclick="layer.load('章节编辑','{:U('Admin/Gather/edit',array('method'=>'txtchapter','id'=>$v['id']))}');" ><i class="glyphicon glyphicon-pencil"></i></a>
                                         <!-- add chapter -->
                                         <a href="javascript:;" onclick="sendChapter({$v['id']});" ><i class="glyphicon glyphicon-pencil"></i></a>
                                         

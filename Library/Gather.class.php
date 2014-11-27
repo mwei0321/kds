@@ -30,7 +30,6 @@
 		* @date 2014-11-16  下午9:04:55
 		*/
 		function readfile($_file,$_chapter = null,$_filter = array(),$_replace = ''){
-		    ini_set('memory', '200M');
 		    $data = file($_file,FILE_SKIP_EMPTY_LINES);
 			$content = array();
 			$i = $init = 0;
@@ -59,8 +58,8 @@
 		 * @author MaWei (http://www.phpyrb.com)
 		 * @date 2014-11-18 下午2:42:23
 		 */
-		function getNovelList($_where = array(),$_limit = 'count'){
-		    $m = M('BookChapterTmp');
+		function getTxtChapter($_where = array(),$_limit = 'count'){
+		    $m = M('TxtChapterTmp');
 		    if($_limit == 'count'){
 		        $count = $m->where($_where)->count();
 		        return $count;

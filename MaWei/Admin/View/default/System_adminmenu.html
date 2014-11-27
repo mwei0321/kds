@@ -19,13 +19,6 @@
 					</div>
 					<div class="clr"> </div>
                     <div class="seach_select">
-                        <form action="{:U('Admin/System/menu')}" method="post">
-                        <input type="text" name="uid" class="intext" value="{$seach['uid']}" placeholder="用户ID"/>
-                        <input type="text" name="keyword" class="intext" value="{$seach['keyword']}" placeholder="用户名或邮箱"/>
-                        <input type="submit" class="btn btn-sm btn-primary" value="搜索"　/>
-                        </form>
-                    </div>
-                    <div class="seach_select">
                     	<input type="button" onclick="layer.load('菜单编辑','{:U('Admin/System/edit',array('type'=>'AdminMenu'))}');" class="btn btn-sm btn-success opn"  value="添加菜单"/>
 					</div>
 					<div class="pull-right flpostion">

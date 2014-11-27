@@ -40,15 +40,32 @@
 		    $_REQUEST['txtid'] && $txtid = intval($_REQUEST['txtid']);
 		    $txtid && $where['txtid'] = $txtid;
 		    $this->keyword && $where['title'] = array('LIKE',"%$this->keyword%");
-		    $count = $this->gather->getNovelList($where);
+		    $count = $this->gather->getTxtChapter($where);
 		    $page = new Page($count,50,array('txtid'=>$txtid,'keyword'=>$this->keyword));
-		    $list = $this->gather->getNovelList($where,"$page->firstRow,$page->listRows");
+		    $list = $this->gather->getTxtChapter($where,"$page->firstRow,$page->listRows");
 			
 		    $this->assign('list',$list);
 		    $this->assign('page',$page->show());
 		    $this->assign('count',$count);
 		    $this->assign('txtid',$txtid);
 		    $this->display();
+		}
+		
+		function tmpNoval(){
+		    $m = M('Book');
+		    $data = array();
+		    $num = intval($_REQUEST['num']);
+		    if($num > 0){
+		        for($i = 0;$i < $num;$i++){
+		            $data[$i]['cateid'] = rand(1,8);
+		            $data[$i]['name'] = randString(array(4,8),4);
+		            $data[$i]['words_num'] = rand(100000, 5000000);
+		            $data[$i]['comment_num'] = rand(100, 50000);
+		            $data[$i]['click_num'] = rand(100, 500000);
+		            $data[$i]['uptime'] = rand(1316376049, time());
+		        }
+		        $m->addAll($data);
+		    }
 		}
 		
 		/**
@@ -74,6 +91,10 @@
 		    $this->display();
 		}
 		
+		function url(){
+		    
+		}
+		
 		/**
 		 * 生成章节
 		 * @return array
@@ -85,7 +106,7 @@
 		    $info = $this->gather->txtFile(1,array('id'=>$id));
 		    $info = array_shift($info);
 		    $list = $this->gather->readfile($info['path'],$info['chapter'],$info['filter']);
-		    $m = M('BookChapterTmp');
+		    $m = M('TxtChapterTmp');
 		    $i = 0;
 		    $count = count($list);
 		    foreach ($list as $k => $v){
@@ -131,7 +152,7 @@
 				    $data = array();
 				    $ids = $_REQUEST['ids'];
 				    $bookid = intval($_REQUEST['bookid']);
-				    $list = $this->gather->getNovelList(array('id'=>array('IN',$ids)),'0,10000');
+				    $list = $this->gather->getTxtChapter(array('id'=>array('IN',$ids)),'0,10000');
 				    $count = count($list);
 				    foreach ($list as $k => $v){
 				        $data[$k]['chapter'] = $v['chapter'];
@@ -151,7 +172,7 @@
 				    //插入小说基本信息
 				    $data = array();
 				    $data['cateid'] = intval($_REQUEST['cateid']);
-				    $data['title'] = text($_REQUEST['title']);
+				    $data['name'] = text($_REQUEST['title']);
 				    $data['author'] = text($_REQUEST['author']);
 				    $data['status'] = 0;
 				    $data['end_status'] = intval($_REQUEST['end_status']);
@@ -188,7 +209,7 @@
 					}
 					echo null;
 					break;
- 				case 'tmpchapter' :
+ 				case 'txtchapter' :
 					$data = array();
 					$_REQUEST['id'] && $data['id'] = intval($_REQUEST['id']);
 					$data['name'] = text($_REQUEST['name']);
@@ -196,7 +217,7 @@
 					$data['title'] = text($_REQUEST['title']);
 					$data['content'] = $_REQUEST['content'];
 					$data['uptime'] = time();
-					$is_ok = add_updata($data,'BookChapterTmp');
+					$is_ok = add_updata($data,'TxtChapterTmp');
 			}
 			$this->success('处理成功');
 		}
@@ -217,7 +238,7 @@
 		            $id && $info = array_shift($this->gather->txtFile('0,1',array('id'=>$id)));
 		            break;
 		        case 'tmpchapter' :
-		        	$id && $info = array_shift($this->gather->getNovelList(array('id'=>$id),1));
+		        	$id && $info = array_shift($this->gather->getTxtChapter(array('id'=>$id),1));
 		        	break;
 		        case 'chapter' :
 		            break;
@@ -240,7 +261,7 @@
 			$model = $m = null;
 			switch ($method){
 				case 'chapter' :
-					$model = 'BookChapterTmp';
+					$model = 'TxtChapterTmp';
 					break;
 			}
 			if($ids < 0){

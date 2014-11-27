@@ -43,9 +43,11 @@
 			return $book;
 		}
 		
-		function cateToBook($_cateid,$_time = 1){
-		    
+		function getTop($_where = array()){
+		    $m = M('Book');
+		    $where = array();
 		}
+
 		
 		/**
 		* 书籍详细信息

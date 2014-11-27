@@ -684,6 +684,7 @@
 	 * @return string
 	 */
 	function randString($len=6,$type='',$addChars='') {
+	    $len = is_int($len) ? $len : rand($len[0],$len[1]);
 	    $str ='';
 	    switch($type) {
 	        case 0:
@@ -715,7 +716,7 @@
 	    }else{
 	        // 中文随机字
 	        for($i=0;$i<$len;$i++){
-	            $str.= self::msubstr($chars, floor(mt_rand(0,mb_strlen($chars,'utf-8')-1)),1,'utf-8',false);
+	            $str.= msubstr($chars,1, floor(mt_rand(0,mb_strlen($chars,'utf-8')-1)),'utf-8',false);
 	        }
 	    }
 	    return $str;

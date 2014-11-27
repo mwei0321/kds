@@ -55,9 +55,9 @@
 				$count = $this->cate->where($_where)->count();
 				return $count;
 			}elseif ($_limit == 'all'){
-				$list = $this->cate->where($_where)->select();
+				$list = $this->cate->where($_where)->order('sort DESC')->select();
 			}else{
-				$list = $this->cate->where($_where)->limit($_limit)->select();
+				$list = $this->cate->where($_where)->order('sort DESC')->limit($_limit)->select();
 			}
 			return $this->temp = fieldtokey($list);
 		}
