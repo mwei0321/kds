@@ -19,7 +19,7 @@
 	* @author MaWei ( http://www.phpyrb.com )
 	* @date 2014-4-17 下午1:50:15
 	*/
-	function arr2to1($_data = array(),$_key = 'id',$_field = null){
+	function arr2to1($_data = array(),$_key = 'id',$_field = null,$_unique = true){
 		$onearray = array();
 		foreach ($_data as $k => $v){
 			if($_field && is_array($v["$_field"])){
@@ -29,7 +29,7 @@
 			}
 			$onearray[] = $v["$_key"];
 		}
-		return array_unique($onearray);
+		return $_unique ? array_unique($onearray) : $onearray;
 	}
 	
 	/**

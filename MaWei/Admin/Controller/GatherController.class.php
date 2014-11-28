@@ -68,6 +68,20 @@
 		    }
 		}
 		
+		function tmpClickLog(){
+		    $m = M('BookClickLog');
+		    $data = array();
+		    $num = intval($_REQUEST['num']);
+    	    if($num > 0){
+    	       for($i = 0;$i < $num;$i++){
+        		    $data[$i]['book_id'] = rand(1000,1500 );
+        		    $data[$i]['uid'] = rand(1,500);
+        		    $data[$i]['uptime'] = rand((time() - 3600 * 20),time());
+    	       }
+    	       $m->addAll($data);
+    	    }
+		}
+		
 		/**
 		 * txtfile列表
 		 * @return array

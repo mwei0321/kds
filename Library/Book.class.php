@@ -43,9 +43,69 @@
 			return $book;
 		}
 		
-		function getTop($_where = array()){
+		/**
+		 * 点击排行榜
+		 * @param string $_where 条件
+		 * @param string $_time 时间内
+		 * @param int $_limit 条数
+		 * @return array $list
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-11-28 上午11:30:49
+		 */
+		function getClickHot($_where = null,$_time = 'day',$_limit = 20){
+		    $m = M('BookClickLog');
+		    $where = array();
+		    if($_time == 'day'){
+		        $where['uptime'] = array('GT',time() - 3600 * 36);
+		    }elseif ($_time == 'week'){
+		        $where['uptime'] = array('GT',time() - 3600 * 24 * 7);
+		    }elseif ($_time == 'month'){
+		        $where['uptime'] = array('GT',time() - 3600 * 24 * 30);
+		    }elseif ($_time == 'year'){
+		        $where['uptime'] = array('GT',time() - 3600 * 24 * 365);
+		    }
+		    //取出小说ID
+		    $bookids = $m->field('book_id')->where($where)->select();
+		    //统计每篇小说的点击量
+		    $bookids = array_count_values(arr2to1($bookids,'book_id',null,false));
+		    //排序
+		    arsort($bookids);
+		    //取出最前ID
+		    $bookids = array_slice(array_keys($bookids),0,$_limit);
+		    //取详细信息
 		    $m = M('Book');
 		    $where = array();
+		    $where['id'] = array('IN',implode(',', $bookids));
+		    $where['status'] = 1;
+		    $tmp = $m->field('id,name,cover,author,intro')->where($where)->select();
+		    $tmp = fieldtokey($tmp);
+		    $list = array();
+		    //排序
+		    foreach ($bookids as $k => $v){
+		        $list[$v] = $tmp[$v];
+		    }
+		    return $list;
+		}
+		
+		/**
+		 * 返回评论
+		 * @param array
+		 * @param string 
+		 * @return array
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-11-28 下午1:59:36
+		 */
+		function getComment($_bid,$_limit = 'count',$_where = array()){
+		    $m = M('BookComment');
+            $where = array();
+            $where = $_where;
+            $where['book_id'] = $_bid;
+            if($_limit == 'count'){
+                $count = $m->where($where)->count();
+                return $count;
+            }
+            $list = $m->where($where)->order('uptime DESC')->limit($_limit)->select();
+            return $list;
 		}
 
 		

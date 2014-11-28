@@ -17,10 +17,10 @@
 	use Library\BookCateTag;
 	
 	class IniController extends Controller{
-		
+		protected $book,$catelist;
 		function _init(){
 			//
-			$this->Book = new Book();
+			$this->book = new Book();
 			$this->catetag = new BookCateTag();
 			//带层次的分类列表
 // 			if(S('CateList')){

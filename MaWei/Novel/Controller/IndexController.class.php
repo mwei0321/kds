@@ -12,7 +12,7 @@
 	**/
 
 	namespace Novel\Controller;
-	use Novel\Controller\IniController;;
+	use Novel\Controller\IniController;
 	
 	class IndexController extends IniController{
 		
@@ -21,7 +21,8 @@
 		}
 		
 		function index(){
-			$this->display();		
+		    $this->book->getClickHot();
+			$this->display();
 		}
 		
 	}
