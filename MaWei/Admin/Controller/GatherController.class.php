@@ -51,7 +51,7 @@
 		    $this->display();
 		}
 		
-		function tmpNoval(){
+		function tmpNovel(){
 		    $m = M('Book');
 		    $data = array();
 		    $num = intval($_REQUEST['num']);
@@ -63,6 +63,9 @@
 		            $data[$i]['comment_num'] = rand(100, 50000);
 		            $data[$i]['click_num'] = rand(100, 500000);
 		            $data[$i]['uptime'] = rand(1316376049, time());
+		            $data[$i]['author'] = randString(array(2,4),4);
+		            $data[$i]['grade'] = rand(6,10);
+		            $data[$i]['intro'] = randString(array(10,30),4);
 		        }
 		        $m->addAll($data);
 		    }
@@ -77,6 +80,7 @@
         		    $data[$i]['book_id'] = rand(1000,1500 );
         		    $data[$i]['uid'] = rand(1,500);
         		    $data[$i]['uptime'] = rand((time() - 3600 * 20),time());
+    	       		$data[$i]['cateid'] = rand(1,8);
     	       }
     	       $m->addAll($data);
     	    }

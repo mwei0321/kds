@@ -18,11 +18,29 @@
 		
 		function _init(){
 			parent::_init();
+// 			dump($this->catelist);
 		}
 		
 		function index(){
-		    $this->book->getClickHot();
+		    //分类推荐排行榜
+		    $reclist = array();
+		    foreach ($this->catelist as $k => $v){
+		    	if($k < 5){
+		    		//最新评分高的小说
+		    		$reclist[$v['id']]['left'] = $this->book->book(5,array('cateid'=>$v['id']),'grade DESC,id DESC');
+		    		//日点量排行榜
+		    		$reclist[$v['id']]['right']['day'] = $this->book->getClickHot(array('cateid'=>$v['id']));
+		    		//周点量排行榜
+		    		$reclist[$v['id']]['right']['week'] = $this->book->getClickHot(array('cateid'=>$v['id']),'week');
+		    		//月点量排行榜
+		    		$reclist[$v['id']]['right']['month'] = $this->book->getClickHot(array('cateid'=>$v['id']),'month');
+		    	}
+		    }
+			$this->assign('reclist',$reclist);
 			$this->display();
 		}
 		
+		function info(){
+			
+		}
 	}

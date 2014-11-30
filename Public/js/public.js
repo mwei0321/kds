@@ -1,7 +1,7 @@
 //公共函数库
 
 ;(function ($,window,document) {
-	$.fn.tabnav = function (Obj){
+	$.fn.tabnav = function (obj){
 		//初始化设置
 		var options = {
 			'init'		: 0,　//是否初始化
@@ -9,14 +9,16 @@
 			'tabcont' : 'tabcont', //切换内容class
 			'tabcur'  : 'cur'
 		}
-		if(Obj && typeof(Obj) === 'object'){
-			$.extend(Obj,options);
+		if(obj && typeof(obj) === 'object'){
+			$.extend(options,obj);
 		}
+		//alert(options.tabcont);
 		var Obj = $(this);
 		var tab = Obj.find('.'+options.tabtitle);
 		if(options.init >= 0){
 			_init(options.init);
 		}
+		
 		tab.click(function (e) {
 			tab.removeClass(options.tabcur);
 			$(this).addClass(options.tabcur);

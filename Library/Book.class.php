@@ -31,7 +31,7 @@
 		* @author MaWei (http://www.phpyrb.com)
 		* @date 2014-7-30  下午10:48:05
 		*/
-		function book($_limit = 'count',$_where = array(),$_field = '*',$_order = 'id DESC'){
+		function book($_limit = 'count',$_where = array(),$_order = 'id DESC',$_field = '*'){
 			$m = M('Book');
 			if($_limit == 'count'){
 				$count = $m->where($_where)->count();
@@ -52,20 +52,19 @@
 		 * @author MaWei (http://www.phpyrb.com)
 		 * @date 2014-11-28 上午11:30:49
 		 */
-		function getClickHot($_where = null,$_time = 'day',$_limit = 20){
+		function getClickHot($_where = null,$_time = 'day',$_limit = 10){
 		    $m = M('BookClickLog');
-		    $where = array();
 		    if($_time == 'day'){
-		        $where['uptime'] = array('GT',time() - 3600 * 36);
+		        $_where['uptime'] = array('GT',time() - 3600 * 36);
 		    }elseif ($_time == 'week'){
-		        $where['uptime'] = array('GT',time() - 3600 * 24 * 7);
+		        $_where['uptime'] = array('GT',time() - 3600 * 24 * 7);
 		    }elseif ($_time == 'month'){
-		        $where['uptime'] = array('GT',time() - 3600 * 24 * 30);
+		        $_where['uptime'] = array('GT',time() - 3600 * 24 * 30);
 		    }elseif ($_time == 'year'){
-		        $where['uptime'] = array('GT',time() - 3600 * 24 * 365);
+		        $_where['uptime'] = array('GT',time() - 3600 * 24 * 365);
 		    }
 		    //取出小说ID
-		    $bookids = $m->field('book_id')->where($where)->select();
+		    $bookids = $m->field('book_id')->where($_where)->select();
 		    //统计每篇小说的点击量
 		    $bookids = array_count_values(arr2to1($bookids,'book_id',null,false));
 		    //排序
@@ -85,6 +84,10 @@
 		        $list[$v] = $tmp[$v];
 		    }
 		    return $list;
+		}
+		
+		function getNewChapter(){
+			
 		}
 		
 		/**
