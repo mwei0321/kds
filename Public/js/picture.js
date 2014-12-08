@@ -14,9 +14,9 @@
 			'eleBW' 		:   0,  //元素边框的宽
 			'showNum'   	:   1,
 			'eleInterval'   :   0,
-			'animateType'		:   1,//动画方式：1为左右，2为上下,3无间隙滚动
+			'animateType'	:   1,//动画方式：1为左右，2为上下,3无间隙滚动
 			'time'			:   2,
-			'isAuto'			:   1,//1为自动动画，0不用
+			'isAuto'		:   1,//1为自动动画，0不用
 			'eventType'		:   1,//事件方式
 		};
 		//合并参数
@@ -36,7 +36,7 @@
 		//启动焦点图
 		_init();
 		
-		//初始化		
+		//初始化		 
 		function _init(obj) {
 			switch(pset.style){
 				case 1 :
@@ -123,6 +123,10 @@
 					return false;
 			}
 		};
+		
+		function _operation(){
+			
+		}
 		
 		//样式设置
 		function _css () {
