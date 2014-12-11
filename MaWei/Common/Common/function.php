@@ -1,5 +1,6 @@
 <?php
-	/**
+	use Library;
+/**
 	*  +----------------------------------------------------------------------------------------------+
 	*   | Explain:  公共函数
 	*  +----------------------------------------------------------------------------------------------+
@@ -175,6 +176,57 @@
 			$info[$k] = $image->thumb2($path, $name,'png',$v['width'],$v['height']);
 		}
 		return $info;
+	}
+	
+	/**
+	 * 采集
+	 * @param string $_url 网址
+	 * @param array $_filter 采集过滤规则   array('title'=>'li','content'=>'.content');
+	 * @param string $_filter 采集区域 '#area'
+	 * @return array $data
+	 * @author MaWei (http://www.phpyrb.com)
+	 * @date 2014-12-11 上午10:39:33
+	 */
+	function gather($_url,$_filter,$_area,$_debug = null){
+	    require_once '/Library/phpQuery.php';
+	    $phpquery = phpQuery::newDocumentFilePHP($_url);
+	    $area = is_array($_area) ? pq($_area[0])->find($_area[1]) : pq($_area);
+	    if($_debug){
+	        dump($_url);
+	        dump($_filter);
+	        dump($_area);
+	        dump($area->html());
+	    }
+	    echo '--------';
+	    $data = array();
+        foreach ($area as $k => $v){
+            echo 111111;
+                if($_debug){
+                    dump($_filter);
+                    dump($_area);
+                    exit;
+                }
+            while (!!list($key,$value) = each($_filter)){
+                if($_debug){
+                    dump($key);
+                    dump($value);
+                    exit;
+                }
+                switch ($value[1]){
+                    case 'text' :
+                        $data[$k][$key] = trim(pq($v)->find($value[0])->text());
+                        break;
+                    case 'html' :
+                        $data[$k][$key] = pq($v)->find($value[0])->html();
+                        break;
+                    default:
+                        $data[$k][$key] = pq($v)->find($value[0])->attr($value[1]);
+                        break;
+                }
+            }
+            reset($_filter);
+        }
+        return $data;
 	}
 	
 	/**

@@ -15,19 +15,25 @@
         return var_dump($v);
     }
     require_once 'phpQuery.php';
-    $phpquery = phpQuery::newDocumentFilePHP('http://www.biquge.la/book/1344/');
-//     print $phpquery->getDocument();
-//     pq('#list')->html();
-//     print phpQuery::getDocument('content');
+//     $phpquery = phpQuery::newDocumentFilePHP('http://www.biquge.la/book/1344/');
+// //     print $phpquery->getDocument();
+// //     pq('#list')->html();
+// //     print phpQuery::getDocument('content');
 
        
-        $ret = pq('#list')->find('dd a');
-        $part = array();
-        foreach($ret as $k => $name){
-            $part[$k] = pq($name)->html();
-            $part[$k]['url'] = pq($name)->attr('href')[0];
-        }
-        dump($part);exit;
+//         $ret = pq('#list')->find('dd');
+//         $part = array();
+//         foreach($ret as $k => $name){
+//             $part[$k]['title'] = pq($name)->text();
+//             $part[$k]['url'] = pq($name)->find('a')->attr('href');
+//          }
+//         dump($part);exit;
+    $ph = phpQuery::newDocumentFileHTML('http://www.biquge.la/book/80/64636.html');
+    $p = pq('#content');
+    foreach ($p as $v){
+        $p = $p->text();
+    }
+    dump($p);
     
     
     

@@ -110,7 +110,47 @@
 		}
 		
 		function url(){
+		    $this->display();
+		}
+		
+		function webcate(){
+		    $list = $this->gather->getWebCate('1000');
+		    $url = 'http://www.biquge.la/book/1344/';
+		    $filter = array('title'=>array('a','text'));
+		    $area = array('#list','dd');
+		    $this->assign('list',$list);
+		    $this->display();
+		}
+		
+		function webname(){
+		    $count = $this->gather->getWebName();
+		    $page = new Page($count,50);
+		    $list = $this->gather->getWebName("$page->firstRow,$page->listRows");
 		    
+		    $this->assign('count',$count);
+		    $this->assign('list',$list);
+		    $this->assign('page',$page->show());
+		    $this->display();
+		}
+		
+		/**
+		 * 
+		 * @param array
+		 * @param string 
+		 * @return array
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-12-10 下午5:03:51
+		 */
+		function _filter($_reg){
+		    $tmp = explode('|', $_reg);
+		    $data = array();
+		    foreach ($tmp as $k => $v){
+		        if($v){
+		            $t = explode('$', $v);
+		            $data[$t['0']] = explode('-',$t['1']);
+		        }
+		    }
+		    return $data;
 		}
 		
 		/**
@@ -236,6 +276,62 @@
 					$data['content'] = $_REQUEST['content'];
 					$data['uptime'] = time();
 					$is_ok = add_updata($data,'TxtChapterTmp');
+					break;
+ 				case 'addwebcate' :
+ 				    $data = array();
+ 				    $_REQUEST['id'] && $data['id'] = intval($_REQUEST['id']);
+ 				    $data['cateid'] = intval($_REQUEST['cateid']);
+ 				    $data['cate_url'] = text($_REQUEST['cateurl']);
+ 				    $data['web_url'] = text($_REQUEST['web_url']);
+ 				    $data['page_param'] = text($_REQUEST['page']);
+ 				    $data['name_area'] = text($_REQUEST['name_area']);
+ 				    $data['chapter_area'] = text($_REQUEST['chapter_area']);
+ 				    $data['content_area'] = text($_REQUEST['content_area']);
+ 				    $data['name_filter'] = text($_REQUEST['name_filter']);
+ 				    $data['chapter_filter'] = text($_REQUEST['chapter_filter']);
+ 				    $data['content_filter'] = text($_REQUEST['content_filter']);
+ 				    $data['uptime'] = time();
+ 				    $is_ok = add_updata($data,'GatherWebCate');
+ 				    break;
+ 				case 'webcate' :
+ 				    $list = $this->gather->getWebCate('all',array('id'=>array('IN',explode(',', $_REQUEST['ids']))));
+ 				    foreach ($list as $k => $v){
+ 				        $data = array();
+ 				        //小说名采集
+ 				        $temp = gather($v['cate_url'], $this->_filter($v['name_filter']), explode('-', $v['name_area']));
+ 				        foreach ($temp as $key => $val){
+ 				            $data[$key]['name'] = $val['name'];
+ 				            $data[$key]['url'] = strpos('http', $val['url']) !== false ? $val['url'] : $v['web_url'].$val['url'];
+ 				            $data[$key]['author'] = $val['author'];
+ 				            $data[$key]['chapter_filter'] = $v['chapter_filter'];
+ 				            $data[$key]['chapter_area'] = $v['chapter_area'];
+ 				            $data[$key]['content_area'] = $v['content_area'];
+ 				            $data[$key]['content_filter'] = $v['content_filter'];
+ 				            $data[$key]['cateid'] = $v['cateid'];
+ 				        }
+ 				        M('GatherWebName')->addAll($data);
+ 				    }
+ 				    break;
+ 				case 'webchapter' : 
+ 				    $list = $this->gather->getWebName('all',array('id'=>array('IN',explode(',', $_REQUEST['ids']))));
+ 				    foreach ($list as $k => $v){
+ 				        $chapter = array();
+//  				        if(!S('TMP')){
+//  				           $temp = gather($v['url'], $this->_filter($v['chapter_filter']), explode('-', $v['chapter_area']));
+//  				           S('TMP',$temp);
+//  				        }
+ 				        foreach (S('TMP') as $key => $val){
+ 				            $chapter[$k]['title'] = $temp['title'];
+ 				            $chapter[$k]['name'] = $v['name'];
+ 				            $chapter[$k]['cateid'] = $v['cateid'];
+ 				            $url = strpos('http', $val['url']) !== false ? $val['url'] : 'http://www.biquge.la/'.$val['url'];
+//  				            dump($v);
+ 				            $content = gather($url, $this->_filter($v['content_filter']),$v['content_area'],1);
+ 				            dump($content);exit;
+ 				            $chapter[$k]['content'] = $content;
+ 				        }
+ 				    }
+ 			    
 			}
 			$this->success('处理成功');
 		}
@@ -258,7 +354,10 @@
 		        case 'tmpchapter' :
 		        	$id && $info = array_shift($this->gather->getTxtChapter(array('id'=>$id),1));
 		        	break;
-		        case 'chapter' :
+		        case 'webchapter' :
+		            break;
+		        case 'wcate' :
+		            $id && $info = array_shift($this->gather->getWebCate(1,array('id'=>$id)));
 		            break;
 		        	
 		    }

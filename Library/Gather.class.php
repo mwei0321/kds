@@ -87,4 +87,66 @@
 // 		    echo $m->getlastsql();
 		    return $list;
 		}
+		
+		/**
+		 * 
+		 * @param array
+		 * @param string 
+		 * @return array
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-12-10 下午3:53:18
+		 */
+		function getWebCate($_limit = 'count',$_where = array()){
+		    $m = M('GatherWebCate');
+		    if($_limit == 'count'){
+		        $count = $m->where($_where)->count();
+		        return $count;
+		    }elseif($_limit == 'all'){
+		        $list = $m->where($_where)->order('id DESC')->select();
+		        return $list;
+		    }
+		    $list = $m->where($_where)->order('id DESC')->limit($_limit)->select();
+// 		    echo $m->getlastsql();
+		    return $list;
+		}
+		
+		/**
+		 * 
+		 * @param array
+		 * @param string 
+		 * @return array
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-12-10 下午4:13:05
+		 */
+		function getWebName($_limit = 'count',$_where = 1){
+		    $m = M('GatherWebName');
+		    if($_limit == 'count'){
+		        $count = $m->where($_where)->count();
+		        return $count;
+		    }elseif($_limit == 'all'){
+		        $list = $m->where($_where)->order('id DESC')->select();
+		    }
+		    $list = $m->where($_where)->order('id DESC')->limit($_limit)->select();
+// 		    echo $m->getlastsql();
+		    return $list;
+		}
+		
+		/**
+		 * 
+		 * @param array
+		 * @param string 
+		 * @return array
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-12-10 下午4:13:09
+		 */
+	    function getWebChapter($_limit = 'count',$_where = 1){
+		    $m = M('GatherWebChapter');
+		    if($_limit == 'count'){
+		        $count = $m->where($_where)->count();
+		        return $count;
+		    }
+		    $list = $m->where($_where)->order('id DESC')->select();
+// 		    echo $m->getlastsql();
+		    return $list;
+		}
 	}

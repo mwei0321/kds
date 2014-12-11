@@ -7,9 +7,9 @@ var layer = {};
 ;(function($, window, document, underfined) {
 	//
 	//浏览器宽度
-	var SreenW = $(window).width();
+	var SreenW = $(document).width();
 	// //浏览器高度
-	var SreenH = $(window).height();
+	var SreenH = $(document).height();
 	 //alert(SreenH +'=>'+SreenW);
 	//初始化配置
 	var Options = {
@@ -20,10 +20,6 @@ var layer = {};
 		ThumbW : 100,
 		ThumbH : 100,
 	}
-	
-	$(window).resize(function () {
-		layer._center();
-	});
 	
 	$.fn.extend(layer, {
 		
@@ -85,7 +81,7 @@ var layer = {};
 			$('body').prepend(html);
 			var h = ajx ? '<iframe>'+cont+'</iframe>' : cont;
 			$('#box_content').append(h);
-			$('#mwbg').click(function () {layer.close(0.3);});
+			//$('#mwbg').click(function () {layer.close(0.3);});
 			layer._center();
 			layer._move();
 		},
@@ -100,14 +96,14 @@ var layer = {};
 		//居中
 		_center : function (){
 			//浏览器宽度
-			var W = $(document).width();
+			//var W = $(document).width();
 			// //浏览器高度
-			var H = $(document).height();
+			//var H = $(document).height();
 			var oboxw = $('#outsidebox').width();
 			var oboxh = $('#outsidebox').height();
 			var oboxl = $('#outsidebox').css({
-				'left' : (W - oboxw) / 2 + 'px',
-				'top' : (H - oboxh) / 2 + 'px',
+				'left' : (SreenW - oboxw) / 2 + 'px',
+				'top' : (SreenH - oboxh) / 2 + 'px',
 			}).fadeTo('slow',0.99);
 		},
 		_iframe : function (){
