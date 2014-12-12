@@ -12,6 +12,7 @@
 	**/
 
 	namespace Library;
+	use phpQuery;
 	
 	class Gather {
 		
@@ -144,9 +145,64 @@
 		    if($_limit == 'count'){
 		        $count = $m->where($_where)->count();
 		        return $count;
+		    }elseif($_limit == 'all'){
+		        $list = $m->where($_where)->order('id DESC')->select();
 		    }
-		    $list = $m->where($_where)->order('id DESC')->select();
+		    $list = $m->where($_where)->order('id DESC')->limit($_limit)->select();
 // 		    echo $m->getlastsql();
 		    return $list;
+		}
+		
+		/**
+		 * 采集
+		 * @param string $_url 网址
+		 * @param array $_filter 采集过滤规则   array('title'=>'li','content'=>'.content');
+		 * @param string $_filter 采集区域 '#area'
+		 * @return array $data
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-12-11 上午10:39:33
+		 */
+		function getUrlGather($_url,$_filter,$_area = null,$_charset = null){
+		    require_once './phpQuery.php';
+		    $html = file_get_contents($_url);
+		    $charset = $_charset ? $_charset : mb_detect_encoding($html, array('ASCII', 'GB2312', 'GBK', 'UTF-8'));
+		    $phpquery = phpQuery::newDocumentHTML("$html",$charset);
+		    $data = array();
+		    if($_area){
+		        $area = is_array($_area) ? pq($_area[0])->find($_area[1]) : pq($_area);
+		        foreach ($area as $k => $v){
+		            while (!!list($key,$value) = each($_filter)){
+		                switch ($value[1]){
+		                    case 'text' :
+		                        $data[$k][$key] = trim(pq($v)->find($value[0])->text());
+		                        break;
+		                    case 'html' :
+		                        $data[$k][$key] = pq($v)->find($value[0])->html();
+		                        break;
+		                    default:
+		                        $data[$k][$key] = pq($v)->find($value[0])->attr($value[1]);
+		                        break;
+		                }
+		            }
+		            reset($_filter);
+		        }
+		    }else{
+		        while (!!list($key,$value) = each($_filter)){
+		            switch ($value[1]){
+		                case 'text' :
+		                    $data[$key] = trim(pq('body')->find($value[0])->text());
+		                    break;
+		                case 'html' :
+		                    $data[$key] = pq('body')->find($value[0])->html();
+		                    break;
+		                default:
+		                    $data[$key] = pq('body')->find($value[0])->attr($value[1]);
+		                    break;
+		            }
+		        }
+		        reset($_filter);
+		    }
+		    eval('$data = '.iconv($charset, 'UTF-8'.'//IGNORE', var_export($data,TRUE)).';');
+		    return $data;
 		}
 	}

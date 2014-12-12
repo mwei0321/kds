@@ -26,7 +26,7 @@
                          <input type="button" url="{:U('Admin/Gather/delete',array('method'=>'chapter'))}" class="btn btn-sm btn-danger" value="清空" onclick="delall($(this),-1)"　/>
                     </div>
                     <div class="seach_select">
-                        <input type="button" class="btn btn-sm btn-primary" value="批量采集" onclick="webchapter();"　/>
+                        <input type="button" class="btn btn-sm btn-primary" value="批量采集" onclick="webcontent();"　/>
                     </div>
                     <div class="pull-right flpostion">
                         <span class="badge">{$count}</span>
@@ -40,12 +40,10 @@
                                 <th>ID</th>
                                 <th>分类</th>
                                 <th>小说名称</th>
-                                <th>小说链接</th>
-                                <th>章节区域</th>
-                                <th>章节规则</th>
-                                <th>内容区域</th>
-                                <th>内容规则</th>
-                                <th>状态</th>
+                                <th>章节标题</th>
+                                <th>内容</th>
+                                <th>内容链接</th>
+                                <th>发布状态</th>
                                 <th>更新时间</th>
                                 <th>操作</th>
                             </tr>
@@ -57,19 +55,17 @@
                                     <td>{$v['id']}</td>
                                     <td>{$v['cateid']}</td>
                                     <td>{$v['name']}</td>
+                                    <td>{$v['title']}</td>
+                                    <td>{$v['content']|strCutOut}</td>
                                     <td>{$v['url']}</td>
-                                    <td>{$v['chapter_area']}</td>
-                                    <td>{$v['chapter_filter']}</td>
-                                    <td>{$v['content_area']}</td>
-                                    <td>{$v['content_filter']}</td>
-                                    <td>{$v['status']}</td>
+                                    <td>{$v['is_send']}</td>
                                     <td>{$v['uptime']|date="Y-m-d H:m:s",###}</td>
                                     <td class="bnt-pl3">
                                         <a href="javascript:;" onclick="layer.load('章节编辑','{:U('Admin/Gather/edit',array('method'=>'wcate','id'=>$v['id']))}');" ><i class="glyphicon glyphicon-pencil"></i></a>
                                         <!-- add chapter -->
-                                        <a href="javascript:;" onclick="webchapter({$v['id']});" ><i class="glyphicon glyphicon-pencil"></i></a>
+                                        <a href="javascript:;" onclick="webcontent({$v['id']});" ><i class="glyphicon glyphicon-pencil"></i></a>
                                         <!-- delete -->
-                                        <a href="javascript:void(0);" url="{:U('Admin/Gather/delete',array('method'=>'webcate'))}" onclick="delall($(this),{$v['id']});"><i style="color:#b00;"  class="glyphicon glyphicon-trash"></i></a>
+                                        <a href="javascript:void(0);" url="{:U('Admin/Gather/delete',array('method'=>'webcontent'))}" onclick="delall($(this),{$v['id']});"><i style="color:#b00;"  class="glyphicon glyphicon-trash"></i></a>
                                     </td>
                                 </tr>
                             </volist>
@@ -81,7 +77,7 @@
         </div>
     </div>
     <script>
-        var webchapter = function (id){
+        var webcontent = function (id){
             var ids = id ? id : getallval();
             if(ids.length < 1){
                 layer.error('请选择要发布的章节！');
@@ -89,7 +85,7 @@
             }
             //layer.load('发布章节','{:U('Admin/Gather/edit',array('method'=>'chapter'))}','ids='+ids.toString());
             $.ajax({
-                url: '{:U('Admin/Gather/dispose',array('method'=>'webchapter'))}',
+                url: '{:U('Admin/Gather/dispose',array('method'=>'webcontent'))}',
                 data : '&ids='+ids.toString(),
             }).done(function (e) {
                 layer.success(e);

@@ -187,47 +187,48 @@
 	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2014-12-11 上午10:39:33
 	 */
-	function gather($_url,$_filter,$_area,$_debug = null){
-	    require_once '/Library/phpQuery.php';
-	    $phpquery = phpQuery::newDocumentFilePHP($_url);
-	    $area = is_array($_area) ? pq($_area[0])->find($_area[1]) : pq($_area);
-	    if($_debug){
-	        dump($_url);
-	        dump($_filter);
-	        dump($_area);
-	        dump($area->html());
-	    }
-	    echo '--------';
-	    $data = array();
-        foreach ($area as $k => $v){
-            echo 111111;
-                if($_debug){
-                    dump($_filter);
-                    dump($_area);
-                    exit;
-                }
-            while (!!list($key,$value) = each($_filter)){
-                if($_debug){
-                    dump($key);
-                    dump($value);
-                    exit;
-                }
-                switch ($value[1]){
-                    case 'text' :
-                        $data[$k][$key] = trim(pq($v)->find($value[0])->text());
-                        break;
-                    case 'html' :
-                        $data[$k][$key] = pq($v)->find($value[0])->html();
-                        break;
-                    default:
-                        $data[$k][$key] = pq($v)->find($value[0])->attr($value[1]);
-                        break;
-                }
-            }
-            reset($_filter);
-        }
-        return $data;
-	}
+// 	function gatherList($_url,$_filter,$_area = null,$_debug = null){
+// 	    require_once '/Library/phpQuery.php';
+// 	    $phpquery = phpQuery::newDocumentFileHTML("$_url");
+// 	    mb_detect_encoding($string, array('ASCII', 'GB2312', 'GBK', 'UTF-8'));
+// 	    $data = array();
+// 	    if($_area){
+// 	        $area = is_array($_area) ? pq($_area[0])->find($_area[1]) : pq($_area);
+// 	        foreach ($area as $k => $v){
+// 	            while (!!list($key,$value) = each($_filter)){
+// 	                switch ($value[1]){
+// 	                    case 'text' :
+// 	                        $data[$k][$key] = trim(pq($v)->find($value[0])->text());
+// 	                        break;
+// 	                    case 'html' :
+// 	                        $data[$k][$key] = pq($v)->find($value[0])->html();
+// 	                        break;
+// 	                    default:
+// 	                        $data[$k][$key] = pq($v)->find($value[0])->attr($value[1]);
+// 	                        break;
+// 	                }
+// 	            }
+// 	            reset($_filter);
+// 	        }
+// 	    }else{
+//             while (!!list($key,$value) = each($_filter)){
+//                 switch ($value[1]){
+//                     case 'text' :
+//                         $data[$key] = trim(pq('body')->find($value[0])->text());
+//                         break;
+//                     case 'html' :
+//                         $data[$key] = pq('body')->find($value[0])->html();
+//                         break;
+//                     default:
+//                         $data[$key] = pq('body')->find($value[0])->attr($value[1]);
+//                         break;
+//                 }
+//             }
+//             dump($data);exit;
+//             reset($_filter);
+// 	    }
+//         return $data;
+// 	}
 	
 	/**
 	 * 公共删除函数

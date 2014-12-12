@@ -5,54 +5,18 @@
 .class_wraptop p a {margin: 0 14px;color: #323431;}
 
 /* content css */
-.content{width: 1100px;margin: 20px auto 0;}
-.box1left{ overflow:hidden;margin-right: 10px;}/*溢出隐藏*/
-	.sidebar,.cont{ float:left; margin-bottom:-9999px; padding-bottom:9999px;}/*水平走向，并等高*/
-	.sidebar{ width:250px; background:#f5ffea;border-right: 1px solid #f5ffea;text-align: center;padding-top: 20px;}
-	.cont{ width:529px; background:#fff;padding-left: 10px;padding-right: 10px;}
+.content{width: 1100px;margin: 20px auto 0;box-sizing:border-box;}
+.box1left{ overflow:hidden;margin-right: 10px;border:1px solid #ccc;background:#fff;}/*溢出隐藏*/
+    .recom-class{padding:10px 0;}
+    .recom-class .recom-ing dd{width:115px;height:150px;border:1px solid #ccc;float:left;margin:5px;}
+	.menu{border-left: 1px solid #ddd;padding-bottom: 23px;margin-right:20px;}
+	.menu ul li{cursor: pointer;width: 80px;height: 26px;color: #282828;text-align: center;margin-top: 5px;height: 26px;line-height: 26px;background: url(../img/indexboxbg.png) no-repeat 0 -9px;}
+	.menu ul li:hover{background-position: 0 -40px;color: #fff;}
 
-	.sidebar h2{height: 43px;line-height: 43px;text-align: center;font-size: 16px;}
-	.sidebar h2 a{color: #080}
-	.sidebar span{color: #777;position: relative;height: 72px;overflow: hidden;display: block;text-align: left;padding:0 20px;}
-	 .green{color: #008000;position: absolute;right: 0;bottom: 0;}
-	.cont .l_cont{width: 409px;}
-	.cont .l_cont h3{text-align: center;color: #DD0200;font-size: 18px;height: 38px;line-height: 38px;margin-top: 6px;}
-	.cont .l_cont h3 a{color: #DD0200;}
-	.cont .l_cont span{color: #777777;height: 36px;position: relative;overflow: hidden;display: block;}
-	.cont .l_cont ul{margin-top: 5px;}
-	.cont .l_cont ul li{width: 188px;font-size: 14px;float: left;height: 28px;line-height: 28px;overflow: hidden;margin-right: 16px;}
-	 .i1{color: #008000;margin-right: 12px;}
-	 .i2{color: #323232;}
-
-	.cont .menu{border-left: 1px solid #ddd;padding-bottom: 23px;}
-	.cont .menu ul li{cursor: pointer;width: 80px;height: 26px;color: #282828;text-align: center;margin-top: 5px;height: 26px;line-height: 26px;background: url(../img/indexboxbg.png) no-repeat 0 -9px;}
-	.cont .menu ul li:hover{background-position: 0 -40px;color: #fff;}
-
-.box1right{width: 288px;border: 1px solid #ddd;background: #fff;margin-bottom: 10px;}
-	.rtit {border-bottom: 1px solid #DCDCDC;height: 30px;}
-	.rtit h3 {line-height: 30px;color: #008001;padding-left: 14px;font-size: 14px;float: left;}
-	.rtit ul {float: right;}
-	.rtit li {line-height: 30px;color: #333333;width: 45px;float: left;text-align: center;cursor: pointer;}
-	.rtit li.cur, .rtit li:hover {line-height: 30px;border-bottom: 2px solid #008001;height: 29px;margin-bottom: -1px;}
-	.rcenter {padding: 13px;}
-	.figure img {width: 80px;height: 102px;padding: 2px;border: 1px solid #DDDDDD;float: left;}
-	.figurer {float: right;width: 165px;position: relative;}
-	.figurer h4 {text-align: center;height: 27px;line-height: 30px;overflow: hidden;}
-	.figurer span {text-indent: 25px;height: 80px;display: block;color: #777777;}
-	.rcenter ul {margin-top: 3px;}
-	.rcenter li {width: 180px;font-size: 12px;float: left;height: 24px;line-height: 24px;margin-bottom: 3px;overflow: hidden;}
 
 .r_tline, .r_bline, .c_tline, .c_bline {background: url(../img/bg01.jpg) repeat-x;}
 .r_tline, .c_tline {height: 3px;}
-.box2{margin-bottom: 10px;}
-	.c_tline{background-position: 0 -20px;}
-	.class_wrap {margin: 0 auto;background: #fff;width: 1100px;overflow: hidden;padding: 18px 0 15px;border-left: 1px solid #E9E9E9;border-right: 1px solid #E9E9E9;}
-	.class_wrap ul {width: 1200px;}
-	.class_wrap li {line-height: 2.2;float: left;padding: 0 45px 0 28px;width: 477px;border-right: 1px solid #E9E9E9;}
-	.class_wrap h6 {height: 34px;line-height: 34px;overflow: hidden;margin-top: -18px;_position: relative;background: url(../img/icobg02.png) no-repeat -48px -185px;color: #333;font-size: 14px;padding-left: 10px;}
-	.class_wrap p {color: #C5D7BD;}
-	.class_wrap a {margin: 0 12px;display: inline-block;white-space: nowrap;}
-	.c_bline {height: 4px;background-position: 0 -23px;}
+
 
 .box3{padding-bottom: 10px;border: 1px solid #ddd;margin-bottom: 10px;background: #fff;}
 	.tabstit {padding:0 14px;height: 42px;background: url(../img/icobg02.png) repeat-x 0 -240px;}

@@ -23,12 +23,6 @@
 		}
 		
 		function index(){
-		    $aa = new QGather();
-		    $aa->bb = '999999';
-		    $aa->cc = '000000';
-		    dump($aa->url);
-		    $aa->nn();exit;
-		    
 		    //分类推荐排行榜
 		    $reclist = array();
 		    foreach ($this->catelist as $k => $v){

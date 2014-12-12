@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50617
 File Encoding         : 65001
 
-Date: 2014-12-11 18:36:04
+Date: 2014-12-12 18:25:34
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -256,6 +256,7 @@ CREATE TABLE `mw_gather_web_cate` (
   `content_filter` varchar(300) DEFAULT NULL COMMENT '内容采集规则',
   `status` tinyint(1) DEFAULT '0' COMMENT '采集状态（1.每天，0.手动）',
   `uptime` int(11) DEFAULT NULL COMMENT '时间',
+  `charset` varchar(50) DEFAULT NULL COMMENT '字符编码',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
@@ -269,10 +270,13 @@ CREATE TABLE `mw_gather_web_chapter` (
   `name` varchar(50) DEFAULT NULL COMMENT '小说名称',
   `title` varchar(200) DEFAULT NULL COMMENT '章节名称',
   `content` text COMMENT '内容',
-  `is_send` tinyint(1) DEFAULT NULL COMMENT '是否已发布(1.发布，0,没有发布)',
+  `is_send` tinyint(1) DEFAULT '0' COMMENT '是否已发布(1.发布，0,没有发布)',
   `uptime` int(11) DEFAULT NULL COMMENT '时间',
+  `filter` varchar(100) DEFAULT NULL COMMENT '内容过滤规则',
+  `url` varchar(120) DEFAULT NULL COMMENT '章节链接地址',
+  `charset` varchar(50) DEFAULT NULL COMMENT '字符编码',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=27621 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for mw_gather_web_name
@@ -289,6 +293,7 @@ CREATE TABLE `mw_gather_web_name` (
   `content_area` varchar(50) DEFAULT NULL COMMENT '内容',
   `status` tinyint(1) DEFAULT '1' COMMENT '1.采集，0.不采集',
   `cateid` int(11) DEFAULT NULL COMMENT '分类',
+  `charset` varchar(50) DEFAULT NULL COMMENT '字符编码',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=61 DEFAULT CHARSET=utf8;
 
