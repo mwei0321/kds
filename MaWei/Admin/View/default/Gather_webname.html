@@ -46,7 +46,6 @@
                                 <th>内容区域</th>
                                 <th>内容规则</th>
                                 <th>状态</th>
-                                <th>更新时间</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
@@ -63,7 +62,6 @@
                                     <td>{$v['content_area']}</td>
                                     <td>{$v['content_filter']}</td>
                                     <td>{$v['status']}</td>
-                                    <td>{$v['uptime']|date="Y-m-d H:m:s",###}</td>
                                     <td class="bnt-pl3">
                                         <a href="javascript:;" onclick="layer.load('章节编辑','{:U('Admin/Gather/edit',array('method'=>'wcate','id'=>$v['id']))}');" ><i class="glyphicon glyphicon-pencil"></i></a>
                                         <!-- add chapter -->

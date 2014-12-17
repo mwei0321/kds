@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50617
 File Encoding         : 65001
 
-Date: 2014-12-12 18:25:34
+Date: 2014-12-17 15:53:54
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -33,6 +33,25 @@ CREATE TABLE `mw_admin_system_menu` (
 ) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COMMENT='后台菜单设置';
 
 -- ----------------------------
+-- Records of mw_admin_system_menu
+-- ----------------------------
+INSERT INTO `mw_admin_system_menu` VALUES ('1', '0', '分类管理', 'CateTag', 'index', 'Admin/CateTag/index?type=cate', '1', '98', '0');
+INSERT INTO `mw_admin_system_menu` VALUES ('2', '1', '分类列表', 'CateTag', 'cate', 'Admin/CateTag/index?type=cate', '1', '97', '1');
+INSERT INTO `mw_admin_system_menu` VALUES ('5', '0', '会员管理', 'Member', 'index', 'Admin/Member/index', '1', '93', '0');
+INSERT INTO `mw_admin_system_menu` VALUES ('4', '1', '标签管理', 'CateTag', 'tag', 'Admin/CateTag/index?type=tag', '1', '95', '1');
+INSERT INTO `mw_admin_system_menu` VALUES ('6', '0', '小说管理', 'Book', 'index', 'Admin/Book/index', '1', '99', '0');
+INSERT INTO `mw_admin_system_menu` VALUES ('7', '6', '小说列表', 'Book', 'index', 'Admin/Book/index', '1', '99', '1');
+INSERT INTO `mw_admin_system_menu` VALUES ('8', '0', '其它设置', 'Other', 'index', 'Admin/Other/index', '1', '50', '0');
+INSERT INTO `mw_admin_system_menu` VALUES ('9', '8', '前台菜单', 'Other', 'index', 'Admin/Other/index', '1', '99', '1');
+INSERT INTO `mw_admin_system_menu` VALUES ('10', '8', '友情链接', 'Other', 'friendurl', 'Admin/Other/friendurl', '1', '97', '1');
+INSERT INTO `mw_admin_system_menu` VALUES ('11', '0', '采集管理', 'Gather', 'index', 'Admin/Gather/index', '1', '30', '0');
+INSERT INTO `mw_admin_system_menu` VALUES ('12', '11', '采集列表', 'Gather', 'index', 'Admin/Gather/index', '1', '99', '1');
+INSERT INTO `mw_admin_system_menu` VALUES ('17', '11', 'web采集', 'Gather', 'webcate', 'Admin/Gather/webcate', '1', '90', '1');
+INSERT INTO `mw_admin_system_menu` VALUES ('14', '11', 'TXT文件列表', 'Gather', 'txtfile', 'Admin/Gather/txtfile', '1', '97', '1');
+INSERT INTO `mw_admin_system_menu` VALUES ('16', '11', 'web小说', 'Gather', 'webname', 'Admin/Gather/webname', '1', '95', '1');
+INSERT INTO `mw_admin_system_menu` VALUES ('18', '11', 'web采集章节', 'Gather', 'webchapter', 'Admin/Gather/webchapter', '1', '95', '1');
+
+-- ----------------------------
 -- Table structure for mw_admin_user
 -- ----------------------------
 DROP TABLE IF EXISTS `mw_admin_user`;
@@ -47,6 +66,10 @@ CREATE TABLE `mw_admin_user` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='后台用户';
 
 -- ----------------------------
+-- Records of mw_admin_user
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for mw_app
 -- ----------------------------
 DROP TABLE IF EXISTS `mw_app`;
@@ -58,6 +81,10 @@ CREATE TABLE `mw_app` (
   `app_entry` varchar(120) CHARACTER SET utf8 DEFAULT NULL COMMENT 'app入口，如 ‘Home/Index’',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of mw_app
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for mw_book
@@ -82,6 +109,10 @@ CREATE TABLE `mw_book` (
 ) ENGINE=MyISAM AUTO_INCREMENT=15063 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of mw_book
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for mw_book_attach
 -- ----------------------------
 DROP TABLE IF EXISTS `mw_book_attach`;
@@ -93,6 +124,10 @@ CREATE TABLE `mw_book_attach` (
   `uptime` int(11) DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`book_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of mw_book_attach
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for mw_book_category
@@ -111,6 +146,18 @@ CREATE TABLE `mw_book_category` (
 ) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COMMENT='分类表';
 
 -- ----------------------------
+-- Records of mw_book_category
+-- ----------------------------
+INSERT INTO `mw_book_category` VALUES ('1', '0', '0', '玄幻　奇幻', '1', '', '1', '90');
+INSERT INTO `mw_book_category` VALUES ('2', '0', '0', '科幻　灵异', '1', '', '1', '80');
+INSERT INTO `mw_book_category` VALUES ('3', '0', '0', '仙侠　武侠', '1', '', '1', '70');
+INSERT INTO `mw_book_category` VALUES ('4', '0', '0', '都市　言情', '1', '', '1', '60');
+INSERT INTO `mw_book_category` VALUES ('5', '0', '0', '历史　军事', '1', '', '1', '50');
+INSERT INTO `mw_book_category` VALUES ('6', '0', '0', '网游　竞技', '1', '', '1', '40');
+INSERT INTO `mw_book_category` VALUES ('7', '0', '0', '悬疑　侦探', '1', '', '1', '30');
+INSERT INTO `mw_book_category` VALUES ('8', '0', '0', '美文　同人', '1', '', '1', '20');
+
+-- ----------------------------
 -- Table structure for mw_book_chapter_t1
 -- ----------------------------
 DROP TABLE IF EXISTS `mw_book_chapter_t1`;
@@ -123,6 +170,10 @@ CREATE TABLE `mw_book_chapter_t1` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `book_id-chapter` (`book_id`) USING BTREE
 ) ENGINE=MyISAM AUTO_INCREMENT=54 DEFAULT CHARSET=utf8 COMMENT='书籍的具体章节';
+
+-- ----------------------------
+-- Records of mw_book_chapter_t1
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for mw_book_click_log
@@ -138,6 +189,10 @@ CREATE TABLE `mw_book_click_log` (
 ) ENGINE=InnoDB AUTO_INCREMENT=8001 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
+-- Records of mw_book_click_log
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for mw_book_collect
 -- ----------------------------
 DROP TABLE IF EXISTS `mw_book_collect`;
@@ -148,6 +203,10 @@ CREATE TABLE `mw_book_collect` (
   `ctime` int(11) DEFAULT NULL COMMENT '收藏时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户收藏书籍列表';
+
+-- ----------------------------
+-- Records of mw_book_collect
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for mw_book_comment
@@ -167,6 +226,10 @@ CREATE TABLE `mw_book_comment` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='书籍评论';
 
 -- ----------------------------
+-- Records of mw_book_comment
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for mw_book_download_log
 -- ----------------------------
 DROP TABLE IF EXISTS `mw_book_download_log`;
@@ -178,6 +241,10 @@ CREATE TABLE `mw_book_download_log` (
   `ctime` int(11) DEFAULT NULL COMMENT '时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of mw_book_download_log
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for mw_book_extend_field
@@ -192,6 +259,10 @@ CREATE TABLE `mw_book_extend_field` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='书籍扩展属性字段表';
 
 -- ----------------------------
+-- Records of mw_book_extend_field
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for mw_book_extend_info
 -- ----------------------------
 DROP TABLE IF EXISTS `mw_book_extend_info`;
@@ -203,6 +274,10 @@ CREATE TABLE `mw_book_extend_info` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='书籍扩展属性信息';
 
 -- ----------------------------
+-- Records of mw_book_extend_info
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for mw_book_grade
 -- ----------------------------
 DROP TABLE IF EXISTS `mw_book_grade`;
@@ -212,6 +287,10 @@ CREATE TABLE `mw_book_grade` (
   `value` tinyint(3) unsigned DEFAULT NULL COMMENT '10分制',
   PRIMARY KEY (`book_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户对书籍评分表';
+
+-- ----------------------------
+-- Records of mw_book_grade
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for mw_book_tag
@@ -227,6 +306,10 @@ CREATE TABLE `mw_book_tag` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='标签表';
 
 -- ----------------------------
+-- Records of mw_book_tag
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for mw_friend_url
 -- ----------------------------
 DROP TABLE IF EXISTS `mw_friend_url`;
@@ -237,6 +320,10 @@ CREATE TABLE `mw_friend_url` (
   `sort` tinyint(3) DEFAULT NULL COMMENT '排序',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of mw_friend_url
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for mw_gather_web_cate
@@ -261,6 +348,10 @@ CREATE TABLE `mw_gather_web_cate` (
 ) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of mw_gather_web_cate
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for mw_gather_web_chapter
 -- ----------------------------
 DROP TABLE IF EXISTS `mw_gather_web_chapter`;
@@ -277,6 +368,10 @@ CREATE TABLE `mw_gather_web_chapter` (
   `charset` varchar(50) DEFAULT NULL COMMENT '字符编码',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=27621 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of mw_gather_web_chapter
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for mw_gather_web_name
@@ -298,6 +393,10 @@ CREATE TABLE `mw_gather_web_name` (
 ) ENGINE=MyISAM AUTO_INCREMENT=61 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of mw_gather_web_name
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for mw_grade
 -- ----------------------------
 DROP TABLE IF EXISTS `mw_grade`;
@@ -312,6 +411,10 @@ CREATE TABLE `mw_grade` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
+-- Records of mw_grade
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for mw_grade_type
 -- ----------------------------
 DROP TABLE IF EXISTS `mw_grade_type`;
@@ -321,6 +424,10 @@ CREATE TABLE `mw_grade_type` (
   `alias` varchar(50) CHARACTER SET utf8 DEFAULT NULL COMMENT '别名(一般为英文）',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of mw_grade_type
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for mw_member
@@ -345,6 +452,10 @@ CREATE TABLE `mw_member` (
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='会员表';
 
 -- ----------------------------
+-- Records of mw_member
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for mw_member_grade
 -- ----------------------------
 DROP TABLE IF EXISTS `mw_member_grade`;
@@ -355,6 +466,10 @@ CREATE TABLE `mw_member_grade` (
   `integral` int(11) NOT NULL DEFAULT '0' COMMENT '分数',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of mw_member_grade
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for mw_system_init_config
@@ -373,6 +488,10 @@ CREATE TABLE `mw_system_init_config` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='系统初始化配置';
 
 -- ----------------------------
+-- Records of mw_system_init_config
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for mw_txt_chapter_tmp
 -- ----------------------------
 DROP TABLE IF EXISTS `mw_txt_chapter_tmp`;
@@ -386,6 +505,10 @@ CREATE TABLE `mw_txt_chapter_tmp` (
   `size` int(11) DEFAULT NULL COMMENT '大小',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=505 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of mw_txt_chapter_tmp
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for mw_txt_file
@@ -403,3 +526,7 @@ CREATE TABLE `mw_txt_file` (
   `status` tinyint(4) DEFAULT NULL COMMENT '状态，（1.已添加，0.未添加）',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of mw_txt_file
+-- ----------------------------

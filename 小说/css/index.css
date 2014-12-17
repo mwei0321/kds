@@ -1,17 +1,13 @@
-/* 精品小说网站 css */
-.class_wraptop {width: 1100px;margin: 0 auto;height: 48px;background: url(../img/class_wraptopbg.jpg) #F1FFF0 no-repeat right;}
-.class_wraptop p {padding-left: 28px;border: 1px solid #A9DEA6;border-right: none;height: 46px;line-height: 46px;color: #C6D9BD;width: 1061px;overflow: hidden;}
-.class_wraptop strong {color: #323431;margin-right: 16px;}
-.class_wraptop p a {margin: 0 14px;color: #323431;}
 
 /* content css */
 .content{width: 1100px;margin: 20px auto 0;box-sizing:border-box;}
-.box1left{ overflow:hidden;margin-right: 10px;border:1px solid #ccc;background:#fff;}/*溢出隐藏*/
-    .recom-class{padding:10px 0;}
-    .recom-class .recom-ing dd{width:115px;height:150px;border:1px solid #ccc;float:left;margin:5px;}
-	.menu{border-left: 1px solid #ddd;padding-bottom: 23px;margin-right:20px;}
-	.menu ul li{cursor: pointer;width: 80px;height: 26px;color: #282828;text-align: center;margin-top: 5px;height: 26px;line-height: 26px;background: url(../img/indexboxbg.png) no-repeat 0 -9px;}
-	.menu ul li:hover{background-position: 0 -40px;color: #fff;}
+.box1{width:100%;margin-bottom:20px;}
+.box1left{width:100%; overflow:hidden;margin-right: 10px;border:1px solid #ccc;background:#fff;}/*溢出隐藏*/
+.recom-class{padding:10px 0;}
+.recom-class .recom-ing dd{width:115px;height:150px;border:1px solid #ccc;float:left;margin:0 8px;}
+.menu{border-left: 1px solid #ddd;padding-bottom: 23px;margin-right:20px;}
+.menu ul li{cursor: pointer;width: 80px;height: 26px;color: #282828;text-align: center;margin-top: 5px;height: 26px;line-height: 26px;background: url(../img/indexboxbg.png) no-repeat 0 -9px;}
+.menu ul li:hover{background-position: 0 -40px;color: #fff;}
 
 
 .r_tline, .r_bline, .c_tline, .c_bline {background: url(../img/bg01.jpg) repeat-x;}

@@ -310,7 +310,7 @@
  				    foreach ($list as $k => $v){
  				        $data = array();
  				        //小说名采集
- 				        $temp = $this->gather->getUrlGather($v['cate_url'], $this->_filter($v['name_filter']), explode('-', $v['name_area']),$v['charset']);
+ 				        $temp = getUrlGather($v['cate_url'], $this->_filter($v['name_filter']), explode('-', $v['name_area']),$v['charset']);
  				        foreach ($temp as $key => $val){
  				            $data[$key]['name'] = $val['name'];
  				            $data[$key]['url'] = strpos('http', $val['url']) !== false ? $val['url'] : $v['web_url'].$val['url'];
@@ -329,7 +329,7 @@
  				    $list = $this->gather->getWebName('all',array('id'=>array('IN',explode(',', $_REQUEST['ids']))));
  				    foreach ($list as $k => $v){
  				        $chapter = array();
- 				        $temp = $this->gather->getUrlGather($v['url'], $this->_filter($v['chapter_filter']), explode('-', $v['chapter_area']),$v['charset']);
+ 				        $temp = getUrlGather($v['url'], $this->_filter($v['chapter_filter']), explode('-', $v['chapter_area']),$v['charset']);
  				        foreach ($temp as $key => $val){
  				            if($val['title'] && $val['url']){
  				                $chapter[$key]['title'] = $val['title'];
@@ -351,7 +351,7 @@
  			        $m = M('GatherWebChapter');
  			        foreach ($list as $k => $v){
  			            if(empty($v['content'])){
- 			                $tmp = $this->gather->getUrlGather($v['url'], $this->_filter($v['filter']),null,$v['charset']);
+ 			                $tmp = getUrlGather($v['url'], $this->_filter($v['filter']),null,$v['charset']);
  			                empty($tmp['content']) && $bad[] = $v['id'];
  			                $content['content'] = $tmp['content'];
  			                $content['uptime'] = time();
