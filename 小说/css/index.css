@@ -1,10 +1,12 @@
 
 /* content css */
+
+.boxshadow{box-shadow:0px 2px 3px #999;}
 .content{width: 1100px;margin: 20px auto 0;box-sizing:border-box;}
-.box1{width:100%;margin-bottom:20px;}
-.box1left{width:100%; overflow:hidden;margin-right: 10px;border:1px solid #ccc;background:#fff;}/*溢出隐藏*/
-.recom-class{padding:10px 0;}
-.recom-class .recom-ing dd{width:115px;height:150px;border:1px solid #ccc;float:left;margin:0 8px;}
+.box1{width:100%;margin-bottom:20px;padding:10px 19px;border:1px solid #ddd;background:#fff;}
+.box1 .recom-ing dd{width:122px;height:170px;overflow:hidden;border:1px solid #ddd;float:left;margin-right:12px;box-shadow:0 1px 2px #ccc;}
+.box1 .recom-ing dd img{width:112px;height:150px;}
+.box1 .recom-ing dd.nomr{margin:0;}
 .menu{border-left: 1px solid #ddd;padding-bottom: 23px;margin-right:20px;}
 .menu ul li{cursor: pointer;width: 80px;height: 26px;color: #282828;text-align: center;margin-top: 5px;height: 26px;line-height: 26px;background: url(../img/indexboxbg.png) no-repeat 0 -9px;}
 .menu ul li:hover{background-position: 0 -40px;color: #fff;}
@@ -14,7 +16,7 @@
 .r_tline, .c_tline {height: 3px;}
 
 
-.box3{padding-bottom: 10px;border: 1px solid #ddd;margin-bottom: 10px;background: #fff;}
+.box3{margin-bottom: 20px;border: 1px solid #ddd;margin-bottom: 10px;background: #fff;}
 	.tabstit {padding:0 14px;height: 42px;background: url(../img/icobg02.png) repeat-x 0 -240px;}
 	.tabstit ul {float: left;margin-top: -1px;height: 43px;_position: relative;}
 	.tabstit li {font-size: 14px;float: left;height: 21px;overflow: hidden;width: 213px;text-align: center;margin-top: 13px;color: #333;cursor: pointer;border-right: 1px solid #D4D4D4;}
@@ -28,7 +30,7 @@
 	.tjico, .ywjico, .lzzico {display: block;position: absolute;right: 0;top: 0;width: 46px;height: 46px;}
 	.lzzico {background: url(../img/lzzico.png) no-repeat;}
 
-.box4{padding-bottom: 10px;border: 1px solid #ddd;background: url(../img/bgrepeaty.png) #fff repeat-y right top;margin-bottom: 10px;}
+.box4{margin-bottom: 20px;border: 1px solid #ddd;background: url(../img/bgrepeaty.png) #fff repeat-y right top;}
 	.w690 {float: left;width: 843px;}
 	.titone {height: 27px;line-height: 24px;margin-top: 8px;}
 	.titone h2 {width: 127px;height: 27px;text-indent: 30px;font-size: 14px;color: #fff;float: left;margin-left: -1px;_position: relative;}
@@ -59,7 +61,7 @@
 	.fontitems li, .olwrap li {white-space: nowrap;-o-text-overflow: ellipsis;text-overflow: ellipsis;}
 	.olwrap a {margin-right: 5px;}
 
-.box5{border: 1px solid #ddd;background: #fff;}
+.box5{border: 1px solid #ddd;background: #fff;margin-bottom:20px;}
 	.box5 .tabstit {background-position: 0 -284px;}}
 	.box5 .recently_list {margin: 10px auto 0;width: 920px;height: auto;overflow: hidden;color: #333;}
 	.recently_list ul {margin-top: -1px;}
