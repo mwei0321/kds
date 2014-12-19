@@ -124,7 +124,7 @@
 		
 		function webname(){
 		    $count = $this->gather->getWebName();
-		    $page = new Page($count,50);
+		    $page = new Page($count,10);
 		    $list = $this->gather->getWebName("$page->firstRow,$page->listRows");
 		    
 		    $this->assign('count',$count);
@@ -331,13 +331,16 @@
  				        $chapter = array();
  				        $temp = getUrlGather($v['url'], $this->_filter($v['chapter_filter']), explode('-', $v['chapter_area']),$v['charset']);
  				        foreach ($temp as $key => $val){
- 				            if($val['title'] && $val['url']){
- 				                $chapter[$key]['title'] = $val['title'];
- 				                $chapter[$key]['name'] = $v['name'];
- 				                $chapter[$key]['cateid'] = $v['cateid'];
- 				                $chapter[$key]['url'] = strpos('http', $val['url']) !== false ? $val['url'] : $v['url'].$val['url'];
- 				                $chapter[$key]['filter'] = $v['content_filter'];
- 				                $chapter[$key]['charset'] = $v['charset'];
+ 				            //检查章节是否已采集
+ 				            if(!$this->gather->checkChpater($v['id'],$val['title'])){
+ 				                if($val['title'] && $val['url']){
+ 				                    $chapter[$key]['title'] = $val['title'];
+ 				                    $chapter[$key]['book_id'] = $v['id'];
+ 				                    $chapter[$key]['name'] = $v['name'];
+ 				                    $chapter[$key]['url'] = strpos('http', $val['url']) !== false ? $val['url'] : $v['url'].$val['url'];
+ 				                    $chapter[$key]['filter'] = $v['content_filter'];
+ 				                    $chapter[$key]['charset'] = $v['charset'];
+ 				                }
  				            }
  				        }
  				        M('GatherWebChapter')->addAll($chapter);
@@ -365,6 +368,56 @@
 			$this->success('处理成功');
 		}
 		
+		/**
+		 * 发布小说
+		 * @return array
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-12-19 下午4:59:56
+		 */
+		function seed (){
+		    $ids = $_REQUEST['ids'];
+		    switch ($_REQUEST['method']){
+		        case 'novel' :
+		            $list = $this->gather->getWebName('all',array('id'=>array('IN',$ids)));
+		            foreach ($list as $k => $v){
+		                if(!$v['book_id']){
+		                    $data = array();
+		                    $data['cateid'] = $v['cateid'];
+		                    $data['name'] = $v['name'];
+		                    $data['author'] = $v['author'];
+		                    $data['uptime'] = time();
+		                    $reid = add_updata($data,'Book');
+		                    //是否发布成功到小说主表，
+		                    if($reid !== false && $reid > 0){
+		                        //更新发布小说ID
+		                        $tmp = array();
+		                        $tmp['id'] = $v['id'];
+		                        $tmp['book_id'] = $reid;
+		                        $reid = add_updata($tmp,'GatherWebName');
+		                        //发布章节，并判断章节是否已发布
+		                        if($reid !== false){
+		                            //取出小说章节
+		                            $chapter = $this->gather->getWebChapter('all',array('book_id'=>$v['id']));
+		                            $data = array();
+		                            $chaptertable = getChapterTable($v['book_id']);
+		                            foreach ($chapter as $key => $val){
+		                                if($val['content'] && $this->gather->checkChpater($reid,$val['title'],$chaptertable)){
+		                                    $data[$key]['book_id'] = $reid;
+		                                    $data[$key]['title'] = $val['title'];
+		                                    $data[$key]['content'] = $val['content'];
+		                                    $data[$key]['ctime'] = time();
+		                                }
+		                            }
+// 		                            dump($data);//exit;
+		                            $reid = M("$chaptertable")->addAll($data);
+		                        }
+		                    }
+		                }
+		            }
+		            echo 'success';
+		            break;
+		    }
+		}
 		
 		/**
 		* //编辑页

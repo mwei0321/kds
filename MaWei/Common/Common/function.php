@@ -33,6 +33,22 @@
 	}
 	
 	/**
+	 * 根据小说返回章节表名
+	 * @param  int $_id 小说ID
+	 * @return array
+	 * @author MaWei (http://www.phpyrb.com)
+	 * @date 2014-11-1  下午7:57:13
+	 */
+	function getChapterTable($_id){
+	    for($i = 1;$i < 100;$i++){
+	        if($_id < $i*300){
+	            return 'BookChapterT'.$i;
+	        }
+	    }
+	    return null;
+	}
+	
+	/**
 	 * 把处理过的HTML还原
 	 * @param array $_data
 	 * @param array $_field 要还原的KEY
@@ -64,13 +80,6 @@
 		$re = array_merge($re,$_extend);
 		echo json_encode($re);
 		exit;
-	}
-	
-	function uploadFile(){
-		if($_FILES['file']){
-			
-		}
-		
 	}
 	
 	/**
@@ -909,8 +918,8 @@
 	/**
 	 * 采集
 	 * @param string $_url 网址
-	 * @param array $_filter 采集过滤规则   array('title'=>'li','content'=>'.content');
-	 * @param string $_filter 采集区域 '#area'
+	 * @param array $_filter 采集过滤规则   filed$DOMEle-type|
+	 * @param string $_area 采集区域 '#area－mulitiele',区域－多个DOM
 	 * @return array $data
 	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2014-12-11 上午10:39:33

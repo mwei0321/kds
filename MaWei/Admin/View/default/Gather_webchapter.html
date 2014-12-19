@@ -38,7 +38,7 @@
                             <tr>
                                 <th><input type="checkbox"  check='1' id="checkall"/>
                                 <th>ID</th>
-                                <th>分类</th>
+                                <th>小说ID</th>
                                 <th>小说名称</th>
                                 <th>章节标题</th>
                                 <th>内容</th>
@@ -53,7 +53,7 @@
                                 <tr id="deleid_{$v['id']}">
                                     <td><input type="checkbox" name="ids[]" value="{$v['id']}" class="checkalls"/></td>
                                     <td>{$v['id']}</td>
-                                    <td>{$v['cateid']}</td>
+                                    <td>{$v['book_id']}</td>
                                     <td>{$v['name']}</td>
                                     <td>{$v['title']}</td>
                                     <td>{$v['content']|strCutOut}</td>

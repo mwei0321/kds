@@ -86,8 +86,25 @@
 		    return $list;
 		}
 		
-		function getNewChapter(){
-			
+		/**
+		 * 返回最新更新的小说章节
+		 * @param string $_limit 条数
+		 * @param int $_cateid 分类ID
+		 * @return array $_list 最新更新的小说章节
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-12-19 下午4:23:57
+		 */
+		function getNewChapter($_limit = 10,$_cateid = null){
+			$m = M('Book');
+			$where = $_cateid ? array('cateid'=>$_cateid) : 1;
+			$list = $m->where($where)->order('uptime DESC')->limit($_limit)->select();
+			echo $m->getlastsql();
+			dump($list);
+			foreach ($list as $k => $v){
+			    $model = M(getChapterTable($v['id']));
+			    $list[$k]['chapter'] = $model->where('book_id='.$v['id'])->order('uptime DESC')->limit(1)->find();
+			}
+			return $list;
 		}
 		
 		/**
@@ -136,45 +153,13 @@
 		* @date 2014-11-1  下午7:55:15
 		*/
 		function getBookChapter($_id,$_limit = 'count',$_field = '*'){
-			$this->_getChapterTable($_id);
+			$m = M(getChapterTable($_id));
 			if($_limit == 'count'){
-				$count = $this->chapter->where(array('book_id'=>$_id))->count();
+				$count = $m->where(array('book_id'=>$_id))->count();
 				return $count;
 			}
-			$list = $this->chapter->field($_field)->where(array('book_id'=>$_id))->order('id DESC')->limit($_limit)->select();
+			$list = $m->field($_field)->where(array('book_id'=>$_id))->order('id DESC')->limit($_limit)->select();
 			return $list;
-		}
-		
-		/**
-		* 根据小说返回章节表名
-		* @param  int $_id 小说ID
-		* @return array 
-		* @author MaWei (http://www.phpyrb.com)
-		* @date 2014-11-1  下午7:57:13
-		*/
-		function _getChapterTable($_id){
-			if ($_id < 1000){
-				$this->chapter = M('BookChapterT1');
-			}elseif ($_id < 2000){
-				$this->chapter = M('BookChapterT2');
-			}elseif ($_id < 3000){
-				$this->chapter = M('BookChapterT3');
-			}elseif ($_id < 4000){
-				$this->chapter = M('BookChapterT4');
-			}elseif ($_id < 5000){
-				$this->chapter = M('BookChapterT5');
-			}elseif ($_id < 6000){
-				$this->chapter = M('BookChapterT6');
-			}elseif ($_id < 7000){
-				$this->chapter = M('BookChapterT7');
-			}elseif ($_id < 8000){
-				$this->chapter = M('BookChapterT8');
-			}elseif ($_id < 9000){
-				$this->chapter = M('BookChapterT9');
-			}elseif ($_id < 10000){
-				$this->chapter = M('BookChapterT10');
-			}
-			return $this->chapter;
 		}
 		
 		/**

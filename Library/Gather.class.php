@@ -111,9 +111,9 @@
 		}
 		
 		/**
-		 * 
-		 * @param array
-		 * @param string 
+		 * 返回采集的小说列表
+		 * @param string $_limit 条数
+		 * @param array $_where 条件
 		 * @return array
 		 * @author MaWei (http://www.phpyrb.com)
 		 * @date 2014-12-10 下午4:13:05
@@ -129,6 +129,23 @@
 		    $list = $m->where($_where)->order('id DESC')->limit($_limit)->select();
 // 		    echo $m->getlastsql();
 		    return $list;
+		}
+		
+		/**
+		 * 检查章节是否已经 采集，返回ID
+		 * @param int $_book_id 小说ID
+		 * @param string $_chapter 章节标题
+		 * @return boolean 
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-12-19 下午5:16:52
+		 */
+		function checkChpater($_book_id,$_chapter,$_model){
+		    $m = M('GatherWebChapter');
+		    $where = array();
+		    $where['book_id'] = $_book_id;
+		    $where['title'] = $_chapter;
+		    $reid = $m->field('id')->where($where)->find();
+		    return $reid;
 		}
 		
 		/**

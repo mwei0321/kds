@@ -13,7 +13,6 @@
 
 	namespace Novel\Controller;
 	use Novel\Controller\IniController;
-	use Library\QGather;
 	
 	class IndexController extends IniController{
 		
@@ -37,8 +36,13 @@
 		    		$reclist[$v['id']]['right']['month'] = $this->book->getClickHot(array('cateid'=>$v['id']),'month');
 		    	}
 		    }
+		    
+		    //最新更新的小说章节
+		    $newchapter = $this->book->getNewChapter();
+		    dump($newchapter);
+		    
 			$this->assign('reclist',$reclist);
-			$this->display();
+// 			$this->display();
 		}
 		
 		function info(){
