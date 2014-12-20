@@ -145,10 +145,9 @@
 		}
 		
 		/**
-		 * 
-		 * @param array
-		 * @param string 
-		 * @return array
+		 * 解析采集规则
+		 * @param string $_reg 采集规则
+		 * @return array $data
 		 * @author MaWei (http://www.phpyrb.com)
 		 * @date 2014-12-10 下午5:03:51
 		 */
@@ -397,19 +396,23 @@
 		                        //发布章节，并判断章节是否已发布
 		                        if($reid !== false){
 		                            //取出小说章节
-		                            $chapter = $this->gather->getWebChapter('all',array('book_id'=>$v['id']));
-		                            $data = array();
+		                            $chapter = $this->gather->getWebChapter('all',array('book_id'=>$v['id'],'is_send'=>0),'id ASC');
 		                            $chaptertable = getChapterTable($v['book_id']);
+		                            $m = M("$chaptertable");
+		                            $t = M('GatherWebChapter');
 		                            foreach ($chapter as $key => $val){
-		                                if($val['content'] && $this->gather->checkChpater($reid,$val['title'],$chaptertable)){
-		                                    $data[$key]['book_id'] = $reid;
-		                                    $data[$key]['title'] = $val['title'];
-		                                    $data[$key]['content'] = $val['content'];
-		                                    $data[$key]['ctime'] = time();
+		                                if($val['content'] && !$this->gather->checkChpater($reid,$val['title'],$chaptertable)){
+		                                	$data = array();
+		                                	$data['book_id'] = $reid;
+		                                    $data['title'] = $val['title'];
+		                                    $data['content'] = $val['content'];
+		                                    $data['ctime'] = time();
+		                                    $reid = $m->add($data);
+		                                    if(intval($reid) > 0){
+		                                    	$t->save(array('id'=>$val['id'],'is_send'=>1));
+		                                    }
 		                                }
 		                            }
-// 		                            dump($data);//exit;
-		                            $reid = M("$chaptertable")->addAll($data);
 		                        }
 		                    }
 		                }

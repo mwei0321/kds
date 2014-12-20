@@ -156,15 +156,15 @@
 		 * @author MaWei (http://www.phpyrb.com)
 		 * @date 2014-12-10 下午4:13:09
 		 */
-	    function getWebChapter($_limit = 'count',$_where = 1){
+	    function getWebChapter($_limit = 'count',$_where = 1,$_order = 'id DESC'){
 		    $m = M('GatherWebChapter');
 		    if($_limit == 'count'){
 		        $count = $m->where($_where)->count();
 		        return $count;
 		    }elseif($_limit == 'all'){
-		        $list = $m->where($_where)->order('id DESC')->select();
+		        $list = $m->where($_where)->order($_order)->select();
 		    }
-		    $list = $m->where($_where)->order('id DESC')->limit($_limit)->select();
+		    $list = $m->where($_where)->order($_order)->limit($_limit)->select();
 // 		    echo $m->getlastsql();
 		    return $list;
 		}
