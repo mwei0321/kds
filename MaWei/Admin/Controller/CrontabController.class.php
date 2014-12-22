@@ -14,13 +14,18 @@
 	namespace Admin\Controller;
 	use Admin\Controller\PubAdminController;
 	use Library\Gather;
-	
+use Vendor\Page;
+		
 	
 	class CrontabController extends PubAdminController{
-		private 
+		private $num,$gather;
 		
 		function _init(){
-			
+			$this->gather = new Gather();
+		}
+		
+		function index(){
+		    echo 11111;
 		}
 		
 		/**
@@ -28,7 +33,8 @@
 		* @author MaWei (http://www.phpyrb.com)
 		* @date 2014-12-20  下午5:48:53
 		*/
-		function gather(){
+		function chapter(){
+		    set_time_limit(3600);
 			//获取web采集列表
 			$list = $this->gather->getWebName('all',array('status'=>1));
 			foreach ($list as $k => $v){
@@ -44,12 +50,59 @@
 							$chapter[$key]['url'] = strpos('http', $val['url']) !== false ? $val['url'] : $v['url'].$val['url'];
 							$chapter[$key]['filter'] = $v['content_filter'];
 							$chapter[$key]['charset'] = $v['charset'];
-							$content = getUrlGather($val['url'], $this->_filter($v['filter']),null,$v['charset']);
+							$chapter[$key]['content'] = 0;
 						}
 					}
 				}
 				M('GatherWebChapter')->addAll($chapter);
+				sleep(1);
 			}
+		}
+		
+		/**
+		 * 采集章节内容
+		 * @return array
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-12-22 下午3:17:09
+		 */
+		function content(){
+		    set_time_limit(3600);
+		    $m = M('GatherWebChapter');
+		    $conut = $this->gather->getWebChapter('count',array('uptime'=>'0'));
+		    if($conut > 0){
+		        $page = new Page($conut, 100);
+		        $list = $this->gather->getWebChapter("$page->firstRow,$page->listRows",array('uptime'=>0));
+		        $chapter = array();
+		        foreach ($list as $k => $v){
+		            $content = $this->_content($v['url'], $v['filter'], $v['charset']);
+	                $chapter['content'] = $content['content'];
+	                $chapter['id'] = $v['id'];
+	                $chapter['uptime'] = time();
+	                $m->save($chapter);
+		        }
+		        $this->content();
+		    }else{
+		        exit;
+		    }
+		}
+		
+		/**
+		 * 章节内容采集
+		 * @param string $_url 采集地址
+		 * @param string $_filter 采集规则
+		 * @param string $_chartset 采集页面字符编码
+		 * @return array
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-12-22 上午9:53:43
+		 */
+		private function _content ($_url,$_filter,$_chartset){
+		    $content = getUrlGather($_url, $this->_filter($_filter),null,$_chartset);
+		    if($content || $this->num > 2){
+                return $content;
+		    }else{
+		        $this->num++;
+		        $this->_content($_url, $_filter, $_chartset);
+		    }
 		}
 		
 		/**

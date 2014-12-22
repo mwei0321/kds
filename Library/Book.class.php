@@ -98,8 +98,8 @@
 			$m = M('Book');
 			$where = $_cateid ? array('cateid'=>$_cateid) : 1;
 			$list = $m->where($where)->order('uptime DESC')->limit($_limit)->select();
-			echo $m->getlastsql();
-			dump($list);
+// 			echo $m->getlastsql();
+// 			dump($list);
 			foreach ($list as $k => $v){
 			    $model = M(getChapterTable($v['id']));
 			    $list[$k]['chapter'] = $model->where('book_id='.$v['id'])->order('uptime DESC')->limit(1)->find();

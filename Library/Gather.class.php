@@ -139,12 +139,13 @@
 		 * @author MaWei (http://www.phpyrb.com)
 		 * @date 2014-12-19 下午5:16:52
 		 */
-		function checkChpater($_book_id,$_chapter,$_model){
-		    $m = M('GatherWebChapter');
+		function checkChpater($_book_id,$_chapter,$_model = 'GatherWebChapter'){
+		    $m = M($_model);
 		    $where = array();
 		    $where['book_id'] = $_book_id;
 		    $where['title'] = $_chapter;
 		    $reid = $m->field('id')->where($where)->find();
+// 		    echo $m->getlastsql();
 		    return $reid;
 		}
 		
