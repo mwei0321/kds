@@ -41,17 +41,14 @@ use Vendor\Page;
 				$chapter = array();
 				$temp = getUrlGather($v['url'], $this->_filter($v['chapter_filter']), explode('-', $v['chapter_area']),$v['charset']);
 				foreach ($temp as $key => $val){
-					//检查章节是否已采集
-					if(!$this->gather->checkChpater($v['id'],$val['title'])){
-						if($val['title'] && $val['url']){
-							$chapter[$key]['title'] = $val['title'];
-							$chapter[$key]['book_id'] = $v['id'];
-							$chapter[$key]['name'] = $v['name'];
-							$chapter[$key]['url'] = strpos('http', $val['url']) !== false ? $val['url'] : $v['url'].$val['url'];
-							$chapter[$key]['filter'] = $v['content_filter'];
-							$chapter[$key]['charset'] = $v['charset'];
-							$chapter[$key]['content'] = 0;
-						}
+					if($val['title'] && $val['url']){
+						$chapter[$key]['title'] = $val['title'];
+						$chapter[$key]['book_id'] = $v['id'];
+						$chapter[$key]['name'] = $v['name'];
+						$chapter[$key]['url'] = strpos('http', $val['url']) !== false ? $val['url'] : $v['url'].$val['url'];
+						$chapter[$key]['filter'] = $v['content_filter'];
+						$chapter[$key]['charset'] = $v['charset'];
+						$chapter[$key]['content'] = 0;
 					}
 				}
 				M('GatherWebChapter')->addAll($chapter);
@@ -76,11 +73,10 @@ use Vendor\Page;
 		        foreach ($list as $k => $v){
 		            $content = $this->_content($v['url'], $v['filter'], $v['charset']);
 	                $chapter['content'] = $content['content'];
-	                $chapter['id'] = $v['id'];
+	                 $chapter['id'] = $v['id'];
 	                $chapter['uptime'] = time();
 	                $m->save($chapter);
 		        }
-		        $this->content();
 		    }else{
 		        exit;
 		    }

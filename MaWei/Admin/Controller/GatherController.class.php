@@ -379,43 +379,42 @@
 		        case 'novel' :
 		            $list = $this->gather->getWebName('all',array('id'=>array('IN',$ids)));
 		            foreach ($list as $k => $v){
-		                if(!$v['book_id']){
+		                if($v['book_id'] == 0){
 		                    $data = array();
 		                    $data['cateid'] = $v['cateid'];
 		                    $data['name'] = $v['name'];
 		                    $data['author'] = $v['author'];
 		                    $data['uptime'] = time();
+		                    $data['status'] = 1;
 		                    $reid = add_updata($data,'Book');
 		                    //是否发布成功到小说主表，
-		                    if($reid !== false && $reid > 0){
+		                    if(intval($reid) > 0){
 		                        //更新发布小说ID
 		                        $tmp = array();
 		                        $tmp['id'] = $v['id'];
 		                        $tmp['book_id'] = $reid;
 		                        $reid = add_updata($tmp,'GatherWebName');
-		                        //发布章节，并判断章节是否已发布
-		                        if($reid !== false){
-		                            //取出小说章节
-		                            $chapter = $this->gather->getWebChapter('all',array('book_id'=>$v['id'],'is_send'=>0),'id ASC');
-		                            $chaptertable = getChapterTable($v['book_id']);
-		                            $m = M("$chaptertable");
-		                            $t = M('GatherWebChapter');
-		                            foreach ($chapter as $key => $val){
-		                                if($val['content'] && !$this->gather->checkChpater($reid,$val['title'],$chaptertable)){
-		                                	$data = array();
-		                                	$data['book_id'] = $reid;
-		                                    $data['title'] = $val['title'];
-		                                    $data['content'] = $val['content'];
-		                                    $data['ctime'] = time();
-		                                    $reid = $m->add($data);
-		                                    if(intval($reid) > 0){
-		                                    	$t->save(array('id'=>$val['id'],'is_send'=>1));
-		                                    }
-		                                }
-		                            }
-		                        }
 		                    }
 		                }
+                        //发布章节
+                        //取出小说章节
+                        $chapter = $this->gather->getWebChapter('all',array('book_id'=>$v['id'],'is_send'=>0),'id ASC');
+                        $chaptertable = getChapterTable($v['book_id']);
+                        $m = M("$chaptertable");
+                        $t = M('GatherWebChapter');
+                        foreach ($chapter as $key => $val){
+                            if($val['content']){
+                            	$data = array();
+                            	$data['book_id'] = $reid;
+                                $data['title'] = $val['title'];
+                                $data['content'] = $val['content'];
+                                $data['ctime'] = time();
+                                $reid = $m->add($data);
+                                if(intval($reid) > 0){
+                                	$t->save(array('id'=>$val['id'],'is_send'=>1));
+                                }
+                            }
+                        }
 		            }
 		            echo 'success';
 		            break;

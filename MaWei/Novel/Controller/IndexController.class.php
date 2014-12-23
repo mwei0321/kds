@@ -40,7 +40,7 @@
 		    //最新更新的小说章节
 		    $newchapter = $this->book->getNewChapter();
 		    //最新推荐小说
-		    $recommend = $this->book->book('16',array('status'=>1),'recommend DESC');
+		    $recommend = $this->book->book('16',array('status'=>1),'recommend DESC,id DESC');
 		    
 		    
 			$this->assign('reclist',$reclist);

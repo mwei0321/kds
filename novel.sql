@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50617
 File Encoding         : 65001
 
-Date: 2014-12-19 18:36:06
+Date: 2014-12-23 18:14:55
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -72,15 +72,16 @@ CREATE TABLE `mw_book` (
   `author` varchar(50) DEFAULT NULL COMMENT '作者',
   `words_num` int(11) DEFAULT NULL COMMENT '字数',
   `grade` int(11) DEFAULT NULL COMMENT '平均评分',
+  `recommend` tinyint(3) DEFAULT '0' COMMENT '推荐',
   `intro` text COMMENT '简介',
   `comment_num` int(11) DEFAULT '0' COMMENT '点评人数',
   `click_num` int(11) DEFAULT '0' COMMENT '查看次数',
-  `status` tinyint(2) DEFAULT NULL COMMENT '文章状态　－1临时保存　0隐藏　1显示',
+  `status` tinyint(2) DEFAULT '0' COMMENT '文章状态　－1临时保存　0隐藏　1显示',
   `end_status` tinyint(2) DEFAULT NULL COMMENT '0连载中……　1完结',
   `uptime` int(11) DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`) USING HASH
-) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for mw_book_attach
@@ -121,8 +122,9 @@ CREATE TABLE `mw_book_chapter_t1` (
   `title` varchar(100) DEFAULT NULL COMMENT '章节名称',
   `content` text COMMENT '章节内容',
   `ctime` int(11) DEFAULT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=63 DEFAULT CHARSET=utf8 COMMENT='书籍的具体章节';
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `book_title` (`book_id`,`title`)
+) ENGINE=MyISAM AUTO_INCREMENT=2018 DEFAULT CHARSET=utf8 COMMENT='书籍的具体章节';
 
 -- ----------------------------
 -- Table structure for mw_book_click_log
@@ -270,14 +272,14 @@ CREATE TABLE `mw_gather_web_chapter` (
   `name` varchar(50) DEFAULT NULL COMMENT '小说名称',
   `title` varchar(200) DEFAULT NULL COMMENT '章节名称',
   `content` text COMMENT '内容',
-  `uptime` int(11) DEFAULT NULL COMMENT '时间',
-  `is_seed` tinyint(1) DEFAULT '0' COMMENT '是否发布',
+  `uptime` int(11) DEFAULT '0' COMMENT '时间',
+  `is_send` tinyint(1) DEFAULT '0' COMMENT '是否发布',
   `filter` varchar(100) DEFAULT NULL COMMENT '内容过滤规则',
   `url` varchar(120) DEFAULT NULL COMMENT '章节链接地址',
   `charset` varchar(50) DEFAULT NULL COMMENT '字符编码',
   PRIMARY KEY (`id`),
   KEY `chapter-name` (`name`,`title`)
-) ENGINE=MyISAM AUTO_INCREMENT=10174 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=89917 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for mw_gather_web_name
