@@ -13,7 +13,7 @@ ul,ol{list-style: none;}
 form {display: inline;}
 b, u, i, s, em {text-decoration: none;font-weight: normal;font-style: normal;}
 .w1110{width:1100px;margin:0 auto;}
-.contadd{background:#fefefe;box-shadow:0 0 10px #999;border-radius:3px;}
+.content{background:#fefefe;box-shadow:0 0 10px #999;border-radius:3px;}
 /* navgition position */
 .nav-position{margin:15px auto;height:22px;line-height:22px;}
 
@@ -91,59 +91,59 @@ body{background: #efefef;}
 
 
 .box3{margin-bottom: 20px;padding-bottom:10px; border: 1px solid #ddd;margin-bottom: 10px;background: #fff;}
-    .tabstit {height: 42px;background: url(/Public/image/icobg02.png) repeat-x 0 -240px;}
-    .tabstit li {font-size: 14px;float: left;height: 21px;overflow: hidden;width: 213px;text-align: center;margin-top: 13px;color: #333;cursor: pointer;}
-    .tabstit li.cur {border-bottom: 4px solid #017F01;height: 42px;_position: relative;background: #fff;line-height: 42px;margin: 0 0 0 -1px;color: #018000;font-weight: bold;}
-    .imgitems {padding: 10px 0 0 4px;}
-    .imgitems li {float: left;margin: 10px 24px 0;display: inline;width: 134px;height: 210px;overflow: hidden;color: #888;position: relative;}
-    .imgcss {display: block;padding: 2px;border: 1px solid #ddd;position: relative;}
-    .imgcss, .imgcss img {width: 128px;height: 159px;}
-    .imgitems h3 {height: 25px;line-height: 27px;overflow: hidden;font-weight: normal;}
-    .tjico, .ywjico, .lzzico {display: block;position: absolute;right: 0;top: 0;width: 46px;height: 46px;}
-    .lzzico {background: url(/Public/image/lzzico.png) no-repeat;}
+	.tabstit {height: 42px;background: url(/Public/image/icobg02.png) repeat-x 0 -240px;}
+	.tabstit li {font-size: 14px;float: left;height: 21px;overflow: hidden;width: 213px;text-align: center;margin-top: 13px;color: #333;cursor: pointer;}
+	.tabstit li.cur {border-bottom: 4px solid #017F01;height: 42px;_position: relative;background: #fff;line-height: 42px;margin: 0 0 0 -1px;color: #018000;font-weight: bold;}
+	.imgitems {padding: 10px 0 0 4px;}
+	.imgitems li {float: left;margin: 10px 24px 0;display: inline;width: 134px;height: 210px;overflow: hidden;color: #888;position: relative;}
+	.imgcss {display: block;padding: 2px;border: 1px solid #ddd;position: relative;}
+	.imgcss, .imgcss img {width: 128px;height: 159px;}
+	.imgitems h3 {height: 25px;line-height: 27px;overflow: hidden;font-weight: normal;}
+	.tjico, .ywjico, .lzzico {display: block;position: absolute;right: 0;top: 0;width: 46px;height: 46px;}
+	.lzzico {background: url(/Public/image/lzzico.png) no-repeat;}
 
 .box4{margin-bottom: 20px;padding-bottom:10px;border: 1px solid #ddd;background: url(/Public/image/bgrepeaty.png) #fff repeat-y right top;}
-    .w690 {float: left;width: 843px;}
-    .titone {height: 27px;line-height: 24px;margin-top: 8px;}
-    .titone h2 {width: 127px;height: 27px;text-indent: 30px;font-size: 14px;color: #fff;float: left;margin-left: -1px;_position: relative;}
-    .titone h2 {background: url(/Public/image/titbgs.jpg) no-repeat;}
-    .titone h2 a {color: #fff;}
-    .titone span {float: left;padding-left: 4px;color: #ccc;line-height: 24px;}
-    .titone span a {margin: 0 22px;}
-    .imgitemstwo {padding: 12px 0 0 1px;}
-    .imgitemstwo li {margin: 10px 24px;width: 116px;height: 190px;}
-    .imgitemstwo .imgcss {padding: 1px;}
-    .imgitemstwo .imgcss, .imgitemstwo .imgcss img {width: 112px;height: 139px;}
-    .imgitemstwo .imgcss strong {position: absolute;width: 107px;height: 21px;line-height: 21px;left: -1px;bottom: -1px;padding-left: 9px;color: #fff;}
-    .imgcss strong {background: rgba(0,0,0,0.5);filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#7f000000', EndColorStr='#7f000000');}
-    .imgitems h3 {height: 25px;line-height: 27px;overflow: hidden;font-weight: normal;}
-    .fontitems {border-top: 1px dotted #ddd;margin: 10px auto 0;width: 790px;padding-top: 8px;overflow: hidden;}
-    .fontitems ul {width: 700px;}
-    .fontitems li, .olwrap li {white-space: nowrap;-o-text-overflow: ellipsis;text-overflow: ellipsis;}
-    .fontitems li {color: #888;float: left;height: 23px;line-height: 23px;width: 300px;margin: 0 50px 0 0;overflow: hidden;display: inline;}
-    .w246 {float: right;width: 246px;padding: 0 9px 0 0;}
-    .tittwo {height: 37px;border-bottom: 1px solid #DCDCDC;}
-    .tittwo h2 {line-height: 44px;height: 37px;overflow: hidden;font-size: 14px;color: #027F01;float: left;padding-left: 16px;}
-    .tittwo ul {float: right;margin-bottom: -1px;_position: relative;}
-    .tittwo li {font-weight: bold;cursor: pointer;float: left;height: 30px;line-height: 30px;overflow: hidden;margin-top: 8px;padding: 0 15px 0 18px;color: #343434;}
-    .tittwo li.cur {color: #027F01;border-bottom: 2px solid #027F01;height: 28px;}
-    .olwrap {padding-top: 6px;}
-    .olwrap ol {float: left;background: url(/Public/image/recbgs.png) no-repeat 17px 0;}
-    .olwrap li {color: #B0B0B0;text-indent: 55px;height: 27px;line-height: 27px;overflow: hidden;}
-    .fontitems li, .olwrap li {white-space: nowrap;-o-text-overflow: ellipsis;text-overflow: ellipsis;}
-    .olwrap a {margin-right: 5px;}
+	.w690 {float: left;width: 843px;}
+	.titone {height: 27px;line-height: 24px;margin-top: 8px;}
+	.titone h2 {width: 127px;height: 27px;text-indent: 30px;font-size: 14px;color: #fff;float: left;margin-left: -1px;_position: relative;}
+	.titone h2 {background: url(/Public/image/titbgs.jpg) no-repeat;}
+	.titone h2 a {color: #fff;}
+	.titone span {float: left;padding-left: 4px;color: #ccc;line-height: 24px;}
+	.titone span a {margin: 0 22px;}
+	.imgitemstwo {padding: 12px 0 0 1px;}
+	.imgitemstwo li {margin: 10px 24px;width: 116px;height: 190px;}
+	.imgitemstwo .imgcss {padding: 1px;}
+	.imgitemstwo .imgcss, .imgitemstwo .imgcss img {width: 112px;height: 139px;}
+	.imgitemstwo .imgcss strong {position: absolute;width: 107px;height: 21px;line-height: 21px;left: -1px;bottom: -1px;padding-left: 9px;color: #fff;}
+	.imgcss strong {background: rgba(0,0,0,0.5);filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#7f000000', EndColorStr='#7f000000');}
+	.imgitems h3 {height: 25px;line-height: 27px;overflow: hidden;font-weight: normal;}
+	.fontitems {border-top: 1px dotted #ddd;margin: 10px auto 0;width: 790px;padding-top: 8px;overflow: hidden;}
+	.fontitems ul {width: 700px;}
+	.fontitems li, .olwrap li {white-space: nowrap;-o-text-overflow: ellipsis;text-overflow: ellipsis;}
+	.fontitems li {color: #888;float: left;height: 23px;line-height: 23px;width: 300px;margin: 0 50px 0 0;overflow: hidden;display: inline;}
+	.w246 {float: right;width: 246px;padding: 0 9px 0 0;}
+	.tittwo {height: 37px;border-bottom: 1px solid #DCDCDC;}
+	.tittwo h2 {line-height: 44px;height: 37px;overflow: hidden;font-size: 14px;color: #027F01;float: left;padding-left: 16px;}
+	.tittwo ul {float: right;margin-bottom: -1px;_position: relative;}
+	.tittwo li {font-weight: bold;cursor: pointer;float: left;height: 30px;line-height: 30px;overflow: hidden;margin-top: 8px;padding: 0 15px 0 18px;color: #343434;}
+	.tittwo li.cur {color: #027F01;border-bottom: 2px solid #027F01;height: 28px;}
+	.olwrap {padding-top: 6px;}
+	.olwrap ol {float: left;background: url(/Public/image/recbgs.png) no-repeat 17px 0;}
+	.olwrap li {color: #B0B0B0;text-indent: 55px;height: 27px;line-height: 27px;overflow: hidden;}
+	.fontitems li, .olwrap li {white-space: nowrap;-o-text-overflow: ellipsis;text-overflow: ellipsis;}
+	.olwrap a {margin-right: 5px;}
 
 .box5{border: 1px solid #ddd;background: #fff;margin-bottom:20px;}
 .box5 #tabsthree ul{padding:0 20px;}
-    .box5 .recently_list li {border-bottom: 1px dotted #ddd;height: 30px;line-height: 30px;}
-    .box5 .recently_list{padding:10px 18px;}
-    .recently_list ul li span {display:inline-block;overflow:hidden;height:35px;line-height: 35px;}
-    .recently_list ul li{width:50%;height:35px;line-height: 35px;float:left;}
-    .recnums_r {color: #D91610;margin-right: 10px;}
-    .r_spanone {width: 155px;}
-    .r_spantwo {width: 260px;padding-left: 5px;}
-    .r_spantwo i {font-style: normal;color: #B1B1B1;}
-    .r_spanthree {width: 100px;color: #B1B1B1;text-align:right;}
+	.box5 .recently_list li {border-bottom: 1px dotted #ddd;height: 30px;line-height: 30px;}
+	.box5 .recently_list{padding:10px 18px;}
+	.recently_list ul li span {display:inline-block;overflow:hidden;height:35px;line-height: 35px;}
+	.recently_list ul li{width:50%;height:35px;line-height: 35px;float:left;}
+	.recnums_r {color: #D91610;margin-right: 10px;}
+ 	.r_spanone {width: 155px;}
+ 	.r_spantwo {width: 260px;padding-left: 5px;}
+ 	.r_spantwo i {font-style: normal;color: #B1B1B1;}
+	.r_spanthree {width: 100px;color: #B1B1B1;text-align:right;}
 
 /* chapter page**/
 .chapter-name{width:100%;height:65px;text-align:center;}
@@ -155,10 +155,10 @@ body{background: #efefef;}
 
 
 .link {width: 1100px;border: 1px solid #DDDDDD;border-bottom: none;margin: 0 auto;background: #fff;margin-top: 6px;}
-    .linktop {position: relative;line-height: 25px;}
-    .linktop h3 {position: absolute;top: 5px;left: -1px;background: url(/Public/image/linktopbg.png);padding-left: 37px;color: #fff;height: 19px;line-height: 19px;width: 102px;float: left;}
-    .linkbody {padding: 31px 27px 17px;line-height: 23px;color: #999;}
-    .linkbody a {margin: 0 10px;}
+	.linktop {position: relative;line-height: 25px;}
+	.linktop h3 {position: absolute;top: 5px;left: -1px;background: url(/Public/image/linktopbg.png);padding-left: 37px;color: #fff;height: 19px;line-height: 19px;width: 102px;float: left;}
+	.linkbody {padding: 31px 27px 17px;line-height: 23px;color: #999;}
+	.linkbody a {margin: 0 10px;}
 
 
 

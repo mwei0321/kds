@@ -49,6 +49,26 @@
 			$this->display();
 		}
 		
+		function chapter(){
+		    $bookid = intval($_REQUEST['nid']);
+		    if($bookid){
+		        //小说详情
+		        $info = $this->book->bookInfo($bookid);
+		        if(empty($info)){
+		            $this->error('该小说不存在或已下架……',U('Index/index'));
+		        }
+		        //返回小说章节列表
+		        $list = $this->book->getBookChapter($bookid);
+		        
+		        $this->assign('list',$list);
+		        $this->assign('info',$info);
+		    }else{
+		        $this->error('该小说不存在或已下架……',U('Index/index'));
+		    }
+		    
+		    $this->display();
+		}
+		
 		function info(){
 			
 		}

@@ -34,25 +34,27 @@ use Vendor\Page;
 		* @date 2014-12-20  下午5:48:53
 		*/
 		function chapter(){
-		    set_time_limit(3600);
 			//获取web采集列表
-			$list = $this->gather->getWebName('all',array('status'=>1));
-			foreach ($list as $k => $v){
-				$chapter = array();
-				$temp = getUrlGather($v['url'], $this->_filter($v['chapter_filter']), explode('-', $v['chapter_area']),$v['charset']);
-				foreach ($temp as $key => $val){
-					if($val['title'] && $val['url']){
-						$chapter[$key]['title'] = $val['title'];
-						$chapter[$key]['book_id'] = $v['id'];
-						$chapter[$key]['name'] = $v['name'];
-						$chapter[$key]['url'] = strpos('http', $val['url']) !== false ? $val['url'] : $v['url'].$val['url'];
-						$chapter[$key]['filter'] = $v['content_filter'];
-						$chapter[$key]['charset'] = $v['charset'];
-						$chapter[$key]['content'] = 0;
-					}
-				}
-				M('GatherWebChapter')->addAll($chapter);
-				sleep(1);
+			$list = $this->gather->getWebName(2,array('status'=>1));
+			if($list){
+			    foreach ($list as $k => $v){
+			        $chapter = array();
+			        $temp = getUrlGather($v['url'], $this->_filter($v['chapter_filter']), explode('-', $v['chapter_area']),$v['charset']);
+			        foreach ($temp as $key => $val){
+			            if($val['title'] && $val['url']){
+			                $chapter[$key]['title'] = $val['title'];
+			                $chapter[$key]['book_id'] = $v['id'];
+			                $chapter[$key]['name'] = $v['name'];
+			                $chapter[$key]['url'] = strpos('http', $val['url']) !== false ? $val['url'] : $v['url'].$val['url'];
+			                $chapter[$key]['filter'] = $v['content_filter'];
+			                $chapter[$key]['charset'] = $v['charset'];
+			                $chapter[$key]['content'] = 0;
+			            }
+			        }
+			        M('GatherWebChapter')->addAll($chapter);
+			        M('GatherWebName')->where('id='.$v['id'])->setField('status',0);
+			        sleep(1);
+			    }
 			}
 		}
 		
@@ -63,23 +65,36 @@ use Vendor\Page;
 		 * @date 2014-12-22 下午3:17:09
 		 */
 		function content(){
-		    set_time_limit(3600);
 		    $m = M('GatherWebChapter');
-		    $conut = $this->gather->getWebChapter('count',array('uptime'=>'0'));
-		    if($conut > 0){
-		        $page = new Page($conut, 100);
-		        $list = $this->gather->getWebChapter("$page->firstRow,$page->listRows",array('uptime'=>0));
-		        $chapter = array();
-		        foreach ($list as $k => $v){
-		            $content = $this->_content($v['url'], $v['filter'], $v['charset']);
+	        $list = $this->gather->getWebChapter(30,array('uptime'=>0));
+	        $log = '';
+	        if($list){
+	            $chapter = array();
+	            foreach ($list as $k => $v){
+	                $content = $this->_content($v['url'], $v['filter'], $v['charset']);
 	                $chapter['content'] = $content['content'];
-	                 $chapter['id'] = $v['id'];
+	                $chapter['id'] = $v['id'];
 	                $chapter['uptime'] = time();
 	                $m->save($chapter);
-		        }
-		    }else{
-		        exit;
-		    }
+	                $log .= date('Y-m-d H:m:s')." --- ".$v['book_id']." -> ".$v['id']." \r\n";
+	            }
+	            $this->_log($log);
+	        }else{
+	            exit;
+	        }
+		}
+		
+		/**
+		 * 记录日志
+		 * @param string $_string 
+		 * @return array
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-12-24 下午6:30:38
+		 */
+		function _log($_string){
+		    $f = fopen('/home/web/novel/crontablog.txt','a');
+		    fwrite($f, $_string.'------------'."\r\n");
+		    fclose($f);
 		}
 		
 		/**

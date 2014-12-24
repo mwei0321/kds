@@ -1,0 +1,21 @@
+<!-- include public templates -->
+<extend name="Public/Temp" />
+
+<block name="content">
+<!-- content start -->
+	<div class="content w1110 contadd">
+	   <div class="chapter-name">
+	       <h3>{$info['name']}</h3>
+	       <p>作者：{$info['author']}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最后更新时间：{$info['uptime']|date="Y-m-d H:m:s",###}</p>
+	   </div>
+	   <div class="clr"> </div>
+	   <div class="chapter-list">
+	       <dl>
+	           <volist name="list" id="n">
+	               <dd <if condition="($key+1)%3 EQ 0">style="margin-right:0;"</if> ><a href="{:U('Index/content',array('nid'=>$n['book_id'],'tid'=>$n['id']))}">{$n['title']}</a></dd>
+	           </volist>
+	       </dl>
+	       <div class="clr"> </div>
+	   </div>
+	</div>
+</block>

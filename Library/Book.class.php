@@ -39,7 +39,7 @@
 			}
 			$book = $m->where($_where)->order($_order)->limit($_limit)->select();
 // 			echo $m->getlastsql();
-			$book = $this->_togToArray($book);
+			$book = $this->_tagToArray($book);
 			return $book;
 		}
 		
@@ -138,9 +138,10 @@
 		* @date 2014-8-9  下午1:28:33
 		*/
 		function bookInfo($_bookid){
-			$m = M();
-			$sql = "SELECT * FROM `mw_book` b LEFT JOIN `mw_book_extend_info` e ON b.id = e.book_id LEFT JOIN mw_book_extend_field f ON f.id = e.extend_id ";
-			$info = $m->where(array('id'=>$_bookid))->find();
+// 			$m = M();
+// 			$sql = "SELECT * FROM `mw_book` b LEFT JOIN `mw_book_extend_info` e ON b.id = e.book_id LEFT JOIN mw_book_extend_field f ON f.id = e.extend_id ";
+            $m = M('book');
+            $info = $m->where(array('id'=>$_bookid))->find();
 			return $info;
 		}
 		
@@ -152,9 +153,13 @@
 		* @author MaWei (http://www.phpyrb.com)
 		* @date 2014-11-1  下午7:55:15
 		*/
-		function getBookChapter($_id,$_limit = 'count',$_field = '*'){
+		function getBookChapter($_id,$_limit = 'all',$_field = 'id,book_id,title'){
 			$m = M(getChapterTable($_id));
-			if($_limit == 'count'){
+			if($_limit == 'all'){
+			    $list = $m->field($_field)->where(array('book_id'=>$_id))->order('id ASC')->select();
+			    echo $m->getlastsql();
+			    return $list;
+			}elseif($_limit == 'count'){
 				$count = $m->where(array('book_id'=>$_id))->count();
 				return $count;
 			}
@@ -169,7 +174,7 @@
 		* @author MaWei (http://www.phpyrb.com)
 		* @date 2014-11-1  下午7:08:32
 		*/
-		function _togToArray($_list = array()){
+		function _tagToArray($_list = array()){
 			foreach ($_list as $k => $v){
 				$_list[$k]['tagid'] = explode(',', $v);
 			}

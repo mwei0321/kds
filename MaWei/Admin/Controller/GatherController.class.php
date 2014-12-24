@@ -373,12 +373,13 @@
 		 * @author MaWei (http://www.phpyrb.com)
 		 * @date 2014-12-19 下午4:59:56
 		 */
-		function seed (){
+		function send (){
 		    $ids = $_REQUEST['ids'];
 		    switch ($_REQUEST['method']){
 		        case 'novel' :
 		            $list = $this->gather->getWebName('all',array('id'=>array('IN',$ids)));
 		            foreach ($list as $k => $v){
+		                $bookid = $v['book_id'];
 		                if($v['book_id'] == 0){
 		                    $data = array();
 		                    $data['cateid'] = $v['cateid'];
@@ -386,16 +387,17 @@
 		                    $data['author'] = $v['author'];
 		                    $data['uptime'] = time();
 		                    $data['status'] = 1;
-		                    $reid = add_updata($data,'Book');
+		                    $bookid = add_updata($data,'Book');
 		                    //是否发布成功到小说主表，
-		                    if(intval($reid) > 0){
+		                    if(intval($bookid) > 0){
 		                        //更新发布小说ID
 		                        $tmp = array();
 		                        $tmp['id'] = $v['id'];
-		                        $tmp['book_id'] = $reid;
+		                        $tmp['book_id'] = $bookid;
 		                        $reid = add_updata($tmp,'GatherWebName');
 		                    }
 		                }
+		                
                         //发布章节
                         //取出小说章节
                         $chapter = $this->gather->getWebChapter('all',array('book_id'=>$v['id'],'is_send'=>0),'id ASC');
@@ -405,10 +407,10 @@
                         foreach ($chapter as $key => $val){
                             if($val['content']){
                             	$data = array();
-                            	$data['book_id'] = $reid;
+                            	$data['book_id'] = $bookid;
                                 $data['title'] = $val['title'];
                                 $data['content'] = $val['content'];
-                                $data['ctime'] = time();
+                                $data['uptime'] = time();
                                 $reid = $m->add($data);
                                 if(intval($reid) > 0){
                                 	$t->save(array('id'=>$val['id'],'is_send'=>1));

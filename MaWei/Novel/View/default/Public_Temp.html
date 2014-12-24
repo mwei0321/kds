@@ -20,7 +20,7 @@
 				<a href="#">注册</a> |
 				<a href="#">登入</a> |
 			</div>
-			<div class="cle"></div>
+			<div class="clr"></div>
 		</div>
 	</div>
 
@@ -68,10 +68,20 @@
 			<a href="#">完结</a> |
 		</p>
 	</div>
+	<!-- navgition position -->
+    <div class="nav-position w1110">
+        <p>当前位置：
+            <a href="{:U('Index/index')}">首页</a> >
+            <a href="{:U('Index/index')}">首页</a> >
+            <a href="{:U('Index/index')}">首页</a> >
+            <a href="{:U('Index/index')}">首页</a> >
+        </p>
+    </div>
 
+    <block name="content">
 <!-- content start -->
     <div class="content">
-    <!-- box1 start -->
+    <!-- box1 start recommed -->
         <div class="box1 boxshadow">
             <div class="recom-ing">
                 <dl style="margin-bottom:10px;">
@@ -81,9 +91,9 @@
                             <a href="{:U('Novel/Index/detalis',array('nid'=>$r['id']))}" class="title">{$r['name']}</a>
                         </dd>
                     </volist>
-                    <div class="cle"></div>
+                    <div class="clr"></div>
                 </dl>
-            <div class="cle"></div>
+            <div class="clr"></div>
             </div>
         </div>
     <!-- box1 end -->
@@ -100,15 +110,15 @@
                 <ul>
                     <volist name="newchapter" id="n">
                         <li>
-                            <span class="r_spanone"><a href="{:U('Novel/Index/index',array('cid'=>$n['cateid']))}">{$catelist[$n['cateid']]['name']}</a><a href="{:U('Novel/Index/details',array('nid'=>$n['id']))}">{$n['name']}</a></span>
-                            <span class="r_spantwo"><i>更新至</i>&nbsp;&nbsp;<a href="{:U('Novel/Index/content',array('nid'=>$n['id']))}">{$n['chapter']}</a></span>
+                            <span class="r_spanone"><a href="{:U('Novel/Index/index',array('cid'=>$n['cateid']))}">[{$catelist[$n['cateid']]['name']}]</a>&nbsp;|&nbsp;<a href="{:U('Novel/Index/details',array('nid'=>$n['id']))}">{$n['name']}</a></span>
+                            <span class="r_spantwo"><i>更新至</i>&nbsp;&nbsp;<a href="{:U('Novel/Index/content',array('nid'=>$n['id'],'tid'=>$n['chapter']['id']))}">{$n['chapter']['title']}</a></span>
                             <span class="r_spanthree">{$n['uptime']|date='Y-m-d',###}</span>
                         </li>
                     </volist>
                 </ul>
-                <div class="cle"></div>
+                <div class="clr"></div>
             </div>
-            <div class="cle"></div>
+            <div class="clr"></div>
         </div>
     
     <!-- box4 start -->
@@ -125,7 +135,7 @@
                         <a href="#">众神王座</a>
                     </span>
                 </div>
-                <ul class="clearfix imgitems imgitemstwo">
+                <ul class="clrarfix imgitems imgitemstwo">
                     <li>
                         <a href="#" class="imgcss"><img src="img/4.jpg" alt=""><strong>左耳思念</strong></a>
                         <h3><a href="#">都市之最强纨绔</a></h3>五百年后国家培养出
@@ -147,7 +157,7 @@
                         <h3><a href="/intro/37457">武炼巅峰</a></h3>武之巅峰，是孤独
                     </li>
                 </ul>
-                <div class="clearfix fontitems">
+                <div class="clrarfix fontitems">
                     <ul>
                         <li><a href="#">剑道独神</a>：剑者，当有锋芒。宁折不屈，宁断不弯，不屈不饶，无所</li>
                         <li><a href="#">裁决</a>：一个外表天真纯朴，一脸迷糊的大头男孩，却是一个跟着</li>
@@ -166,7 +176,7 @@
                         <li>月</li>
                     </ul>
                 </div>
-                <div class="clearfix olwrap">
+                <div class="clrarfix olwrap">
                     <ol>
                         <li><a href="#">绝世武神</a>：九霄大陆，宗门林立，</li>
                         <li><a href="#">绝世唐门</a>：这里没有魔法，没有斗</li>
@@ -181,9 +191,10 @@
                     </ol>
                 </div>
             </div>
-            <div class="cle"></div>
+            <div class="clr"></div>
         </div>
 
+    </block>
 
     <!-- box6 start -->
         <div class="link boxshadow">
@@ -230,8 +241,6 @@
                 <a href="http://www.17k.com/ " targdt="_blank">17K小说网</a>|
             </div>
         </div>
-
-    </div>
 
 <!-- footer start -->
     <div class="footer">
