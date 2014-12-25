@@ -170,4 +170,17 @@
 		    return $list;
 		}
 		
+		/**
+		 * 根据ids返回章节
+		 * @param string $_ids
+		 * @return array
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2014-12-25 上午10:30:35
+		 */
+		function getIdsChapter($_ids){
+		    $m = M('GatherWebChapter');
+		    $list = $m->where(array('id'=>array('IN',$_ids)))->select();
+		    return $list;
+		}
+		
 	}

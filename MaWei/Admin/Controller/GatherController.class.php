@@ -134,12 +134,21 @@
 		}
 		
 		function webchapter(){
-		    $count = $this->gather->getWebChapter();
-		    $page = new Page($count,50);
-		    $list = $this->gather->getWebChapter("$page->firstRow,$page->listRows");
+		    $pagenum = $_REQUEST['pagenum'] ? intval($_REQUEST['pagenum']) : 100;
+		    $keyword = text($_REQUEST['keyword']);
+		    $where = array();
+		    $_REQUEST['nid'] && $where['book_id'] = intval($_REQUEST['nid']);
+		    $keyword && $where['title'] = array('LIKE',"%$keyword%");
+		    
+		    $count = $this->gather->getWebChapter('count',$where);
+		    $page = new Page($count,$pagenum,array('keyword'=>$keyword,'nid'=>$_REQUEST['nid'],'pagenum'=>$pagenum));
+		    $list = $this->gather->getWebChapter("$page->firstRow,$page->listRows",$where,'id ASC');
 		
 		    $this->assign('count',$count);
 		    $this->assign('list',$list);
+		    $this->assign('nid',$_REQUEST['nid']);
+		    $this->assign('pagenum',$pagenum);
+		    $this->assign('keyword',$keyword);
 		    $this->assign('page',$page->show());
 		    $this->display();
 		}
@@ -364,7 +373,6 @@
  			        echo '共采集了'.$good.' 条，其中采集失败的有'.count($bad).'条，ID为'.implode(',', arr2to1($list));
  			        break;
 			}
-			$this->success('处理成功');
 		}
 		
 		/**
@@ -420,6 +428,14 @@
 		            }
 		            echo 'success';
 		            break;
+		        case 'chapter' :
+		            $ids = $_REQUEST['ids'];
+		            $chapter = $this->gather->getIdsChapter($ids);
+		            $data = array();
+		            foreach ($chapter as $k => $v){
+		                $data[$k]['title'] = $v['title'];
+		                $data[$k]['content'] = $v['content'];
+		            }
 		    }
 		}
 		

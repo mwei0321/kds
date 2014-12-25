@@ -17,16 +17,18 @@
                     </div>
                     <div class="clr"> </div>
                     <div class="seach_select">
-                        <form action="{:U('Admin/Gather/index')}" method="post">
-                            <input type="text" name="txtid" class="intext" value="{$txtid}" placeholder="txtid" onkeyup="value=value.replace(/[^\d]/,'');"/>
+                        <form action="{:U('Admin/Gather/webchapter')}" method="post">
+                            <input type="text" name="nid" class="intext" value="{$nid}" placeholder="小说ID" onkeyup="value=value.replace(/[^\d]/,'');"/>
                             <input type="text" name="keyword" class="intext" value="{$keyword}" placeholder="章节名称"/>
+                            <input type="text" name="pagenum" class="intext" value="{$pagenum}" placeholder="显示条数" />
                             <input type="submit" class="btn btn-sm btn-primary" value="搜索"　/>
                         </form>
                         <input type="button" url="{:U('Admin/Gather/delete',array('method'=>'chapter'))}" class="btn btn-sm btn-danger" value="批量删除" onclick="delall($(this))"　/>
-                         <input type="button" url="{:U('Admin/Gather/delete',array('method'=>'chapter'))}" class="btn btn-sm btn-danger" value="清空" onclick="delall($(this),-1)"　/>
+                        <input type="button" url="{:U('Admin/Gather/delete',array('method'=>'chapter'))}" class="btn btn-sm btn-danger" value="清空" onclick="delall($(this),-1)"　/>
                     </div>
                     <div class="seach_select">
                         <input type="button" class="btn btn-sm btn-primary" value="批量采集" onclick="webcontent();"　/>
+                        <input type="button" class="btn btn-sm btn-primary" value="发布小说章节" onclick="sendcontent();"　/>
                     </div>
                     <div class="pull-right flpostion">
                         <span class="badge">{$count}</span>
@@ -78,6 +80,21 @@
     </div>
     <script>
         var webcontent = function (id){
+            var ids = id ? id : getallval();
+            if(ids.length < 1){
+                layer.error('请选择要采集的章节！');
+                return false;
+            }
+            //layer.load('发布章节','{:U('Admin/Gather/edit',array('method'=>'chapter'))}','ids='+ids.toString());
+            $.ajax({
+                url: '{:U('Admin/Gather/dispose',array('method'=>'webcontent'))}',
+                data : '&ids='+ids.toString(),
+            }).done(function (e) {
+                layer.success(e);
+            });
+        }
+        
+        var sendcontent = function (id){
             var ids = id ? id : getallval();
             if(ids.length < 1){
                 layer.error('请选择要发布的章节！');
