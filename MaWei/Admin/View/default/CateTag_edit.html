@@ -1,0 +1,64 @@
+<!-- admin system menu edit -->
+
+<!-- stystem menu content -->
+<div class="row" style="width:400px;">
+    <div class="col-lg-12">
+        <div class="panel panel-default bootstrap-admin-no-table-panel">
+            <div class="bootstrap-admin-no-table-panel-content bootstrap-admin-panel-content collapse in">
+                <form class="form-horizontal" method="post" action="{:U('Admin/CateTag/addupdata',array('type'=>$tp))}" enctype="multipart/form-data">
+                    <input type="hidden" name="id" value="{$info['id']}" />
+                    <input type="hidden" name="type" value="{$tp}" />
+                    <fieldset>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label" for="focusedInput">{$name[$tp]}名称</label>
+                            <div class="col-lg-6">
+                                <input class="form-control" name="name" id="focusedInput" type="text" placeholder="{$name[$tp]}名称" value="{$info['name']}">
+                            </div>
+                        </div>
+                        <if condition="$tp EQ 'cate'">
+                        <div class="form-group">
+                                <label class="col-lg-3 control-label" for="disabledInput">父分类</label>
+                                <div class="col-lg-6">
+                                    <input type="hidden" name="path" value="{$info['path']}" />
+                                    <input type="hidden" name="oldpid" value="{$info['pid']}" />
+                                    <select class="form-control" name="pid">
+                                        <option value="0" <if condition="$info['pid'] EQ $c['id']">selected</if> >顶级分类</option>
+                                    <volist name="catelist" id="c">
+                                        <if condition="$c['level'] LT 1">
+                                        <option value="{$c['id']}" <if condition="$info['pid'] EQ $c['id']">selected</if> >{$c['levelstr']}{$c['name']}</option>
+                                        </if>
+                                    </volist>
+                                </select>
+                                </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label" for="focusedInput">分类图标</label>
+                            <div class="col-lg-6">
+                                <input class="form-control" name="icon" id="focusedInput" type="text" placeholder="分类图标的位置坐标" value="{$info['icon']}">
+                                <p class="explain">/Public/image/cate_icon.png，背景图片坐标；例：-10px 0px</p>
+                            </div>
+                        </div>
+                        </if>　
+                        <if condition="$info['id']">
+                            <div class="form-group">
+                                <label class="col-lg-3 control-label" for="disabledInput">状态</label>
+                                <div class="col-lg-6">
+                                    <select class="form-control" name="status">
+                                        <option value="0" <if condition="$info['status'] EQ 0">selected</if>>隐藏</option>
+                                        <option value="1" <if condition="$info['status'] EQ 1">selected</if>>显示</option>
+                                    </select>
+                                </div>
+                            </div>
+                        <else />
+                            <input type="hidden" value="1" name="status" />
+                        </if>
+                        <div class="fr bntmr20">
+                        <button type="submit" class="btn btn-primary">确定</button>
+                        <button type="reset" class="btn btn-default" onclick="layer.close(0.3);">取消</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

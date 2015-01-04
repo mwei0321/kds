@@ -1,0 +1,93 @@
+<!-- admin system menu edit -->
+
+<div class="row" style="width:850px;">
+    <div class="col-lg-12">
+        <div class="panel panel-default bootstrap-admin-no-table-panel">
+            <div class="panel-heading">
+                <div class="text-muted bootstrap-admin-box-title">web采集</div>
+            </div>
+            <div class="bootstrap-admin-no-table-panel-content bootstrap-admin-panel-content collapse in">
+                <form class="form-horizontal" method="post" action="{:U('Admin/Gather/dispose',array('method'=>'addwebcate'))}" enctype="multipart/form-data">
+                    <input type="hidden" name="id" value="{$info['id']}" />
+                    <fieldset>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label" for="focusedInput">网站url</label>
+                            <div class="col-lg-5">
+                                <input class="form-control" name="web_url" id="focusedInput" type="text" value="{$info['web_url']}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label" for="selectError">小说分类</label>
+                            <div class="col-lg-3">
+                                <select class="form-control" name="cateid">
+                                    <volist name="catelist" id="c">
+                                        <option value="{$key}" <if condition="$info['cateid'] EQ $key">selected="selected"</if> >{$c['levelstr']}{$c['name']}</option>
+                                    </volist>
+                                </select>
+                                <!--span class="help-block">Woohoo!</span -->
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label" for="focusedInput">分类url</label>
+                            <div class="col-lg-5">
+                                <input class="form-control" name="cateurl" id="focusedInput" type="text" value="{$info['cate_url']}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label" for="focusedInput">分类参数</label>
+                            <div class="col-lg-5">
+                                <input class="form-control" name="page" id="focusedInput" type="text" value="{$info['page_param']}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label" for="focusedInput">名称采集区域</label>
+                            <div class="col-lg-5">
+                                <input class="form-control" placeholder="区域-多个元素" name="name_area" id="focusedInput" type="text" value="{$info['name_area']}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label" for="focusedInput">名称采集规则</label>
+                            <div class="col-lg-10">
+                                <input class="form-control" placeholder="字段名$元素名-取值类型|filed$DOMEle-type" name="name_filter" id="focusedInput" type="text" value="{$info['name_filter']}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label" for="focusedInput">章节采集区域</label>
+                            <div class="col-lg-5">
+                                <input class="form-control" placeholder="区域-多个元素" name="chapter_area" id="focusedInput" type="text" value="{$info['chapter_area']}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label" for="focusedInput">章节采集规则</label>
+                            <div class="col-lg-10">
+                                <input class="form-control" placeholder="字段名$元素名-取值类型|filed$DOMEle-type" name="chapter_filter" id="focusedInput" type="text" value="{$info['chapter_filter']}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label" for="focusedInput">内容采集区域</label>
+                            <div class="col-lg-5">
+                                <input class="form-control"placeholder="区域"  name="content_area" id="focusedInput" type="text" value="{$info['content_area']}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label" for="focusedInput">内容采集规则</label>
+                            <div class="col-lg-10">
+                                <input class="form-control" placeholder="字段名$元素名-取值类型|filed$DOMEle-type" name="content_filter" id="focusedInput" type="text" value="{$info['content_filter']}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label" for="focusedInput">采集字符编码</label>
+                            <div class="col-lg-5">
+                                <input class="form-control" name="charset" id="focusedInput" type="text" value="{$info['charset']}">
+                            </div>
+                        </div>
+                        <div class="fr bntmr20">
+                            <button type="submit" class="btn btn-primary">确定</button>
+                            <button type="reset" class="btn btn-default" onclick="layer.close(0.3);">取消</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,72 @@
+<!-- include public templates -->
+<extend name="Public:Temp" />
+
+<!-- page title name -->
+<block name="PageName">
+	会员等级列表
+</block>
+
+<!-- user list content -->
+<block name="content">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<div class="text-muted bootstrap-admin-box-title">
+					会员等级列表&nbsp;&nbsp;&nbsp;
+					</div>
+                    <div class="clr"> </div>
+                    <div class="seach_select">
+                        <form action="{:U('Admin/Member/index')}" method="post">
+                            <input type="text" name="uid" class="intext" value="{$seach['uid']}" placeholder="用户ID"/>
+                            <input type="text" name="keyword" class="intext" value="{$seach['keyword']}" placeholder="用户名或邮箱"/>
+                            <input type="submit" class="btn btn-sm btn-primary" value="搜索"　/>
+                        </form>
+                    </div>
+                    <div class="seach_select">
+                        <input type="button" onclick="layer.load('积分等级编辑','{:U('Admin/Member/gradeEdit')}');" class="btn btn-sm btn-success opn"  value="积分等级编辑"/>
+                    </div>
+                    <div class="pull-right flpostion">
+                        <span class="badge">{$count}</span>
+                    </div>
+				</div>
+				<div class="bootstrap-admin-panel-content">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th><input type="checkbox"  check='1' id="checkall"/>
+								</th>
+								<th>ID</th>
+								<th>等级名称</th>
+								<th>等级分数</th>
+								<th>等级</th>
+								<th>类型</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+						    <volist name="list" id="u">
+    							<tr>
+    								<td><input type="checkbox" name="ids[]" value="{$u['id']}" class="checkalls"/></td>
+    								<td>{$u['id']}</td>
+    								<td>{$u['name']}</td>
+    								<td>{$u['grade']}</td>
+    								<td>{$u['level']}</td>
+    								<td>{$gradetype[$u['type']]['name']}</td>
+    								<td class="bnt-pl3">
+    								    <a href="javascript:;" onclick="layer.load('积分等级编辑','{:U('Admin/Member/gradeEdit',array('id'=>$u['id']))}');" ><i class="glyphicon glyphicon-pencil"></i></a>
+    								    <a href="javascript:void(0);" url="{:U('Admin/Member/delete',array('type'=>'grade'))}" onclick="delall($(this),{$u['id']});"><i style="color:#b00;" class="glyphicon glyphicon-trash"></i></a>
+    								</td>
+    							</tr>
+							</volist>
+						</tbody>
+					</table>
+					<div class="pagination-container">{$page}</div>
+					<div class="clr"> </div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- include public js-->
+</block>
+

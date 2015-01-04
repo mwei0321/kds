@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		body{
+			background: #ccc;
+		}
+		#pubu{
+			width: 1000px;
+			margin: 0 auto;
+			position: relative;
+		}
+		#pubu .grid{
+			position: absolute;
+			width: 230px;
+			border:1px solid gray;
+			box-shadow: 1px 1px 2px black;
+			border-radius: 10px;
+			background: white;
+		}
+	</style>
+	<script type="text/javascript" src="jquery-1.11.1.min.js"></script>
+	<script type="text/javascript">
+		window.onload = function(){	
+			pububa();
+			function pububa(){
+				//得到窗口宽
+				var chuankoukuan = $(window).width();
+				//计算列数，就是窗口宽度除以250
+				var lieshu = parseInt(chuankoukuan / 250);
+				//设置瀑布最大盒子的宽度，目的是为了让盒子居中
+				$("#pubu").css("width",lieshu * 250);
+
+				for(var i = 0 ; i <= $(".grid").length - 1 ; i++){
+					var leijia = 0;
+					// 下面的for循环，是累加器，比如当前i为9，那么下面的循环
+					//	将计算6、3、0号盒子的高度累加。
+					for(var j = i - lieshu ; j >= 0 ; j = j - lieshu){
+						leijia = leijia + $(".grid").eq(j).height() + 20;
+					}
+
+					// 设置每个盒子的left、top
+					$(".grid").eq(i).stop().animate(
+						{
+							"left":i % lieshu * 250,
+							"top":leijia
+						},1000
+					);
+				}
+			}
+
+			$(window).resize(pububa);
+		}
+	</script>
+</head>
+<body>
+	<div id="pubu">
+		<div class="grid">
+			<h3>0</h3>
+			<p><img src="images/0.png" />考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉</p>
+		</div>
+		<div class="grid">
+			<h3>1</h3>
+			<p><img src="images/1.png" />考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉</p>
+		</div>
+		<div class="grid">
+			<h3>2</h3>
+			<p><img src="images/2.png" />考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考考拉</p>
+		</div>
+		<div class="grid">
+			<h3>3</h3>
+			<p><img src="images/3.png" />考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉</p>
+		</div>
+		<div class="grid">
+			<h3>4</h3>
+			<p><img src="images/4.png" />考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉拉考拉</p>
+		</div>
+		<div class="grid">
+			<h3>5</h3>
+			<p><img src="images/5.png" />考拉考拉考拉考拉考拉拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉</p>
+		</div>
+		<div class="grid">
+			<h3>6</h3>
+			<p><img src="images/6.png" />考拉考拉考拉</p>
+		</div>
+		<div class="grid">
+			<h3>7</h3>
+			<p><img src="images/7.png" />考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉</p>
+		</div>
+		<div class="grid">
+			<h3>8</h3>
+			<p><img src="images/8.png" />考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉</p>
+		</div>
+		<div class="grid">
+			<h3>9</h3>
+			<p>考拉考拉考拉考拉考拉考拉考拉考拉考拉</p>
+		</div>
+		<div class="grid">
+			<h3>10</h3>
+			<p>考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉考拉</p>
+		</div>
+	</div>
+</body>
+</html>

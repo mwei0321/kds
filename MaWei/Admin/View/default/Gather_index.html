@@ -1,0 +1,101 @@
+<!-- include public templates -->
+<extend name="Public:Temp" />
+
+<!-- page title name -->
+<block name="PageName">
+    小说管理中心
+</block>
+
+<!-- user list content -->
+<block name="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="text-muted bootstrap-admin-box-title">
+                                                    小说临时章节列表
+                    </div>
+                    <div class="clr"> </div>
+                    <div class="seach_select">
+                        <form action="{:U('Admin/Gather/index')}" method="post">
+                            <input type="text" name="txtid" class="intext" value="{$txtid}" placeholder="txtid" onkeyup="value=value.replace(/[^\d]/,'');"/>
+                            <input type="text" name="keyword" class="intext" value="{$keyword}" placeholder="章节名称"/>
+                            <input type="submit" class="btn btn-sm btn-primary" value="搜索"　/>
+                        </form>
+                        <input type="button" url="{:U('Admin/Gather/delete',array('method'=>'chapter'))}" class="btn btn-sm btn-danger" value="批量删除" onclick="delall($(this))"　/>
+                         <input type="button" url="{:U('Admin/Gather/delete',array('method'=>'chapter'))}" class="btn btn-sm btn-danger" value="清空" onclick="delall($(this),-1)"　/>
+                    </div>
+                    <div class="seach_select">
+                        <input type="text" id="bookid" name="bookid" class="intext" placeholder="小说ID" onkeyup="value=value.replace(/[^\d]/,'');" style="float:none;margin-right:0;width:70px;"/>
+                        <input type="button" class="btn btn-sm btn-primary" value="发布章节" onclick="sendChapter();"　/>
+                    </div>
+                    <div class="pull-right flpostion">
+                        <span class="badge">{$count}</span>
+                    </div>
+                </div>
+                <div class="bootstrap-admin-panel-content">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox"  check='1' id="checkall"/>
+                                <th>ID</th>
+                                <th>TXTID</th>
+                                <th>小说名称</th>
+                                <th>章节</th>
+                                <th>章节标题</th>
+                                <th>内容</th>
+                                <th>更新时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <volist name="list" id="v">
+                                <tr id="deleid_{$v['id']}">
+                                    <td><input type="checkbox" name="ids[]" value="{$v['id']}" class="checkalls"/></td>
+                                    <td>{$v['id']}</td>
+                                    <td>{$v['txtid']}</td>
+                                    <td>{$v['name']}</td>
+                                    <td>{$v['chapter']}</td>
+                                    <td>{$v['title']}</td>
+                                    <td>{$v['content']|strCutOut}</td>
+                                    <td>{$v['uptime']|date="Y-m-d H:m:s",###}</td>
+                                    <td class="bnt-pl3">
+                                        <a href="javascript:;" onclick="layer.load('章节编辑','{:U('Admin/Gather/edit',array('method'=>'txtchapter','id'=>$v['id']))}');" ><i class="glyphicon glyphicon-pencil"></i></a>
+                                        <!-- add chapter -->
+                                        <a href="javascript:;" onclick="sendChapter({$v['id']});" ><i class="glyphicon glyphicon-pencil"></i></a>
+                                        
+                                        <!-- delete -->
+                                        <a href="javascript:void(0);" url="{:U('Admin/Gather/delete',array('method'=>'chapter'))}" onclick="delall($(this),{$v['id']});"><i style="color:#b00;"  class="glyphicon glyphicon-trash"></i></a>
+                                    </td>
+                                </tr>
+                            </volist>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="page">{$page}</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var sendChapter = function (id){
+            var ids = id ? id : getallval();
+            var bookid = $('#bookid').val();
+            if(!bookid){
+                layer.error('请输入要发布到小说ID！');
+                return false;
+            }
+            if(ids.length < 1){
+                layer.error('请选择要发布的章节！');
+                return false;
+            }
+            //layer.load('发布章节','{:U('Admin/Gather/edit',array('method'=>'chapter'))}','ids='+ids.toString());
+            $.ajax({
+                url: '{:U('Admin/Gather/dispose',array('method'=>'chapter'))}',
+                data : 'bookid='+bookid+'&ids='+ids.toString(),
+            }).done(function (e) {
+                layer.success(e);
+            });
+        }
+    </script>
+</block>
+

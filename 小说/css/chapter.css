@@ -1,0 +1,24 @@
+/* 当前位置 css */
+.crumbswrap {margin: 0 auto;width: 1100px;height: 32px;line-height: 32px;overflow: hidden;font-family: \5B8B\4F53;}
+.crumbswrap span {color: #888;padding-left: 10px;}
+.crumbswrap a {margin: 0 6px;}
+.crumbswrap em {color: #666;}
+
+/* content css */
+.chapter_content{width: 1098px;margin: 0 auto;border: 1px solid #ddd;background: #fff;}
+.ywjico {display: block;position: absolute;right: -8px;top: -8px;width: 88px;height: 88px;background: url(../img/b_ywjico.png) no-repeat;_filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true,sizingMethod=scale,src="images/b_ywjico.png");_background: none;}
+.chapter_content h1 {height: 60px;overflow: hidden;font: normal 22px/79px \5FAE\8F6F\96C5\9ED1;color: #333;text-align: center;}
+.smallcons {margin: 0 auto;width: 1045px;position: relative;height: 24px;text-align: center;line-height: 31px;overflow: hidden;color: #888;}
+.smallcons span {color: #333;}
+.favbooks {cursor: pointer;display: block;line-height: 300px;overflow: hidden;width: 88px;height: 24px;position: absolute;top: 0;right: 0;background: url(../img/dir_bg01.png) no-repeat -106px 0;}
+.detail{padding:0 25px;margin-bottom: 23px;}
+.dirtitone {margin-top: 24px;height: 30px;line-height: 30px;overflow: hidden;border-bottom: 2px solid #3FAF0D;background: #FBF8EF url(../img/dir_bg01.png) no-repeat 100% -70px;}
+.dirtitone h2 {float: left;padding-left: 48px;font-size: 14px;color: #1d6300;background: url(../img/dir_bg01.png) no-repeat -162px -30px;}
+.dirconone {margin-top: 16px;overflow: hidden;background: url(../img/dir_bg02.jpg) repeat;}
+.dirconone li {height: 36px;line-height: 36px;float: left;width: 349px;display: inline;color: #949494;}
+.dirconone a {margin-right: 5px;}
+.dirconone a:hover {text-decoration: none;color: #12B20A;}
+
+/* 阅读提示 css */
+.dirwraps {border: 1px solid #ddd;background: #fff;margin: 0 auto;width: 1068px;padding: 0 15px 12px;position: relative;margin-top: 9px;line-height: 2.0;color: #888;}
+.dircontwo h6 {color: #f60;padding-top: 10px;font-size:14px;font-weight: bold;}

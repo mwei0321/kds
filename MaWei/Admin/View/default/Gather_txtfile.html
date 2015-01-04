@@ -1,0 +1,87 @@
+<!-- include public templates -->
+<extend name="Public:Temp" />
+
+<!-- page title name -->
+<block name="PageName">
+    txt文件管理中心
+</block>
+
+<!-- user list content -->
+<block name="content">
+    <div class="row>
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="text-muted bootstrap-admin-box-title">
+                                                   txt文件列表
+                    </div>
+                    <div class="clr"> </div>
+                    <div class="seach_select">
+                        <form action="{:U('Admin/Gather/txtfile')}" method="post">
+                            <input type="text" name="id" class="intext" value="{$bookid}" placeholder="小说ID"/>
+                            <input type="text" name="keyword" class="intext" value="{$keyword}" placeholder="关键字"/>
+                            <input type="submit" class="btn btn-sm btn-primary" value="搜索"　/>
+                        </form>
+                    </div>
+                    <div class="seach_select">
+                        <a href="javascript:;" onclick="layer.load('txt文件导入','{:U('Admin/Gather/edit',array('method'=>'txt'))}')" class="btn btn-sm btn-success opn">txt文件导入</a>
+                        <input type="button" url="{:U('Admin/Gather/delete')}" class="btn btn-sm btn-primary" value="批量删除" onclick="delall($(this))"　/>
+                    </div>
+                    <div class="pull-right flpostion">
+                        <span class="badge">{$count}</span>
+                    </div>
+                </div>
+                <div class="bootstrap-admin-panel-content">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox"  check='1' id="checkall"/>
+                                <th>ID</th>
+                                <th>分类ID</th>
+                                <th>小说名称</th>
+                                <th>章节正则</th>
+                                <th>字符过滤正则</th>
+                                <th>更新时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <volist name="list" id="v">
+                                <tr id="deleid_{$v['id']}">
+                                    <td><input type="checkbox" name="ids[]" value="{$v['id']}" class="checkalls"/></td>
+                                    <td>{$v['id']}</td>
+                                    <td>{$catelist[$v['cateid']]['name']}</td>
+                                    <td>{$v['name']}</td>
+                                    <td>{$v['chapter']}</td>
+                                    <td>{$v['filter']}</td>
+                                    <td>{$v['uptime']|date="Y-m-d H:m:s",###}</td>
+                                    <td class="bnt-pl3">
+                                        <!-- chapter -->
+                                        <a href="javascript:;" onclick="cchapter($(this));" url="{:U('Admin/Gather/chapter',array('id'=>$v['id']))}" title="生成章节"><i class="glyphicon glyphicon-download-alt"></i></a>
+                                        <a href="javascript:;" <if condition="!$v['status']">onclick="cchapter($(this));" url="{:U('Admin/Gather/dispose',array('id'=>$v['id'],'method'=>'addinfo'))}"</if> <if condition="$v['status']"> onclick="layer.error('已添加！');"  style="color:red"</if>  title="添加小说基本信息" ><i class="glyphicon glyphicon-ok"></i></a>
+                                        <!-- edit -->
+                                        <a href="{:U('Admin/Gather/edit',array('id'=>$v['id']))}" ><i class="glyphicon glyphicon-pencil"></i></a>
+                                        <!-- delete -->
+                                        <a href="javascript:void(0);" url="{:U('Admin/Gather/delete')}" onclick="delall($(this),{$v['id']});"><i style="color:#b00;"  class="glyphicon glyphicon-trash"></i></a>
+                                    </td>
+                                </tr>
+                            </volist>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="page">{$page}</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var cchapter = function (Obj) {
+            layer.error('导入中……请稍后',600);
+            $.ajax({
+                url : Obj.attr('url')
+            }).done(function (e){
+                layer.success(e);
+            });
+        }
+    </script>
+</block>
+

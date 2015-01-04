@@ -1,0 +1,87 @@
+<!-- include public templates -->
+<extend name="Public:Temp" />
+
+<!-- page title name -->
+<block name="PageName">
+	会员管理中心
+</block>
+
+<!-- user list content -->
+<block name="content">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<div class="text-muted bootstrap-admin-box-title">
+						会员列表&nbsp;&nbsp;&nbsp;
+					</div>
+                    <div class="clr"> </div>
+                    <div class="seach_select">
+                        <form action="{:U('Admin/Member/index')}" method="post">
+                            <input type="text" name="uid" class="intext" value="{$seach['uid']}" placeholder="用户ID"/>
+                            <input type="text" name="keyword" class="intext" value="{$seach['keyword']}" placeholder="用户名或邮箱"/>
+                            <input type="submit" class="btn btn-sm btn-primary" value="搜索"　/>
+                        </form>
+                    </div>
+                    <div class="seach_select">
+                        <input type="button" onclick="layer.load('会员编辑','{:U('Admin/Member/edit')}');" class="btn btn-sm btn-success opn"  value="添加会员"/>
+                    </div>
+                    <div class="pull-right flpostion">
+                        <span class="badge">{$count}</span>
+                    </div>
+				</div>
+				<div class="bootstrap-admin-panel-content">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th><input type="checkbox"  check='1' id="checkall"/>
+								</th>
+								<th>ID</th>
+								<th>会员名称</th>
+								<th>邮箱地址</th>
+								<th>会员头像</th>
+								<th>会员积分</th>
+								<th>状态</th>
+								<th>性别</th>
+								<th>最后登入时间</th>
+								<th>注册时间</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+						    <volist name="ulist" id="u">
+    							<tr id="deleid_{$u['id']}">
+    								<td><input type="checkbox" name="ids[]" value="{$u['id']}" class="checkalls"/></td>
+    								<td>{$u['id']}</td>
+    								<td>{$u['uname']}</td>
+    								<td>{$u['email']}</td>
+    								<td><img src="{$u['avatar']}" style="width:40px;height:40px;"/></td>
+    								<td>{$u['grade']}</td>
+    								<td class="upstat">{$status[$u['status']]}</td>
+    								<td>{$sex[$u['sex']]}</td>
+    								<td>{$u['lasttime']|date="Y-m-d H:m:s",###}</td>
+    								<td>{$u['registertime']|date="Y-m-d H:m:s",###}</td>
+    								<td class="bnt-pl3">
+    								    <a href="javascript:;" onclick="layer.load('会员编辑','{:U('Admin/Member/edit',array('uid'=>$u['id']))}');" ><i class="glyphicon glyphicon-pencil"></i></a>
+    								    <a href="javascript:void(0);" url="{:U('Admin/Member/desable')}" onclick="setstatus($(this),{$u['id']});" status="{$u['status']}">
+    								        <if condition="$u['status'] EQ 1">
+    								        <i class="glyphicon glyphicon-minus-sign" style="color:red;"></i>
+    								        <else />
+    								        <i class="glyphicon glyphicon-ok" style="color:green;"></i>
+    								        </if>
+    								    </a>
+    								    <a href="javascript:void(0);" url="{:U('Admin/Member/deluser',array('type'=>'member'))}" onclick="delall($(this),{$u['id']});"><i style="color:#a00;" class="glyphicon glyphicon-trash"></i></a>
+    								</td>
+    							</tr>
+							</volist>
+						</tbody>
+					</table>
+					<div id="page">{$page}</div>
+					<div class="clr"> </div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- include public js-->
+</block>
+
