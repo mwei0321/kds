@@ -237,6 +237,49 @@
 // 	    }
 //         return $data;
 // 	}
+
+	/**
+	 * 下载图片
+	 * @param  string $_path 文件夹路径
+	 * @return array
+	 * @author MaWei (http://www.phpyrb.com)
+	 * @date 2014-8-3  下午2:10:22
+	 * @qq群号：341411327
+	 */
+	function downImg($_url,$_path = null,$_name = null){
+	    ob_start();
+	    readfile($_url);
+	    $img = ob_get_contents();
+	    ob_end_clean();
+	    if(! $_name){
+	        $exname = getFileExeName($_url);
+	        $_name = date('YmdHms').rand(10).'.'.$exname;
+	    }
+	    if(! $_path){
+	        $_path = UPLOAD_PATH.'/avatar'.'/';
+	    }
+	    createDir($_path);
+	    $path = $_path.$_name;
+	    file_put_contents($path, $img);
+	    if(is_file($path)){
+	        chmod($path, 0444);//这步不能少，放病毒攻击
+	        return $path;
+	    }
+	    return null;
+	}
+	
+	/**
+	 * 返回文件的后缀名
+	 * @param string $_file
+	 * @return string $exname
+	 * @author MaWei ( http://www.phpyrb.com )
+	 * @date 2014-4-17 下午1:50:15
+	 */
+	function getFileExeName($_file){
+        $file = basename($_file);
+        $exname = substr(strrchr($file,'.'), 1);
+        return  strtolower($exname);
+	}
 	
 	/**
 	 * 公共删除函数
@@ -927,43 +970,43 @@
 	function getUrlGather($_url,$_filter,$_area = null,$_charset = null){
 	    require_once ROOT_PATH.'/Library/phpQuery.php';
 	    $html = file_get_contents($_url);
-	    $charset = $_charset ? $_charset : mb_detect_encoding($html, array('ASCII', 'GB2312', 'GBK', 'UTF-8'));
-	    $phpquery = phpQuery::newDocumentHTML("$html",$charset);
-	    $data = array();
-	    if($_area){
-	        $area = is_array($_area) ? pq($_area[0])->find($_area[1]) : pq($_area);
-	        foreach ($area as $k => $v){
-	            while (!!list($key,$value) = each($_filter)){
-	                switch ($value[1]){
-	                    case 'text' :
-	                        $data[$k][$key] = trim(pq($v)->find($value[0])->text());
-	                        break;
-	                    case 'html' :
-	                        $data[$k][$key] = pq($v)->find($value[0])->html();
-	                        break;
-	                    default:
-	                        $data[$k][$key] = pq($v)->find($value[0])->attr($value[1]);
-	                        break;
-	                }
-	            }
-	            reset($_filter);
-	        }
-	    }else{
-	        while (!!list($key,$value) = each($_filter)){
-	            switch ($value[1]){
-	                case 'text' :
-	                    $data[$key] = trim(pq('body')->find($value[0])->text());
-	                    break;
-	                case 'html' :
-	                    $data[$key] = pq('body')->find($value[0])->html();
-	                    eval('$data[$key] = '.iconv($charset, 'UTF-8'.'//IGNORE', var_export($data[$key],TRUE)).';');
-	                    break;
-	                default:
-	                    $data[$key] = pq('body')->find($value[0])->attr($value[1]);
-	                    break;
-	            }
-	        }
-	        reset($_filter);
-	    }
-	    return $data;
+        $charset = $_charset ? $_charset : mb_detect_encoding($html, array('ASCII', 'GB2312', 'GBK', 'UTF-8'));
+        $phpquery = phpQuery::newDocumentHTML("$html",$charset);
+        $data = array();
+        if($_area){
+            $area = is_array($_area) ? pq($_area[0])->find($_area[1]) : pq($_area);
+            foreach ($area as $k => $v){
+                while (!!list($key,$value) = each($_filter)){
+                    switch ($value[1]){
+                        case 'text' :
+                            $data[$k][$key] = trim(pq($v)->find($value[0])->text());
+                            break;
+                        case 'html' :
+                            $data[$k][$key] = pq($v)->find($value[0])->html();
+                            break;
+                        default:
+                            $data[$k][$key] = pq($v)->find($value[0])->attr($value[1]);
+                            break;
+                    }
+                }
+                reset($_filter);
+            }
+        }else{
+            while (!!list($key,$value) = each($_filter)){
+                switch ($value[1]){
+                    case 'text' :
+                        $data[$key] = trim(pq('body')->find($value[0])->text());
+                        break;
+                    case 'html' :
+                        $data[$key] = pq('body')->find($value[0])->html();
+                        eval('$data[$key] = '.iconv($charset, 'UTF-8'.'//IGNORE', var_export($data[$key],TRUE)).';');
+                        break;
+                    default:
+                        $data[$key] = pq('body')->find($value[0])->attr($value[1]);
+                        break;
+                }
+            }
+            reset($_filter);
+        }
+        return $data;
 	}

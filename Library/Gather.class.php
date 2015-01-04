@@ -170,6 +170,22 @@
 		    return $list;
 		}
 		
+		function getQisuu($_where = 1,$_limit = 'count',$_order = 'id DESC'){
+		    $m = M('QisuuGather');
+		    if($_limit == 1){
+		        $list = $m->where($_where)->order($_order)->find();
+		        return $list;
+		    }elseif($_limit == 'count'){
+		        $count = $m->where($_where)->count();
+		        return $count;
+		    }elseif($_limit == 'all'){
+		        $list = $m->where($_where)->order($_order)->select();
+		        return $list;
+		    }
+		    $list = $m->where($_where)->order($_order)->limit($_limit)->select();
+		    return $list;
+		}
+		
 		/**
 		 * 根据ids返回章节
 		 * @param string $_ids

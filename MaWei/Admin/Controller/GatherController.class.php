@@ -374,6 +374,50 @@
  			        break;
 			}
 		}
+		/**
+		 * qisuu
+		 * @param array
+		 * @param string 
+		 * @return array
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2015-1-4 下午4:07:25
+		 */
+		function qisuu(){
+		    $method = $_REQUEST['method'];
+		    $gpage = $_REQUEST['gpage'] ? intval($_REQUEST['gpage']) : 100;
+		    switch ($method){
+		        case 'gather' :
+		            $m = M('QisuuGather');
+		            $url = 'http://www.qisuu.com/soft/sort01';
+		            for($i = 2;$i < 3;$i++){
+		                $filter = 'name$.mainSoftName>a-text|url$.mainSoftName>a-href';
+		                $list = getUrlGather($url.'/index_'.$i.'.html', $this->_filter($filter),array('#listbox','.mainListInfo'),'gb2312');
+		                foreach ($list as $k => $v){
+		                    $data = array();
+		                    $data['name'] = preg_filter('/《|》|全集|-|_/', '', $v['name']);
+		                    $data['url'] = 'http://www.qisuu.com'.$v['url'];
+		                    $m->add($data);
+		                }
+// 		                $m->addAll($data);dump($data);
+// 		                echo $m->getlastsql();exit;
+		            }
+		            break;
+		        case 'file' :
+		            $data = array();
+		            $tmp = $this->gather->getQisuu(array('is_dispose'=>0),1);
+		            $data['id'] = $tmp['id'];
+		            $filter = array('cover'=>array('#downInfoArea>div>a>img','src'),'intro'=>array('#clickeye_content','html'),'author'=>array('#downInfoArea>.downInfoRowL>a','text'));
+// 		            $gather = getUrlGather($tmp['url'], $filter,'','GB2312');
+		            //下载文件
+                    $html = file_get_contents($tmp['url']);
+		            preg_match('/.*thunderResTitle=\'(.*)\' thunderType=/',$html ,$matches);
+                    $content = file_get_contents($matches['1']);      
+		            file_put_contents('a.rar', $content);
+		            dump($url);
+		        default : 
+		            exit;
+		    }
+		}
 		
 		/**
 		 * 发布小说
