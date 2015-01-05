@@ -405,15 +405,32 @@
 		        case 'file' :
 		            $data = array();
 		            $tmp = $this->gather->getQisuu(array('is_dispose'=>0),1);
-		            $data['id'] = $tmp['id'];
 		            $filter = array('cover'=>array('#downInfoArea>div>a>img','src'),'intro'=>array('#clickeye_content','html'),'author'=>array('#downInfoArea>.downInfoRowL>a','text'));
-// 		            $gather = getUrlGather($tmp['url'], $filter,'','GB2312');
+		            $gather = getUrlGather($tmp['url'], $filter,'','GB2312');
+// 		            dump($gather);exit;
 		            //下载文件
                     $html = file_get_contents($tmp['url']);
 		            preg_match('/.*thunderResTitle=\'(.*)\' thunderType=/',$html ,$matches);
-                    $content = file_get_contents($matches['1']);      
-		            file_put_contents('a.rar', $content);
-		            dump($url);
+                    $file = downFile($matches['1'],'Novel',null,false);
+                    $ofile = rar_open($file);
+                    $f_list = rar_list($ofile);
+                    $filepath = null;
+                    foreach ($f_list as $k => $v){
+                        if(getFileExeName($v->getName()) == 'txt' && $v->getUnpackedSize() > 2000){
+                            $fpath = UPLOAD_PATH.'Novel/'.date('Ym').'/';
+                            $v->extract($fpath);
+                            $filepath = $fpath.$v->getName();
+                        }
+                    }
+                    rar_close($ofile);
+                    unlink($file);
+                    $data['filepath'] = $filepath;
+		            //下载封面
+		            $data['cover'] = downFile('http://www.qisuu.com'.$gather['cover'],'Cover');
+		            $data['intro'] = $gather['intro'];
+		            $data['is_dispose'] = 1;
+		            M('QisuuGather')->where('id='.$tmp['id'])->save($data);
+		            echo M('QisuuGather')->getlastsql();
 		        default : 
 		            exit;
 		    }

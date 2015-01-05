@@ -239,14 +239,14 @@
 // 	}
 
 	/**
-	 * 下载图片
+	 * 下载文件
 	 * @param  string $_path 文件夹路径
 	 * @return array
 	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2014-8-3  下午2:10:22
 	 * @qq群号：341411327
 	 */
-	function downImg($_url,$_path = null,$_name = null){
+	function downFile($_url,$_path = null,$_name = null,$_chmod = TRUE){
 	    ob_start();
 	    readfile($_url);
 	    $img = ob_get_contents();
@@ -255,14 +255,16 @@
 	        $exname = getFileExeName($_url);
 	        $_name = date('YmdHms').rand(10).'.'.$exname;
 	    }
-	    if(! $_path){
-	        $_path = UPLOAD_PATH.'/avatar'.'/';
+	    if($_path){
+	        $_path = UPLOAD_PATH.$_path.'/'.date('Ym').'/';
+	    }else{
+	        $_path = UPLOAD_PATH.'avatar/'.date('Ym').'/';
 	    }
 	    createDir($_path);
 	    $path = $_path.$_name;
 	    file_put_contents($path, $img);
 	    if(is_file($path)){
-	        chmod($path, 0444);//这步不能少，放病毒攻击
+	        $_chmod && chmod($path, 0444);//这步不能少，防病毒攻击
 	        return $path;
 	    }
 	    return null;
