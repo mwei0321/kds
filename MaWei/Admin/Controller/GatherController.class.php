@@ -384,22 +384,31 @@
 		 */
 		function qisuu(){
 		    $method = $_REQUEST['method'];
-		    $gpage = $_REQUEST['gpage'] ? intval($_REQUEST['gpage']) : 100;
+// 		    $gpage = $_REQUEST['gpage'] ? intval($_REQUEST['gpage']) : 100;
+// 		    $cateid = $_REQUEST['cateid'] ? intval($_REQUEST['cateid']) : 1;
 		    switch ($method){
 		        case 'gather' :
 		            $m = M('QisuuGather');
-		            $url = 'http://www.qisuu.com/soft/sort01';
-		            for($i = 2;$i < 3;$i++){
+		            $config = explode('|',file_get_contents('gpage.txt'));
+		            $gpage = intval($config['0']);
+		            $cateid = intval($config['1']);
+		            $url = $config[2];
+		            if($gpage > 2){
+		                $log = fopen('gathername'.$cateid.'.txt', 'a');
+		                fwrite($log, "\r\n".'------------ page'.$gpage.'------------'."\r\n\r\n");
 		                $filter = 'name$.mainSoftName>a-text|url$.mainSoftName>a-href';
-		                $list = getUrlGather($url.'/index_'.$i.'.html', $this->_filter($filter),array('#listbox','.mainListInfo'),'gb2312');
+		                $list = getUrlGather($url.'/index_'.$gpage.'.html', $this->_filter($filter),array('#listbox','.mainListInfo'),'gb2312');
 		                foreach ($list as $k => $v){
 		                    $data = array();
 		                    $data['name'] = preg_filter('/《|》|全集|-|_/', '', $v['name']);
 		                    $data['url'] = 'http://www.qisuu.com'.$v['url'];
-		                    $m->add($data);
+		                    $data['cateid'] = $cateid;
+		                    if($m->add($data)){
+		                        fwrite($log, $data['name'].' --  '.$data['url'].' --  '.date('Y-m-d H:m:s')."\t\n");
+		                    }
 		                }
-// 		                $m->addAll($data);dump($data);
-// 		                echo $m->getlastsql();exit;
+		                fclose($log);
+		                file_put_contents('gpage.txt', ($gpage-1)."|$cateid|$url");
 		            }
 		            break;
 		        case 'file' :
@@ -430,7 +439,7 @@
 		            $data['intro'] = $gather['intro'];
 		            $data['is_dispose'] = 1;
 		            M('QisuuGather')->where('id='.$tmp['id'])->save($data);
-		            echo M('QisuuGather')->getlastsql();
+// 		            echo M('QisuuGather')->getlastsql();
 		        default : 
 		            exit;
 		    }

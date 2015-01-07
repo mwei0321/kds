@@ -170,6 +170,14 @@
 		    return $list;
 		}
 		
+		/**
+		 * 奇书采集列表
+		 * @param array
+		 * @param string 
+		 * @return array
+		 * @author MaWei (http://www.phpyrb.com)
+		 * @date 2015-1-7 下午3:53:37
+		 */
 		function getQisuu($_where = 1,$_limit = 'count',$_order = 'id DESC'){
 		    $m = M('QisuuGather');
 		    if($_limit == 1){
