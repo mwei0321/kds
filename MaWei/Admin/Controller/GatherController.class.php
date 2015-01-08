@@ -394,7 +394,7 @@
 		            $cateid = intval($config['1']);
 		            $url = $config[2];
 		            if($gpage > 2){
-		                $log = fopen('gathername'.$cateid.'.txt', 'a');
+		                $log = fopen('./log/gathername'.$cateid.'.txt', 'a');
 		                fwrite($log, "\r\n".'------------ page'.$gpage.'------------'."\r\n\r\n");
 		                $filter = 'name$.mainSoftName>a-text|url$.mainSoftName>a-href';
 		                $list = getUrlGather($url.'/index_'.$gpage.'.html', $this->_filter($filter),array('#listbox','.mainListInfo'),'gb2312');
@@ -420,22 +420,25 @@
 		            //下载文件
                     $html = file_get_contents($tmp['url']);
 		            preg_match('/.*thunderResTitle=\'(.*)\' thunderType=/',$html ,$matches);
-                    $file = downFile($matches['1'],'Novel',null,false);
+                    $file = downFile($matches['1'],'Tmp/',null,'0777');
                     $ofile = rar_open($file);
                     $f_list = rar_list($ofile);
                     $filepath = null;
                     foreach ($f_list as $k => $v){
                         if(getFileExeName($v->getName()) == 'txt' && $v->getUnpackedSize() > 2000){
-                            $fpath = UPLOAD_PATH.'Novel/'.date('Ym').'/';
+                            $fpath = 'Tmp/';
                             $v->extract($fpath);
                             $filepath = $fpath.$v->getName();
                         }
                     }
                     rar_close($ofile);
                     unlink($file);
+                    $log = fopen('log/download.txt', 'a');
+                    fwrite($log, $tmp['name'].'  ---  '.$filepath.'  ---  '.date('Y-m-d H:m:s')."\n");
+                    fclose($log);
                     $data['filepath'] = $filepath;
 		            //下载封面
-		            $data['cover'] = downFile('http://www.qisuu.com'.$gather['cover'],'Cover');
+		            $data['cover'] = downFile('http://www.qisuu.com'.$gather['cover'],UPLOAD_PATH.'Cover/'.date('Ym').'/');
 		            $data['intro'] = $gather['intro'];
 		            $data['is_dispose'] = 1;
 		            M('QisuuGather')->where('id='.$tmp['id'])->save($data);

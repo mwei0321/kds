@@ -246,7 +246,7 @@
 	 * @date 2014-8-3  下午2:10:22
 	 * @qq群号：341411327
 	 */
-	function downFile($_url,$_path = null,$_name = null,$_chmod = TRUE){
+	function downFile($_url,$_path = null,$_name = null,$_chmod = '0444'){
 	    ob_start();
 	    readfile($_url);
 	    $img = ob_get_contents();
@@ -255,16 +255,16 @@
 	        $exname = getFileExeName($_url);
 	        $_name = date('YmdHms').rand(10).'.'.$exname;
 	    }
-	    if($_path){
-	        $_path = UPLOAD_PATH.$_path.'/'.date('Ym').'/';
-	    }else{
+	    //默认路径
+	    if(! $_path){
 	        $_path = UPLOAD_PATH.'avatar/'.date('Ym').'/';
 	    }
+	    
 	    createDir($_path);
 	    $path = $_path.$_name;
 	    file_put_contents($path, $img);
 	    if(is_file($path)){
-	        $_chmod && chmod($path, 0444);//这步不能少，防病毒攻击
+	        chmod($path, $_chmod);//这步不能少，防病毒攻击
 	        return $path;
 	    }
 	    return null;
