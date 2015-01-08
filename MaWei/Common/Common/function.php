@@ -49,6 +49,27 @@
 	}
 	
 	/**
+	 * 把字符串写成文件
+	 * @param string $_str 要写入字符串
+	 * @param string $_path 文件路径名称
+	 * @param int $_type 0为复写,1.为添写
+	 * @return int|boolean
+	 * @author MaWei (http://www.phpyrb.com)
+	 * @date 2015-1-8 下午4:48:29
+	 */
+	function writeFile($_str,$_path,$_type = 0){
+	    $status = null;
+	    if($_type){
+	        $status = file_put_contents($_path, $_str);
+	    }else{
+	        $f = fopen($_path, 'a');
+	        $status = fwrite($f, $_str);
+	        fclose($f);
+	    }
+	    return $status;
+	}
+	
+	/**
 	 * 把处理过的HTML还原
 	 * @param array $_data
 	 * @param array $_field 要还原的KEY

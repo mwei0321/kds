@@ -374,6 +374,16 @@
  			        break;
 			}
 		}
+		
+		function qisuulist(){
+		    $count = $this->gather->getQisuu();
+		    $page = new Page($count,50);
+		    $list = $this->gather->getQisuu(1,"$page->firstRow,$page->listRows",'id DESC');
+// 		    dump($list);
+		    $this->assign('list',$list);
+		    $this->display();
+		}
+		
 		/**
 		 * qisuu
 		 * @param array
@@ -439,8 +449,67 @@
 		            $data['intro'] = $gather['intro'];
 		            $data['is_dispose'] = 1;
 		            M('QisuuGather')->where('id='.$tmp['id'])->save($data);
-// 		            echo M('QisuuGather')->getlastsql();
-		        default : 
+		            echo M('QisuuGather')->getlastsql();
+		            break;
+		        case 'view':
+		            $id = intval($_REQUEST['id']);
+		            $info = M('QisuuGather')->field('id,filepath')->where('id='.$id)->find();
+		            $f = fopen($info['filepath'], 'r');
+		            $str = fread($f, 1000);
+		            $content = autoCharset($str);
+		            fclose($f);
+		            
+		            $this->assign('id',$id);
+		            $this->assign('content',$content);
+		            $this->display('fileview');
+		            break;
+		        case 'filter' :
+		            if($_REQUEST['preg']){
+		                $data = array();
+		                $data['id'] = intval($_REQUEST['id']);
+		                $data['filter_preg'] = $_REQUEST['preg'];
+		                $data['filter_keyword'] = $_REQUEST['keyword'];
+		                M('QisuuGather')->save($data);
+		            }else{
+		                echo '过滤归则不能为空';
+		            }
+		            break;
+		        case 'send':
+		            $ids = $_REQUEST['ids'];
+		            $list = $this->gather->getQisuu(array('id'=>array('IN',$ids),'is_dispose'=>2,));
+		            $m = M('Book');
+		            $i = 0;
+		            foreach ($list as $k => $v){
+		               if($v['filter_preg']){
+		                   $data = array();
+		                   $data['name'] = $v['name'];
+		                   $data['cover'] = $v['cover'];
+		                   $data['intro'] = $v['intro'];
+		                   $data['end_status'] = 1;
+		                   $data['author'] = $v['author'];
+		                   $data['cateid'] = $v['cateid'];
+		                   $data['uptime'] = $data['ctime'] = time();
+		                   if(!! $reid = $m->add($data)){
+		                       $path = createDir(NOVEL_PATH.date('Y',$data['ctime']).'/'.$reid.'/');
+		                       $list = $this->gather->readfile($v['filepath'],$v['filter_preg'],$v['filter_keyword']);
+		                       $chapter = getChapterTable($reid);
+		                       $chapter = M($chapter);
+		                       foreach ($list as $k => $v){
+		                           $tmp = array();
+		                           $tmp['title'] = $v['title'];
+		                           $tmp['book_id'] = $reid;
+		                           $tmp['uptime'] = time();
+		                           $chapter->add($tmp);
+		                           writeFile($v['content'], $path.$k.'.txt');
+		                       }
+		                       $i++;
+		                   }
+		               }
+		            }
+		            echo '共发布成功'.$i;
+		            exit;
+		            break;
+		        default :
 		            exit;
 		    }
 		}
@@ -506,6 +575,7 @@
 		                $data[$k]['title'] = $v['title'];
 		                $data[$k]['content'] = $v['content'];
 		            }
+		            
 		    }
 		}
 		

@@ -30,12 +30,15 @@
 		* @date 2014-11-16  下午9:04:55
 		*/
 		function readfile($_file,$_chapter = null,$_filter = array(),$_replace = ''){
-		    $data = file($_file,FILE_SKIP_EMPTY_LINES);
+		    $data = file($_file,FILE_SKIP_EMPTY_LINES|FILE_IGNORE_NEW_LINES);
 			$content = array();
 			$i = $init = 0;
-			!$_chapter && $_chapter = '/(第[\d|一|二|三|四|五|六|七|八|九|十|百|千|万]+章{1})(.*)/';
+			!$_chapter && $_chapter = '/^(第[\d|一|二|三|四|五|六|七|八|九|十|百|千|万]+章{1})(.*)/';
+			for ($i = 0;$i < 3;$i++){
+			    unset($data[$i]);
+			}
 			foreach ($data as $k => $v){
-				$v = trim($v);
+				$v = autoCharset(trim($v));
 				if(preg_match_all($_chapter, $v , $title)){
 					$init && $i ++;
 					$content[$i]['title'] = $title[2][0];
@@ -191,6 +194,7 @@
 		        return $list;
 		    }
 		    $list = $m->where($_where)->order($_order)->limit($_limit)->select();
+// 		    echo $m->getlastsql();
 		    return $list;
 		}
 		
