@@ -381,6 +381,7 @@
 		    $list = $this->gather->getQisuu(1,"$page->firstRow,$page->listRows",'id DESC');
 // 		    dump($list);
 		    $this->assign('list',$list);
+		    $this->assign('page',$page->show());
 		    $this->display();
 		}
 		
@@ -443,6 +444,7 @@
                     }
                     rar_close($ofile);
                     unlink($file);
+                    writeFile($tmp['id'].'  ----  '.$tmp['name'].'  -----  '.$filepath.' ----- '.date('Y-m-d H:m:s')."\n" , 'log/download.txt',1);
                     $data['filepath'] = $filepath;
 		            //下载封面
 		            $data['cover'] = downFile('http://www.qisuu.com'.$gather['cover'],'Cover');
@@ -450,6 +452,15 @@
 		            $data['is_dispose'] = 1;
 		            M('QisuuGather')->where('id='.$tmp['id'])->save($data);
 		            echo M('QisuuGather')->getlastsql();
+		            break;
+		        case 'img':
+		            $tmp = $this->gather->getQisuu(array('cover'=>0),1);
+		            $filter = array('cover'=>array('#downInfoArea>div>a>img','src'));
+		            $gather = getUrlGather($tmp['url'], $filter,'','GB2312');
+		            //下载封面
+		            $data['cover'] = downFile('http://www.qisuu.com'.$gather['cover'],'Cover');
+		            M('QisuuGather')->where('id='.$tmp['id'])->save($data);
+		            exit;
 		            break;
 		        case 'view':
 		            $id = intval($_REQUEST['id']);
@@ -466,17 +477,29 @@
 		        case 'filter' :
 		            if($_REQUEST['preg']){
 		                $data = array();
-		                $data['id'] = intval($_REQUEST['id']);
+		                $id = intval($_REQUEST['id']);
 		                $data['filter_preg'] = $_REQUEST['preg'];
 		                $data['filter_keyword'] = $_REQUEST['keyword'];
-		                M('QisuuGather')->save($data);
+		                $reid = M('QisuuGather')->where(array('id'=>$id))->save($data);
+                        echo '添加正则成功!';
+// 		                echo M('QisuuGather')->getLastsql();
 		            }else{
 		                echo '过滤归则不能为空';
 		            }
 		            break;
+		        case 'del':
+		            $where = $_REQUEST['ids'] < 0 ? 1 : array('id'=>array('IN',$_REQUEST['ids']));
+		            $list = $this->gather->getQisuu($where,'all');
+		            $m = M('QisuuGather');
+		            foreach ($list as $k => $v){
+		                unlink($v['filepath']);
+		                $reid = $m->where('id='.$v['id'])->delete();
+		            }
+		            echo $reid;
+		            break;
 		        case 'send':
 		            $ids = $_REQUEST['ids'];
-		            $list = $this->gather->getQisuu(array('id'=>array('IN',$ids),'is_dispose'=>2,));
+		            $list = $this->gather->getQisuu(array('id'=>array('IN',$ids),'is_dispose'=>1,),'all');
 		            $m = M('Book');
 		            $i = 0;
 		            foreach ($list as $k => $v){
@@ -490,23 +513,30 @@
 		                   $data['cateid'] = $v['cateid'];
 		                   $data['uptime'] = $data['ctime'] = time();
 		                   if(!! $reid = $m->add($data)){
-		                       $path = createDir(NOVEL_PATH.date('Y',$data['ctime']).'/'.$reid.'/');
+		                       $path = NOVEL_PATH.date('Y',$data['ctime']).'/'.$reid.'/';
+		                       createDir($path);
 		                       $list = $this->gather->readfile($v['filepath'],$v['filter_preg'],$v['filter_keyword']);
+		                       writeFile($list['file'],$path.$v['name'].'.txt');
+		                       unset($list['file']);
 		                       $chapter = getChapterTable($reid);
 		                       $chapter = M($chapter);
+		                       $i = 1;
 		                       foreach ($list as $k => $v){
 		                           $tmp = array();
 		                           $tmp['title'] = $v['title'];
 		                           $tmp['book_id'] = $reid;
 		                           $tmp['uptime'] = time();
 		                           $chapter->add($tmp);
-		                           writeFile($v['content'], $path.$k.'.txt');
+		                           writeFile($v['content'], $path.$i.'.txt');
+		                           $i++;
 		                       }
 		                       $i++;
 		                   }
+		                   //更新发布状态
+		                   M('QisuuGather')->where('id='.$v['id'])->setField('is_dispose',2);
 		               }
 		            }
-		            echo '共发布成功'.$i;
+		            echo '共发布成功'.$i.'章节';
 		            exit;
 		            break;
 		        default :
@@ -628,7 +658,7 @@
 			}else{
 				$m = M("$model")->delete($ids);
 			}
-// 			echo M("$model")->getLastSql();
+			echo M("$model")->getLastSql();
 			if($m === false){
 				echo null;
 			}else{

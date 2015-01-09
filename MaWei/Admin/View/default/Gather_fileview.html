@@ -5,12 +5,11 @@
     <div class="col-lg-12">
         <div class="panel panel-default bootstrap-admin-no-table-panel">
             <div class="tabnavcont">
-                    <input type="hidden" name="id" value="{$id}" />
                     <fieldset>
                         <div class="form-group">
                             <label class="col-lg-3 control-label" for="focusedInput">章节正则</label>
                             <div class="col-lg-7">
-                                <input class="form-control" name="preg" id="preg" type="text" placeholder="" value="/^(第[\d|一|二|三|四|五|六|七|八|九|十|百|千|万]+章{1})(.*)/">
+                                <input class="form-control" name="preg" id="preg" type="text" placeholder="" value="/^(第[\d]|一|二|三|四|五|六|七|八|九|十|百|千|万+[章|节]{1})/">
                             </div>
                         </div>
                         <div class="form-group">
@@ -30,14 +29,13 @@
             </div>
             <script>
                 var filter = function () {
+                    var reg = $('#preg').val().replace(/\+/g,'%2B');
                     $.ajax({
                         type : 'post',
-                        data : 'preg='+$('#preg').val()+'&keyword='+$('#keyword').val(),
-                        url  : "{:U('Admin/Gather/qisuu',array('method'=>'filter'))}"
+                        data : 'preg='+reg+'&keyword='+$('#keyword').val(),
+                        url  : "{:U('Admin/Gather/qisuu',array('method'=>'filter','id'=>$id))}"
                     }).done(function (e){
-                        layer.close(0.02);
-                        var msg = e;
-                        setTimeout(function (e) {layer.success(msg)},800);
+                        layer.msg(e,e);
                     });
                 }
             </script>

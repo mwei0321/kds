@@ -38,12 +38,22 @@ var layer = {};
 			//close();
 		},
 		//错误提示
-		error : function(msg,time) {
-			layer._message(msg,0,time);
+		error : function(msg,time,close) {
+			time = time ? time : 1.5;
+			layer._message(msg,0,time,close);
 		},
 		//操作成功提示
-		success : function(msg,time) {
-			layer._message(msg,1,time);
+		success : function(msg,time,close) {
+			time = time ? time : 1.5;
+			layer._message(msg,1,time,close);
+		},
+		//消息提示
+		msg : function (msg,status,time,close) {
+			if(status){
+				layer.success(msg,time,close);
+			}else{
+				layer.error(msg,time,close);
+			}
 		},
 		//可以url加载
 		load : function (title,url,parem){
@@ -79,7 +89,7 @@ var layer = {};
 		},
 		
 		_html : function (cont,title,ajx) {
-			layer._style();
+			layer._init();
 			var t = title ? '<div id="lytitle"><h3>'+title+'<a href="javascript:;" onclick="layer.close(0.4);" title="关闭">X</a></h3></div>' : '';
 			var html = '<div id="mwbg" show="1"></div>'+
 						'<div id="outsidebox">'+ t +
@@ -92,20 +102,28 @@ var layer = {};
 			layer.status = 1;
 		},
 		//消息提示
-		_message : function (msg,type,time) {
+		_message : function (msg,type,time,cle) {
+			layer._init();
 			var clas = type ? 'success' : 'error';
-			var html = '<span class="' + clas + '">' + msg + '</span>';
-			layer._html(html);
-			layer.close(time);
-			
-			var msg = '<div id="laymsgmw"><span class="' + clas + '">' + msg + '</span></div>';
-			var html = '';
-			if(!layer.status){
-				html = '<div id="mwbg" show="1"></div>'+
-					   '<div id="outsidebox">'+ msg +'<div>';
-			}
-			$('#outsidebox').append(msg);
-			
+			var yclose =  cle ? cle : (type ? 1 : 0); 
+			//是否要关闭主窗口,如果是成功信息默认关闭
+			(yclose && layer.status) ? $('#outsidebox').remove() : false;
+			//拼装HTML
+			var msg = '<div id="msgbgw"></div><div id="laymsgmw"><span class="' + clas + '">' + msg + '</span></div>';
+			//添加html
+			$('body').prepend(msg);
+			//居中
+			layer._center('#laymsgmw');
+			//主窗口状态 
+			var status = layer.status;
+     		var setmsg = setTimeout(function() {
+     			yclose ? layer._nowClose() : false;//删除主窗口
+     			//消息关闭
+				$('#laymsgmw').fadeOut('1000', function() {
+					$(this).remove();
+					$('#msgbgw').remove();
+				});
+			}, time * 1000);
 			return false;
 		},
 		//居中
@@ -137,16 +155,23 @@ var layer = {};
 	     	});
 		},
 		_style : function (){
-			var style = '<style>#mwbg{display:block;position:fixed;z-index:900;opacity: 0.8;filter:Alpha(Opacity=90);postion:fixed;background:' + Options.bgColor + ';top:0;left:0;width:100%;height:100%;}' + 
-			'#outsidebox{border:5px solid #666;background:#fff;border-radius:10px;z-index:910;position:fixed;padding:10px;display:none;} #outsidebox h3{height:35px;line-height:35px;border-bottom:1px solid #ccc;background:#efefef;}' +
-			 '#outsidebox .error{color:red;font-size:14px;} #outsidebox .success{color:green;font-size:14px;} ' + '#outsidebox .clr{clear:both;padding:0;margin:0;}' + 
+			var style = '<style>#mwbg,#msgbgw{display:block;position:fixed;z-index:900;opacity: 0.8;filter:Alpha(Opacity=90);postion:fixed;background:' + Options.bgColor + ';top:0;left:0;width:100%;height:100%;}' + 
+			'#outsidebox,#laymsgmw{border:5px solid #666;background:#fff;border-radius:10px;z-index:910;position:fixed;padding:10px;display:none;} #outsidebox h3{height:35px;line-height:35px;border-bottom:1px solid #ccc;background:#efefef;}' +
+			 '#laymsgmw .error{color:red;font-size:14px;} #laymsgmw .success{color:green;font-size:14px;} ' + '#outsidebox .clr{clear:both;padding:0;margin:0;}' + 
 			 '#outsidebox #box_content{padding:0 10px;max-height:800px;overflow:hidden;overflow-y:auto;}'+
 			 '#outsidebox #lytitle{height:30px;margin-bottom:20px;} #outsidebox #lytitle h3{height:40px;line-height:40px;color:#999;padding:0 15px;border:1px solid #ccc;font-size:18px;margin:0;linear-gradient(to bottom, #f5f5f5 0%, #e8e8e8 100%);border-radius:5px;color:#666;font-family:微软雅黑} '+ 
 			 '#outsidebox #lytitle h3 a{display:inline-block;width:20px;height:20px;font-size:18px;color:#333;float:right;cursor:pointer;text-align:center;line-height:40px;font-weight:bold;} #outsidebox #lytitle h3 a:hover{color:#a00;}'+
-			 '#outsidebox #laymsgmw{position:fixed;dispaly:block;z-index:999;}'+
+			 '#laymsgmw{z-index:999;}#msgbgw{z-index:998;}'+
 			 '</style>';
 			$("head").append(style);
 		},
+		_init : function (){
+			var obj = $('body');
+			if(! obj.hasClass('layercss')){
+				obj.addClass('layercss');
+				layer._style();
+			};
+		}
 	});
 	
 })(jQuery, window, document)

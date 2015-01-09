@@ -59,7 +59,7 @@
 	 */
 	function writeFile($_str,$_path,$_type = 0){
 	    $status = null;
-	    if($_type){
+	    if(!$_type){
 	        $status = file_put_contents($_path, $_str);
 	    }else{
 	        $f = fopen($_path, 'a');
@@ -274,7 +274,7 @@
 	    ob_end_clean();
 	    if(! $_name){
 	        $exname = getFileExeName($_url);
-	        $_name = date('YmdHms').rand(10).'.'.$exname;
+	        $_name = date('YmdHms').randString(5).'.'.$exname;
 	    }
 	    if($_path){
 	        $_path = UPLOAD_PATH.$_path.'/'.date('Ym').'/';
