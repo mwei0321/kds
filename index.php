@@ -27,6 +27,7 @@
 	//根路径
 	define('ROOT_PATH', str_replace('\\','/',dirname(__FILE__)));
 	define('UPLOAD_PATH','Uploads/');
+	define('NOVEL_PATH','Novel/');
 	
 	// 引入ThinkPHP入口文件
 	require './ThinkPHP/ThinkPHP.php';
