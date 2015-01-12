@@ -54,7 +54,7 @@
                                     <td><input type="checkbox" name="ids[]" value="{$v['id']}" class="checkalls"/></td>
                                     <td>{$v['id']}</td>
                                     <td>{$catelist[$v['cateid']]['name']}</td>
-                                    <td>{$v['title']}</td>
+                                    <td>{$v['name']}</td>
                                     <td><img src="{$v['cover']}" style="width:50px;height:50px;"/></td>
                                     <td class="upstat">{$status[$v['status']]}</td>
                                     <td>{$v['comment_num']}</td>
@@ -64,7 +64,7 @@
                                     <td class="bnt-pl3">
                                         <a href="{:U('Admin/Book/edit',array('id'=>$v['id']))}" ><i class="glyphicon glyphicon-pencil"></i></a>
                                         <!-- set recommend -->
-                                        <a href="javascript:void(0);" url="{:U('Admin/Book/recommend',array('id'=>$v['id']))}" recomm="{$v['recommend']}" onclick="recommend($(this));">
+                                        <a href="javascript:void(0);" url="{:U('Admin/Book/recommend',array('id'=>$v['id']))}" recomm="{$v['recommend']}" onclick="recommend($(this));" title="设置推荐">
                                             <if condition="$v['recommend'] EQ 1">
                                                 <i class="glyphicon glyphicon-flag" style="color:green;"></i>
                                             <else />
@@ -72,7 +72,7 @@
                                             </if>
                                         </a>
                                         <!-- set status -->
-                                        <a href="javascript:void(0);" url="{:U('Admin/Book/status')}" style="color:red;" status="{$v['status']}" onclick="setstatus($(this),{$v['id']});">
+                                        <a href="javascript:void(0);" url="{:U('Admin/Book/status')}" style="color:red;" status="{$v['status']}" onclick="setstatus($(this),{$v['id']});" title="设置状态">
                                             <if condition="$v['status'] EQ 1">
                                                 <i class="glyphicon glyphicon-minus-sign" style="color:red;"></i>
                                             <else />
@@ -80,8 +80,8 @@
                                             </if>
                                         </a>
                                         <!-- delete -->
-                                        <a href="javascript:void(0);" url="{:U('Admin/Book/delete')}" onclick="delall($(this),{$v['id']});"><i style="color:#b00;"  class="glyphicon glyphicon-trash"></i></a>
-                                        <a href="javascript:void(0);" onclick="layer.load('章节列表','{:U('Admin/Book/chapter',array('bookid'=>$v['id']))}');"><i style="color:#b00;"  class="glyphicon glyphicon-trash"></i></a>
+                                        <a href="javascript:void(0);" url="{:U('Admin/Book/delete')}" onclick="delall($(this),{$v['id']});" title="删除小说"><i style="color:#b00;"  class="glyphicon glyphicon-trash"></i></a>
+                                        <a href="{:U('Admin/Book/chapter',array('bookid'=>$v['id'],'name'=>$v['name']))}" title="章节列表"><i style="color:#b00;"  class="glyphicon glyphicon-trash"></i></a>
                                     </td>
                                 </tr>
                             </volist>

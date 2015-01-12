@@ -51,9 +51,10 @@
 		 */
 		function chapter(){
 		    $bookid = intval($_REQUEST['bookid']);
-		    $count = $this->book->getBookChapter($bookid);
+		    $count = $this->book->getBookChapter($bookid,'count');
 		    $page = new Page($count,20,array(),array('ajax'=>1));
 		    $list = $this->book->getBookChapter($bookid,"$page->firstRow,$page->listRows");
+		    
 		    
 		    $this->assign('list',$list);
 		    $this->assign('page',$page->show());
@@ -61,11 +62,12 @@
 		        $this->assign('html',1);
 		        $data = array();
 		        $data['show'] = $page->show();
-		        $html = $this->fetch();
+		        $html = $this->fetch('pagechpater');
 		        $data['html'] = $html;
 		        echo json_encode($data);
 		        exit;
 		    }
+		    $this->assign('name',$_REQUEST['name']);
 		    $this->display();
 		}
 		
@@ -135,7 +137,7 @@
 			if($_REQUEST['id']){
 				$info = $this->book->bookinfo(intval($_REQUEST['id']));
 // 				dump($info);
-				$this->assign('info',$info[0]);
+				$this->assign('info',$info);
 			}
 			$this->display();
 		}
@@ -161,16 +163,15 @@
 			$data = array();
 			$_REQUEST['id'] && $data['id'] = intval($_REQUEST['id']);
 			$data['cateid'] = intval($_REQUEST['cateid']);
-			$data['tagid'] = implode(',', $_REQUEST['tagids']);
+// 			$data['tagid'] = implode(',', $_REQUEST['tagids']);
 			$data['grade'] = intval($_REQUEST['grade']);
 			$data['status'] = $_REQUEST['status'] ? intval($_REQUEST['status']) : 1;
-			$data['title'] = h(text($_REQUEST['title']));
-			$data['uid'] = $this->uid;
+			$data['name'] = h(text($_REQUEST['name']));
+			$data['author'] = h(text($_REQUEST['author']));
 			$data['uptime'] = time();
 			$data['recommend'] = intval($_REQUEST['recommend']);
-			$intro = text($_REQUEST['intro']);
-			$data['keyword'] = text($_REQUEST['keyword']);
-			$data['discription'] = $_REQUEST['discription'] ? $_REQUEST['discription'] : mb_substr($intro,0,150);
+			$data['end_status'] = intval($_REQUEST['end']);
+			$data['intro'] = $_REQUEST['$intro'];
 			if($_FILES['cover']['name']){
 				$avatar = uploads(array('path'=>'cover','ImgWidth'=>105,'ImgHeight'=>160,'filename'=>'cover'),true);
 				$data['cover'] = $avatar['thumb'];
@@ -179,15 +180,15 @@
 			if($reid === false){
 				$this->error('添加修改失败',U('Admin/Book/edit'));
 			}else{
-				$temp = array();
-				$temp['book_id'] = $_REQUEST['id'] ? intval($_REQUEST['id']) : $reid;
-				$temp['intro'] = $intro;
-				$temp['content'] = $_REQUEST['content'];
-				$reid = add_updata($temp,'bookContent','book_id');
-// 				if($reid === false){
-// 					$this->error('添加修改失败',U('Admin/book/index'));
-// 				}
-// 				$this->success('添加修改成功',U('Admin/book/index'));
+// 				$temp = array();
+// 				$temp['book_id'] = $_REQUEST['id'] ? intval($_REQUEST['id']) : $reid;
+// 				$temp['intro'] = $intro;
+// 				$temp['content'] = $_REQUEST['content'];
+// 				$reid = add_updata($temp,'bookContent','book_id');
+// // 				if($reid === false){
+// // 					$this->error('添加修改失败',U('Admin/book/index'));
+// // 				}
+				$this->success('添加修改成功',U('Admin/book/index'));
 			}
 			}
 		}
