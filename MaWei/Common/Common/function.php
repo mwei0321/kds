@@ -70,6 +70,33 @@
 	}
 	
 	/**
+	 * 读取文件
+	 * @param string $_path 文件路径
+	 * @param string|int $_type 读取类型 'array'读r成数组,'0'读取全部为字符串,'2'读取多少
+	 * @return string
+	 * @author MaWei (http://www.phpyrb.com)
+	 * @date 2015-1-12 下午4:09:42
+	 */
+	function rFile($_path,$_type = 'array'){
+	    if(file_exists($_path)){
+	        if($_type == 'array'){
+	            return file($_path,FILE_SKIP_EMPTY_LINES|FILE_IGNORE_NEW_LINES);
+	        }elseif($_type == 0){
+	            return file_get_contents($_path);
+	        }elseif(is_int($_type) && $_type > 0){
+	            $f = fopen($_path, 'r');
+	            $str = fread($f, $_type);
+	            fclose($f);
+	            return $str;
+	        }else{
+	            return null;
+	        }
+	    }else{
+	        return null;
+	    }
+	}
+	
+	/**
 	 * 把处理过的HTML还原
 	 * @param array $_data
 	 * @param array $_field 要还原的KEY

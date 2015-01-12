@@ -1,0 +1,20 @@
+<volist name="list" id="v">
+    <tr id="deleid_{$v['id']}">
+        <td><input type="checkbox" name="ids[]" value="{$v['id']}" class="checkalls"/></td>
+        <td>{$v['id']}</td>
+        <td>{$v['txtid']}</td>
+        <td>{$v['name']}</td>
+        <td>{$v['chapter']}</td>
+        <td>{$v['title']}</td>
+        <td>{$v['content']|strCutOut}</td>
+        <td>{$v['uptime']|date="Y-m-d H:m:s",###}</td>
+        <td class="bnt-pl3">
+            <a href="javascript:;" onclick="layer.load('章节编辑','{:U('Admin/Gather/edit',array('method'=>'chapter','id'=>$v['id']))}');" ><i class="glyphicon glyphicon-pencil"></i></a>
+            <!-- add chapter -->
+            <a href="javascript:;" onclick="sendChapter({$v['id']});" ><i class="glyphicon glyphicon-pencil"></i></a>
+            
+            <!-- delete -->
+            <a href="javascript:void(0);" url="{:U('Admin/Gather/delete',array('method'=>'chapter'))}" onclick="delall($(this),{$v['id']});"><i style="color:#b00;"  class="glyphicon glyphicon-trash"></i></a>
+        </td>
+    </tr>
+</volist>
