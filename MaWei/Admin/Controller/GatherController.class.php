@@ -409,12 +409,12 @@
 		            $config = explode('|',file_get_contents('gpage.txt'));
 		            $gpage = intval($config['0']);
 		            $cateid = intval($config['1']);
-		            $url = $config[2];
+		            $url = text($config[2]).'index_'.$gpage.'.html';
 		            if($gpage > 2){
 		                $log = fopen('./log/gathername'.$cateid.'.txt', 'a');
 		                fwrite($log, "\r\n".'------------ page'.$gpage.'------------'."\r\n\r\n");
 		                $filter = 'name$.mainSoftName>a-text|url$.mainSoftName>a-href';
-		                $list = getUrlGather($url.'/index_'.$gpage.'.html', $this->_filter($filter),array('#listbox','.mainListInfo'),'gb2312');
+		                $list = getUrlGather($url, $this->_filter($filter),array('#listbox','.mainListInfo'),'gb2312');
 		                foreach ($list as $k => $v){
 		                    $data = array();
 		                    $data['name'] = preg_filter('/《|》|全集|-|_/', '', $v['name']);
@@ -425,27 +425,40 @@
 		                    }
 		                }
 		                fclose($log);
-		                file_put_contents('gpage.txt', ($gpage-1)."|$cateid|$url");
+		                file_put_contents('gpage.txt', ($gpage-1)."|$cateid|".text($config[2]));
 		            }
+                    echo $url;
+                    echo $gpage;
 		            break;
 		        case 'file' :
 		        	$id = intval($_REQUEST['id']);
 		        	$where = $id ? array('id'=>$id) : array('is_dispose'=>0);
-		            $data = array();
+		            $data = $temp = array();
 		            $tmp = $this->gather->getQisuu($where,1);
 		            $filter = array('cover'=>array('#downInfoArea>div>a>img','src'),'intro'=>array('#clickeye_content','html'),'author'=>array('#downInfoArea>.downInfoRowL>a','text'));
 		            $gather = getUrlGather($tmp['url'], $filter,'','GB2312');
 // 		            dump($gather);exit;
+                    //
+                    $data['name'] = $tmp['name'];
+                    $data['author'] = $temp['author'] = $gather['author'];
+                    $data['intro'] = $temp['intro'] = $gather['intro'];
+                    $data['uptime'] = $data['ctime'] = time();
+                    $data['cateid'] = $tmp['cateid'];
+		            //下载封面
+		            $data['cover'] = downFile('http://www.qisuu.com'.$gather['cover'],UPLOAD_PATH.'Cover/'.date('Ym').'/');
+                    $bookid = M('Book')->add($data);
+                    $fpath = NOVEL_PATH.date('Y').'/'.$bookid.'/';
+                    createDir($fpath);
 		            //下载文件
                     $html = file_get_contents($tmp['url']);
 		            preg_match('/.*thunderResTitle=\'(.*)\' thunderType=/',$html ,$matches);
                     $file = downFile($matches['1'],'Tmp/',null,'0777');
+                
                     $ofile = rar_open($file);
                     $f_list = rar_list($ofile);
                     $filepath = null;
                     foreach ($f_list as $k => $v){
                         if(getFileExeName($v->getName()) == 'txt' && $v->getUnpackedSize() > 2000){
-                            $fpath = 'Tmp/';
                             $v->extract($fpath);
                             $filepath = $fpath.$v->getName();
                         }
@@ -453,12 +466,9 @@
                     rar_close($ofile);
                     unlink($file);
                     writeFile($tmp['id'].'  ----  '.$tmp['name'].'  -----  '.$filepath.' ----- '.date('Y-m-d H:m:s')."\n" , 'log/download.txt',1);
-                    $data['filepath'] = $filepath;
-		            //下载封面
-		            $data['cover'] = downFile('http://www.qisuu.com'.$gather['cover'],UPLOAD_PATH.'Cover/'.date('Ym').'/');
-		            $data['intro'] = $gather['intro'];
-		            $data['is_dispose'] = 1;
-		            M('QisuuGather')->where('id='.$tmp['id'])->save($data);
+                    $temp['filepath'] = $filepath;
+		            $temp['is_dispose'] = 1;
+		            M('QisuuGather')->where('id='.$tmp['id'])->save($temp);
 		            echo M('QisuuGather')->getlastsql();
 		            break;
 		        case 'img':
