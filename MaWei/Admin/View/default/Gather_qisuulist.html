@@ -22,8 +22,8 @@
                             <input type="text" name="keyword" class="intext" value="{$keyword}" placeholder="章节名称"/>
                             <input type="submit" class="btn btn-sm btn-primary" value="搜索"　/>
                         </form>
-                        <input type="button" url="{:U('Admin/Gather/delete',array('method'=>'chapter'))}" class="btn btn-sm btn-danger" value="批量删除" onclick="delall($(this))"　/>
-                         <input type="button" url="{:U('Admin/Gather/delete',array('method'=>'chapter'))}" class="btn btn-sm btn-danger" value="清空" onclick="delall($(this),-1)"　/>
+                        <input type="button" url="{:U('Admin/Gather/qisuu',array('method'=>'del'))}" class="btn btn-sm btn-danger" value="批量删除" onclick="delall($(this))"　/>
+                         <input type="button" url="{:U('Admin/Gather/qisuu',array('method'=>'del'))}" class="btn btn-sm btn-danger" value="清空" onclick="delall($(this),-1)"　/>
                     </div>
                     <div class="seach_select">
                         <input type="button" class="btn btn-sm btn-primary" value="添加网站" onclick="layer.load('web采集小说名','{:U('Admin/Gather/edit',array('method'=>'wcate'))}')"　/>
@@ -36,7 +36,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th><input type="checkbox"  check='1' id="checkall"/>
+                                <th><input type="checkbox"  check='1' id="checkall" onclick="layer.success('qqq')"/>
                                 <th>ID</th>
                                 <th>分类</th>
                                 <th>名称</th>
@@ -63,11 +63,12 @@
                                     <td>{$v['filter_keyword']}</td>
                                     <td>{$v['intro']|strCutOut=10}</td>
                                     <td class="bnt-pl3">
-                                        <a href="javascript:;" onclick="layer.load('章节编辑','{:U('Admin/Gather/qisuu',array('method'=>'view','id'=>$v['id']))}');" title="添加章节正则"><i class="glyphicon glyphicon-pencil"></i></a>
+                                        <a href="javascript:;" onclick="layer.load('添加章节正则','{:U('Admin/Gather/qisuu',array('method'=>'view','id'=>$v['id']))}');" title="添加章节正则"><i class="glyphicon glyphicon-th"></i></a>
                                         <!-- add chapter -->
-                                        <a href="javascript:;" onclick="Send({$v['id']});" ><i class="glyphicon glyphicon-pencil"></i></a>
+                                        <a href="javascript:;" onclick="Send({$v['id']});" title="处理章节并发布"><i class="glyphicon glyphicon-eject"></i></a>
                                         <!-- delete -->
-                                        <a href="javascript:void(0);" url="{:U('Admin/Gather/delete',array('method'=>'webcate'))}" onclick="delall($(this),{$v['id']});"><i style="color:#b00;"  class="glyphicon glyphicon-trash"></i></a>
+                                        <a href="javascript:void(0);" url="{:U('Admin/Gather/qisuu',array('method'=>'del'))}" onclick="delall($(this),{$v['id']});"><i style="color:#b00;"  class="glyphicon glyphicon-trash"></i></a>
+                                        <a href="javascript:void(0);" url="{:U('Admin/Gather/qisuu',array('method'=>'file','id'=>$v['id']))}" onclick="mwUI.ReqAjax($(this));"><i style="color:#008000;"  class="glyphicon glyphicon-download-alt"></i></a>
                                     </td>
                                 </tr>
                             </volist>
@@ -90,7 +91,7 @@
                 url: '{:U('Admin/Gather/qisuu',array('method'=>'send'))}',
                 data : '&ids='+ids.toString(),
             }).done(function (e) {
-                layer.success(e);
+                layer.msg(e,e,3);
             });
         }
     </script>

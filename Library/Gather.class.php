@@ -33,24 +33,29 @@
 		    $data = file($_file,FILE_SKIP_EMPTY_LINES|FILE_IGNORE_NEW_LINES);
 			$content = array();
 			$i = $init = 0;
-			!$_chapter && $_chapter = '/^(第[\d|一|二|三|四|五|六|七|八|九|十|百|千|万]+章{1})(.*)/';
-			for ($i = 0;$i < 3;$i++){
+			!$_chapter && $_chapter = '/(^第[\d一二三四五六七八九十百千万]+章.*)/';
+			$file = '';
+			for ($i = 0;$i < 2;$i++){
+			    $file .= autoCharset($data[$i])."\n\r";
 			    unset($data[$i]);
 			}
+			unset($data['2']);
+			$file .= "严正声明:本书由看点网(http://www.kandianshu.com)自网络收集整理制作,仅供交流学习使用,版权归原作者和出版社所有,如果喜欢,请支持正版.谢谢!\n\r";
 			foreach ($data as $k => $v){
 				$v = autoCharset(trim($v));
-				if(preg_match_all($_chapter, $v , $title)){
+				$file .= $v."\n\r";
+				$preg = preg_match_all($_chapter, $v , $title);
+				if($preg){
 					$init && $i ++;
-					$content[$i]['title'] = $title[2][0];
-					$content[$i]['chapter'] = $title[1][0];
-					$content[$i]['uptime'] = time();
+					$content[$i]['title'] = $v;
 					$init = 1;
-				}else{
+				}elseif($content){
 					$txt = $_filter ? preg_replace($_filter, $_replace, $v) : $v;
 					$content[$i]['content'] .= '<p>'.$txt.'</p>';
 				}
 				unset($data[$k]);
 			}
+			$content['file'] = $file;
 			return $content;
 		}
 		
@@ -191,6 +196,7 @@
 		        return $count;
 		    }elseif($_limit == 'all'){
 		        $list = $m->where($_where)->order($_order)->select();
+		        //echo $m->getlastsql();
 		        return $list;
 		    }
 		    $list = $m->where($_where)->order($_order)->limit($_limit)->select();
