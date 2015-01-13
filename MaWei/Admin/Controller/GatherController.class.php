@@ -435,6 +435,7 @@
 		        	$where = $id ? array('id'=>$id) : array('is_dispose'=>0);
 		            $data = $temp = array();
 		            $tmp = $this->gather->getQisuu($where,1);
+                    //采集
 		            $filter = array('cover'=>array('#downInfoArea>div>a>img','src'),'intro'=>array('#clickeye_content','html'),'author'=>array('#downInfoArea>.downInfoRowL>a','text'));
 		            $gather = getUrlGather($tmp['url'], $filter,'','GB2312');
 // 		            dump($gather);exit;
@@ -446,14 +447,15 @@
                     $data['cateid'] = $tmp['cateid'];
 		            //下载封面
 		            $data['cover'] = downFile('http://www.qisuu.com'.$gather['cover'],UPLOAD_PATH.'Cover/'.date('Ym').'/');
-                    $bookid = M('Book')->add($data);
+                    //添加到小说主表
+		            $bookid = M('Book')->add($data);
                     $fpath = NOVEL_PATH.date('Y').'/'.$bookid.'/';
                     createDir($fpath);
 		            //下载文件
                     $html = file_get_contents($tmp['url']);
 		            preg_match('/.*thunderResTitle=\'(.*)\' thunderType=/',$html ,$matches);
                     $file = downFile($matches['1'],'Tmp/',null,'0777');
-                
+                    //解压下载文件
                     $ofile = rar_open($file);
                     $f_list = rar_list($ofile);
                     $filepath = null;
@@ -461,13 +463,42 @@
                         if(getFileExeName($v->getName()) == 'txt' && $v->getUnpackedSize() > 2000){
                             $v->extract($fpath);
                             $filepath = $fpath.$v->getName();
+                            chmod($filepath, '0755');
                         }
                     }
                     rar_close($ofile);
                     unlink($file);
+                    //写日志
                     writeFile($tmp['id'].'  ----  '.$tmp['name'].'  -----  '.$filepath.' ----- '.date('Y-m-d H:m:s')."\n" , 'log/download.txt',1);
-                    $temp['filepath'] = $filepath;
-		            $temp['is_dispose'] = 1;
+                        
+		            //添加章节
+		            //处理文件章节
+		            $list = $this->gather->readfile($filepath);
+		            
+		            $chapter = getChapterTable($bookid);
+		            $chapter = M($chapter);
+		            //写入章节到数据库
+		            if(count($list) > 50){
+		                //更新小说文件
+		                unlink($v['filepath']);
+		                writeFile($list['file'],$fpath.$v['name'].'.txt');
+		                unset($list['file']);
+		                //提取章节
+		                foreach($list as $k => $v){
+		                    $tmp = array();
+		                    $tmp['title'] = $v['title'];
+		                    $tmp['book_id'] = $bookid;
+		                    $tmp['uptime'] = time();
+		                    $chapter->add($tmp);
+		                    writeFile($v['content'], $fpath.$v['title'].'.txt');
+		                }
+		                $temp['is_dispose'] = 2;
+		            }else {
+		                $temp['is_dispose'] = 1;
+		            }
+		            //更新qisuu表
+		            $temp['filepath'] = $filepath;
+		            $temp['book_id'] = $bookid;
 		            M('QisuuGather')->where('id='.$tmp['id'])->save($temp);
 		            echo M('QisuuGather')->getlastsql();
 		            break;
@@ -522,7 +553,7 @@
 		            $m = M('Book');
 		            $i = 0;
 		            foreach ($list as $k => $v){
-		               if($v['filter_preg']){
+		                if($v['book_id']){
 		                   $data = array();
 		                   $data['name'] = $v['name'];
 		                   $data['cover'] = $v['cover'];
@@ -531,31 +562,37 @@
 		                   $data['author'] = $v['author'];
 		                   $data['cateid'] = $v['cateid'];
 		                   $data['uptime'] = $data['ctime'] = time();
-		                   if(!! $reid = $m->add($data)){
-		                       $path = NOVEL_PATH.date('Y',$data['ctime']).'/'.$reid.'/';
-		                       createDir($path);
-		                       $list = $this->gather->readfile($v['filepath'],$v['filter_preg'],$v['filter_keyword']);
-		                       writeFile($list['file'],$path.$v['name'].'.txt');
-		                       unset($list['file']);
-		                       $chapter = getChapterTable($reid);
-		                       $chapter = M($chapter);
-		                       $i = 1;
-		                       foreach ($list as $k => $v){
-		                       	   if($v['content']){
-			                       	   	$tmp = array();
-			                       	   	$tmp['title'] = $v['title'];
-			                       	   	$tmp['book_id'] = $reid;
-			                       	   	$tmp['uptime'] = time();
-   		                                $chapter->add($tmp);
-			                       	   	writeFile($v['content'], $path.$i.'.txt');
-			                       	   	$i++;
-		                       	   }
-		                       }
-		                       $i++;
+		                   $reid = $m->add($data);
+		                   if($reid == false){
+		                       $reid = $m->field('id')->where(array('name'=>$v['name']))->find();
+		                       $reid = $reid['id'];
 		                   }
-		                   //更新发布状态
-		                   M('QisuuGather')->where('id='.$v['id'])->setField('is_dispose',2);
-		               }
+		                }
+		                //章节存放路径
+                        $path = NOVEL_PATH.date('Y',$data['ctime']).'/'.$reid.'/';
+                        createDir($path);
+                        //读取文件
+                        $list = $this->gather->readfile($v['filepath'],$v['filter_preg'],$v['filter_keyword']);
+                        unlink($v['filepath']);
+                        writeFile($list['file'],$path.$v['name'].'.txt');
+                        unset($list['file']);
+                        $chapter = getChapterTable($reid);
+                        $chapter = M($chapter);
+                        $i = 1;
+                        foreach ($list as $k => $v){
+                       	   if($v['content']){
+	                       	   	$tmp = array();
+	                       	   	$tmp['title'] = $v['title'];
+	                       	   	$tmp['book_id'] = $reid;
+	                       	   	$tmp['uptime'] = time();
+                                $chapter->add($tmp);
+	                       	   	writeFile($v['content'], $path.$i.'.txt');
+	                       	   	$i++;
+                       	   }
+                        }
+                        $i++;
+                        //更新发布状态
+                        M('QisuuGather')->where('id='.$v['id'])->setField('is_dispose',2);
 		            }
 		            echo '共发布成功'.$i.'章节';
 		            exit;
