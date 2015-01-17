@@ -41,7 +41,7 @@
 	 */
 	function getChapterTable($_id){
 	    for($i = 1;$i < 100;$i++){
-	        if($_id < $i*300){
+	        if($_id < $i*500){
 	            return 'BookChapterT'.$i;
 	        }
 	    }
@@ -77,7 +77,7 @@
 	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2015-1-12 下午4:09:42
 	 */
-	function rFile($_path,$_type = 'array'){
+	function rFile($_path,$_type = 'array',$_charset = null){
 	    if(file_exists($_path)){
 	        if($_type == 'array'){
 	            return file($_path,FILE_SKIP_EMPTY_LINES|FILE_IGNORE_NEW_LINES);
@@ -87,7 +87,7 @@
 	            $f = fopen($_path, 'r');
 	            $str = fread($f, $_type);
 	            fclose($f);
-	            return $str;
+	            return $_charset ? autoCharset($str) : $str;
 	        }else{
 	            return null;
 	        }
@@ -949,7 +949,9 @@
 	        return $string;
 	    }
 	    if (is_string($string)) {
-	        if (function_exists('mb_convert_encoding')) {
+	    	if(mb_detect_encoding($string,array('ASCII', 'GB2312', 'GBK', 'UTF-8')) == strtoupper($to)){
+	    		return $string;
+	    	}elseif (function_exists('mb_convert_encoding')) {
 	            return mb_convert_encoding($string, $to, $from);
 	        } elseif (function_exists('iconv')) {
 	            return iconv($from, $to, $string);

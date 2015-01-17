@@ -417,7 +417,7 @@
 		                $list = getUrlGather($url, $this->_filter($filter),array('#listbox','.mainListInfo'),'gb2312');
 		                foreach ($list as $k => $v){
 		                    $data = array();
-		                    $data['name'] = preg_filter('/《|》|全集|-|_/', '', $v['name']);
+		                    $data['name'] = text(preg_filter('/《|》|全集|-|_/', '', $v['name']));
 		                    $data['url'] = 'http://www.qisuu.com'.$v['url'];
 		                    $data['cateid'] = $cateid;
 		                    if($m->add($data)){
@@ -431,6 +431,7 @@
                     echo $gpage;
 		            break;
 		        case 'file' :
+		        	ini_set('memory_limit','128M');
 		        	$id = intval($_REQUEST['id']);
 		        	$where = $id ? array('id'=>$id) : array('is_dispose'=>0);
 		            $data = $temp = array();
@@ -445,16 +446,25 @@
                     $data['intro'] = $temp['intro'] = $gather['intro'];
                     $data['uptime'] = $data['ctime'] = time();
                     $data['cateid'] = $tmp['cateid'];
+                    $data['end_status'] = 1;
 		            //下载封面
 		            $data['cover'] = downFile('http://www.qisuu.com'.$gather['cover'],UPLOAD_PATH.'Cover/'.date('Ym').'/');
                     //添加到小说主表
-		            $bookid = M('Book')->add($data);
-                    $fpath = NOVEL_PATH.date('Y').'/'.$bookid.'/';
+                    $m = M('Book');
+		            $bookid = $m->add($data);
+		            if(intval($bookid) == 0){
+		            	$bookid = $m->field('id')->where(array('name'=>$tmp['name']))->find();
+		            	echo $m->getLastSql();
+		            	dump($bookid);
+		            	$bookid = $bookid['id'];
+		            }
+		            dump($bookid);
+                    $fpath = NOVEL_PATH.'Cate-'.$tmp['cateid'].'/'.$bookid.'/';
                     createDir($fpath);
 		            //下载文件
                     $html = file_get_contents($tmp['url']);
 		            preg_match('/.*thunderResTitle=\'(.*)\' thunderType=/',$html ,$matches);
-                    $file = downFile($matches['1'],'Tmp/',null,'0777');
+                    $file = downFile($matches['1'],'Tmp/',null,'777');
                     //解压下载文件
                     $ofile = rar_open($file);
                     $f_list = rar_list($ofile);
@@ -462,46 +472,59 @@
                     foreach ($f_list as $k => $v){
                         if(getFileExeName($v->getName()) == 'txt' && $v->getUnpackedSize() > 2000){
                             $v->extract($fpath);
-                            $filepath = $fpath.$v->getName();
-                            chmod($filepath, '0755');
+                            $filepath = $fpath.$tmp['name'].'.txt';
+                            chmod($filepath, '777');
                         }
                     }
                     rar_close($ofile);
                     unlink($file);
                     //写日志
                     writeFile($tmp['id'].'  ----  '.$tmp['name'].'  -----  '.$filepath.' ----- '.date('Y-m-d H:m:s')."\n" , 'log/download.txt',1);
-                        
-		            //添加章节
-		            //处理文件章节
-		            $list = $this->gather->readfile($filepath);
 		            
-		            $chapter = getChapterTable($bookid);
-		            $chapter = M($chapter);
-		            //写入章节到数据库
-		            if(count($list) > 50){
-		                //更新小说文件
-		                unlink($v['filepath']);
-		                writeFile($list['file'],$fpath.$v['name'].'.txt');
-		                unset($list['file']);
-		                //提取章节
-		                foreach($list as $k => $v){
-		                    $tmp = array();
-		                    $tmp['title'] = $v['title'];
-		                    $tmp['book_id'] = $bookid;
-		                    $tmp['uptime'] = time();
-		                    $chapter->add($tmp);
-		                    writeFile($v['content'], $fpath.$v['title'].'.txt');
-		                }
-		                $temp['is_dispose'] = 2;
-		            }else {
-		                $temp['is_dispose'] = 1;
-		            }
 		            //更新qisuu表
 		            $temp['filepath'] = $filepath;
 		            $temp['book_id'] = $bookid;
+		            $temp['is_dispose'] = 1;
 		            M('QisuuGather')->where('id='.$tmp['id'])->save($temp);
 		            echo M('QisuuGather')->getlastsql();
 		            break;
+		        case 'chapter' :
+		        	//添加章节
+		        	//处理文件章节
+		        	$ids = $_REQUEST['ids'];
+		        	$list = $this->gather->getQisuu(array('id'=>array('IN',$ids)),'all');
+		        	foreach ($list as $k => $v){
+		        		$novel = $this->gather->readfile($v['filepath'],$v['filter_preg'],$v['filter_keyword']);
+		        		$path = dirname($v['filepath']).'/';
+		        		//转换字符后保存全本
+		        		if($novel['file']){
+		        			unlink($v['filepath']);
+		        			writeFile($novel['file'],$v['filepath']);
+		        			unset($novel['file']);
+		        		}
+		        		//返回章节表名
+		        		$chapter = getChapterTable($v['book_id']);
+		        		$chapter = M($chapter);
+		        		//写入章节到数据库
+		        		if(count($novel) > 50){
+		        			//提取章节
+		        			foreach($novel as $key => $val){
+		        				$tmp = array();
+		        				$tmp['title'] = $val['title'];
+		        				$tmp['book_id'] = $v['book_id'];
+		        				$tmp['uptime'] = time();
+		        				$tmp['sort'] = $key*30;
+		        				$reid = $chapter->add($tmp);dump($path.$val['title'].'.txt');
+		        				writeFile($val['content'], $path.$reid.'.txt');
+		        				unset($novel[$key]);
+		        			}
+		        			M('QisuuGather')->where('id='.$v['id'])->setfield('is_dispose',2);
+		        		}else {
+		        			dump($novel);
+		        		}
+		        	}
+		        	
+		        	break;
 		        case 'img':
 		            $tmp = $this->gather->getQisuu(array('cover'=>0),1);
 		            $filter = array('cover'=>array('#downInfoArea>div>a>img','src'));
@@ -514,10 +537,8 @@
 		        case 'view':
 		            $id = intval($_REQUEST['id']);
 		            $info = M('QisuuGather')->field('id,filepath,filter_preg,filter_keyword')->where('id='.$id)->find();
-		            $f = fopen($info['filepath'], 'r');
-		            $str = fread($f, 1000);
-		            $content = autoCharset($str);
-		            fclose($f);
+		            $content = file($info['filepath'],FILE_SKIP_EMPTY_LINES|FILE_IGNORE_NEW_LINES);
+		            $content = autoCharset(array_slice($content, 0,100));
 		            
 		            $this->assign('id',$id);
 		            $this->assign('info',$info);

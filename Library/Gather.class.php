@@ -30,28 +30,23 @@
 		* @date 2014-11-16  下午9:04:55
 		*/
 		function readfile($_file,$_chapter = null,$_filter = array(),$_replace = ''){
-		    $data = file($_file,FILE_SKIP_EMPTY_LINES|FILE_IGNORE_NEW_LINES);
+			$data = file($_file,FILE_SKIP_EMPTY_LINES|FILE_IGNORE_NEW_LINES);
 			$content = array();
 			$i = $init = 0;
 			!$_chapter && $_chapter = '/(^第[\d一二三四五六七八九十百千万]+章.*)/';
-			$file = '';
-			for ($i = 0;$i < 2;$i++){
-			    $file .= autoCharset($data[$i])."\n\r";
-			    unset($data[$i]);
-			}
-			unset($data['2']);
-			$file .= "严正声明:本书由看点网(http://www.kandianshu.com)自网络收集整理制作,仅供交流学习使用,版权归原作者和出版社所有,如果喜欢,请支持正版.谢谢!\n\r";
+			$file = "严正声明:本书由看点网(http://www.kandianshu.com)自网络收集整理制作,仅供交流学习使用,版权归原作者和出版社所有,如果喜欢,请支持正版.谢谢!"."\n\r";
 			foreach ($data as $k => $v){
 				$v = autoCharset(trim($v));
-				$file .= $v."\n\r";
 				$preg = preg_match_all($_chapter, $v , $title);
 				if($preg){
 					$init && $i ++;
 					$content[$i]['title'] = $v;
 					$init = 1;
+					$file .= $v."\n\r";
 				}elseif($content){
 					$txt = $_filter ? preg_replace($_filter, $_replace, $v) : $v;
 					$content[$i]['content'] .= '<p>'.$txt.'</p>';
+					$file .= $v."\n\r";
 				}
 				unset($data[$k]);
 			}
@@ -196,7 +191,7 @@
 		        return $count;
 		    }elseif($_limit == 'all'){
 		        $list = $m->where($_where)->order($_order)->select();
-		        //echo $m->getlastsql();
+// 		        echo $m->getlastsql();
 		        return $list;
 		    }
 		    $list = $m->where($_where)->order($_order)->limit($_limit)->select();
