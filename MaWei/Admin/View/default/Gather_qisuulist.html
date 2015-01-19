@@ -88,10 +88,11 @@
             }
             //layer.load('发布章节','{:U('Admin/Gather/edit',array('method'=>'chapter'))}','ids='+ids.toString());
             $.ajax({
-                url: '{:U('Admin/Gather/qisuu',array('method'=>'chapter'))}',
+                url: '{:U('Admin/Gather/endBook',array('method'=>'chapter'))}',
                 data : '&ids='+ids.toString()
             }).done(function (e) {
-                //layer.msg(e,e,3);
+               // layer.msg(e,e,3);
+               layer.box('发布状态',e);
             });
         }
     </script>

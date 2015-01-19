@@ -31,22 +31,25 @@
 		*/
 		function readfile($_file,$_chapter = null,$_filter = array(),$_replace = ''){
 			$data = file($_file,FILE_SKIP_EMPTY_LINES|FILE_IGNORE_NEW_LINES);
+			if(!$data) return null;
 			$content = array();
 			$i = $init = 0;
 			!$_chapter && $_chapter = '/(^第[\d一二三四五六七八九十百千万]+章.*)/';
 			$file = "严正声明:本书由看点网(http://www.kandianshu.com)自网络收集整理制作,仅供交流学习使用,版权归原作者和出版社所有,如果喜欢,请支持正版.谢谢!"."\n\r";
+			$charset = mb_detect_encoding($data['1'],array('ASCII', 'GB2312', 'GBK', 'UTF-8'));
 			foreach ($data as $k => $v){
-				$v = autoCharset(trim($v));
+			    $v = text($v);
+				$charset != 'UTF-8' && $v = autoCharset($v);
 				$preg = preg_match_all($_chapter, $v , $title);
 				if($preg){
 					$init && $i ++;
 					$content[$i]['title'] = $v;
 					$init = 1;
-					$file .= $v."\n\r";
+					$charset != 'UTF-8' && $file .= $v."\n\r";
 				}elseif($content){
 					$txt = $_filter ? preg_replace($_filter, $_replace, $v) : $v;
 					$content[$i]['content'] .= '<p>'.$txt.'</p>';
-					$file .= $v."\n\r";
+					$charset != 'UTF-8' && $file .= $v."\n\r";
 				}
 				unset($data[$k]);
 			}

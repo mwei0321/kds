@@ -391,6 +391,12 @@
 		    $this->display();
 		}
 		
+		function endBook(){
+		    $filter_preg = array('cover'=>array('ul>.storelistbt5a>img','src'),'url'=>array('ul>.storelistbt5a>.top5>a','href'));
+		    $gather = getUrlGather('http://www.258wx.cc/', $filter_preg,array('.picul','.storelistbt5'),'gbk');
+		    dump($gather);exit;
+		}
+		
 		/**
 		 * qisuu
 		 * @param array
@@ -431,7 +437,6 @@
                     echo $gpage;
 		            break;
 		        case 'file' :
-		        	ini_set('memory_limit','128M');
 		        	$id = intval($_REQUEST['id']);
 		        	$where = $id ? array('id'=>$id) : array('is_dispose'=>0);
 		            $data = $temp = array();
@@ -447,20 +452,20 @@
                     $data['uptime'] = $data['ctime'] = time();
                     $data['cateid'] = $tmp['cateid'];
                     $data['end_status'] = 1;
-		            //下载封面
-		            $data['cover'] = downFile('http://www.qisuu.com'.$gather['cover'],UPLOAD_PATH.'Cover/'.date('Ym').'/');
                     //添加到小说主表
                     $m = M('Book');
 		            $bookid = $m->add($data);
 		            if(intval($bookid) == 0){
 		            	$bookid = $m->field('id')->where(array('name'=>$tmp['name']))->find();
-		            	echo $m->getLastSql();
-		            	dump($bookid);
+// 		            	echo $m->getLastSql();
+// 		            	dump($bookid);
 		            	$bookid = $bookid['id'];
 		            }
-		            dump($bookid);
                     $fpath = NOVEL_PATH.'Cate-'.$tmp['cateid'].'/'.$bookid.'/';
                     createDir($fpath);
+                    //下载封面
+                    $cover = downFile('http://www.qisuu.com'.$gather['cover'],$fpath,'cover');
+                    $m->where('id='.$bookid)->save(array('cover'=>$cover));
 		            //下载文件
                     $html = file_get_contents($tmp['url']);
 		            preg_match('/.*thunderResTitle=\'(.*)\' thunderType=/',$html ,$matches);
@@ -468,11 +473,12 @@
                     //解压下载文件
                     $ofile = rar_open($file);
                     $f_list = rar_list($ofile);
+                    
                     $filepath = null;
                     foreach ($f_list as $k => $v){
                         if(getFileExeName($v->getName()) == 'txt' && $v->getUnpackedSize() > 2000){
                             $v->extract($fpath);
-                            $filepath = $fpath.$tmp['name'].'.txt';
+                            $bookname = $fpath.$v->getName();;
                             chmod($filepath, '777');
                         }
                     }
@@ -482,21 +488,28 @@
                     writeFile($tmp['id'].'  ----  '.$tmp['name'].'  -----  '.$filepath.' ----- '.date('Y-m-d H:m:s')."\n" , 'log/download.txt',1);
 		            
 		            //更新qisuu表
-		            $temp['filepath'] = $filepath;
+		            $temp['filepath'] = $bookname;
 		            $temp['book_id'] = $bookid;
 		            $temp['is_dispose'] = 1;
 		            M('QisuuGather')->where('id='.$tmp['id'])->save($temp);
 		            echo M('QisuuGather')->getlastsql();
 		            break;
 		        case 'chapter' :
+		            ini_set('memory_limit','200M');
 		        	//添加章节
 		        	//处理文件章节
 		        	$ids = $_REQUEST['ids'];
 		        	$list = $this->gather->getQisuu(array('id'=>array('IN',$ids)),'all');
 		        	foreach ($list as $k => $v){
 		        		$novel = $this->gather->readfile($v['filepath'],$v['filter_preg'],$v['filter_keyword']);
+		        	    if(!$novel){
+		        	        echo '文件不存在!';
+		        	        exit;
+		        	    }
 		        		$path = dirname($v['filepath']).'/';
+		        		
 		        		//转换字符后保存全本
+		        		//检测文件编码
 		        		if($novel['file']){
 		        			unlink($v['filepath']);
 		        			writeFile($novel['file'],$v['filepath']);
@@ -505,6 +518,8 @@
 		        		//返回章节表名
 		        		$chapter = getChapterTable($v['book_id']);
 		        		$chapter = M($chapter);
+		        		$str = '';
+		        		$i = 0;
 		        		//写入章节到数据库
 		        		if(count($novel) > 50){
 		        			//提取章节
@@ -514,16 +529,20 @@
 		        				$tmp['book_id'] = $v['book_id'];
 		        				$tmp['uptime'] = time();
 		        				$tmp['sort'] = $key*30;
-		        				$reid = $chapter->add($tmp);dump($path.$val['title'].'.txt');
-		        				writeFile($val['content'], $path.$reid.'.txt');
+		        				$reid = $chapter->add($tmp);//dump($path.$val['title'].'.txt');
+		        				if(writeFile($val['content'], $path.$reid.'.txt')){
+		        				    $str .= '<p>'.$val['title'].'</p>';
+		        				    $i++;
+		        				}
 		        				unset($novel[$key]);
 		        			}
 		        			M('QisuuGather')->where('id='.$v['id'])->setfield('is_dispose',2);
 		        		}else {
 		        			dump($novel);
 		        		}
+		        		unset($novel);
 		        	}
-		        	
+		        	echo '<p>共写入&nbsp;'.$i.' 章</p>'.$str;
 		        	break;
 		        case 'img':
 		            $tmp = $this->gather->getQisuu(array('cover'=>0),1);

@@ -299,9 +299,11 @@
 	    readfile($_url);
 	    $img = ob_get_contents();
 	    ob_end_clean();
+	    $exname = getFileExeName($_url);
 	    if(! $_name){
-	        $exname = getFileExeName($_url);
 	        $_name = date('YmdHms').randString(5).'.'.$exname;
+	    }else{
+	        $_name = $_name.'.'.$exname;
 	    }
 	    //默认路径
 	    if(! $_path){
@@ -1021,12 +1023,15 @@
 	 */
 	function getUrlGather($_url,$_filter,$_area = null,$_charset = null){
 	    require_once ROOT_PATH.'/Library/phpQuery.php';
-	    $html = file_get_contents($_url);
         $charset = $_charset ? $_charset : mb_detect_encoding($html, array('ASCII', 'GB2312', 'GBK', 'UTF-8'));
-        $phpquery = phpQuery::newDocumentHTML("$html",$charset);
+        $phpquery = phpQuery::newDocumentFileHTML("$_url",$charset);
+        $a = pq($_area[0])->find($_area[1]);
+        dump($a);exit;
         $data = array();
         if($_area){
             $area = is_array($_area) ? pq($_area[0])->find($_area[1]) : pq($_area);
+            dump($_area);
+            dump($area);exit;
             foreach ($area as $k => $v){
                 while (!!list($key,$value) = each($_filter)){
                     switch ($value[1]){
