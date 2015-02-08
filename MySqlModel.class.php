@@ -31,15 +31,15 @@
         protected $numCols    = 0;
         // 
         protected $method = array();
-        
+        //获取成员变量
         function __get($_name){
             return isset($this->method[$_name]) ? $this->method[$_name] : null;
         }
-        
+        //设置成员变量
         function __set($_name,$_value){
             $this->method[$_name] = $_value;
         }
-        
+        //消除变量
         function __unset($_name){
             unset($this->method[$_name]);
         }
@@ -60,6 +60,13 @@
             return $this;
         }
         
+        /**
+        * 初始化设置
+        * @param  array $_config 配置数组 
+        * @return array 
+        * @author MaWei (http://www.phpyrb.com)
+        * @date 2015-2-8  下午10:20:10
+        */
         function __construct($_config = array()){
             //判断数据库配置
             empty($_config) && exit('not db config');
@@ -74,16 +81,176 @@
             }
         }
         
+        /**
+         * sql语句查询
+         * @param  string $_sql sql语句
+         * @return array
+         * @author MaWei (http://www.phpyrb.com)
+         * @date 2015-2-8  下午10:19:04
+         */
+        public function query($_sql){
+        	if(! $this->linkID ) return 'DateBase Connent Fialure';
+        	$this->Sql = $_sql;
+        	//释放之前查询
+        	$this->linkID && $this->free();
+        	//查询sql
+        	if($this->dbtype == 'mysqli'){
+        		$this->queryID = $this->linkID->query($_sql);
+        		// 对存储过程改进
+        		if( $this->linkID->more_results() ){
+        			while (($res = $this->linkID->next_result()) != NULL) {
+        				$res->free_result();
+        			}
+        		}
+        		$this->numRows  = $this->queryID->num_rows;
+        		$this->numCols    = $this->queryID->field_count;
+        	}else{
+        		$this->queryID = mysql_query($_sql, $this->linkID);
+        		$this->numRows = mysql_num_rows($this->queryID);
+        	}
+        }
+        
+        /**
+        * 添加、更新数据
+        * @param  array $_data 数据 
+        * @param  string $_tableName 表名
+        * @return array 
+        * @author MaWei (http://www.phpyrb.com)
+        * @date 2015-2-8  下午10:22:26
+        */
         public function add_updata($_data,$_tableName){
             if(empty($_data)){
                 
             }
         }
         
+        /**
+        * 插入多条记录
+        * @param  array $_datas
+        * @param  string 
+        * @return array 
+        * @author MaWei (http://www.phpyrb.com)
+        * @date 2015-2-8  下午10:56:02
+        */
+	    public function insertAll($_datas,$_options=array(),$_replace=false) {
+	        if(!is_array($_datas[0])) return false;
+	        $fields = array_keys($_datas[0]);
+	        array_walk($fields, array($this, 'parseKey'));
+	        $values  =  array();
+	        foreach ($_datas as $data){
+	            $value   =  array();
+	            foreach ($data as $key=>$val){
+	                $val   =  $this->parseValue($val);
+	                if(is_scalar($val)) { // 过滤非标量数据
+	                    $value[]   =  $val;
+	                }
+	            }
+	            $values[]    = '('.implode(',', $value).')';
+	        }
+	        $sql   =  ($replace?'REPLACE':'INSERT').' INTO '.$this->parseTable($_options['table']).' ('.implode(',', $fields).') VALUES '.implode(',',$values);
+	        return $this->execute($sql);
+	    }
+	    
+	    /**
+	     * 字段和表名处理添加`
+	     * @access protected
+	     * @param string $key
+	     * @return string
+	     */
+	    protected function parseKey(&$key) {
+	    	$key   =  trim($key);
+	    	if(!is_numeric($key) && !preg_match('/[,\'\"\*\(\)`.\s]/',$key)) {
+	    		$key = '`'.$key.'`';
+	    	}
+	    	return $key;
+	    }
+	    
+	    /**
+	     * SQL指令安全过滤
+	     * @static
+	     * @access public
+	     * @param string $str  SQL指令
+	     * @return string
+	     */
+	    public function escapeString($str) {
+	    	if($this->_linkID) {
+	    		return  $this->_linkID->real_escape_string($str);
+	    	}else{
+	    		return addslashes($str);
+	    	}
+	    }
+        
+        /**
+         * 验证数据 支持 in between equal length regex expire ip_allow ip_deny
+         * @access public
+         * @param string $value 验证数据
+         * @param mixed $rule 验证表达式
+         * @param string $type 验证方式 默认为正则验证
+         * @return boolean
+         */
+        public function check($value,$rule,$type='regex'){
+        	$type   =   strtolower(trim($type));
+        	switch($type) {
+        		case 'in': // 验证是否在某个指定范围之内 逗号分隔字符串或者数组
+        		case 'notin':
+        			$range   = is_array($rule)? $rule : explode(',',$rule);
+        			return $type == 'in' ? in_array($value ,$range) : !in_array($value ,$range);
+        		case 'between': // 验证是否在某个范围
+        		case 'notbetween': // 验证是否不在某个范围
+        			if (is_array($rule)){
+        				$min    =    $rule[0];
+        				$max    =    $rule[1];
+        			}else{
+        				list($min,$max)   =  explode(',',$rule);
+        			}
+        			return $type == 'between' ? $value>=$min && $value<=$max : $value<$min || $value>$max;
+        		case 'equal': // 验证是否等于某个值
+        		case 'notequal': // 验证是否等于某个值
+        			return $type == 'equal' ? $value == $rule : $value != $rule;
+        		case 'length': // 验证长度
+        			$length  =  mb_strlen($value,'utf-8'); // 当前数据长度
+        			if(strpos($rule,',')) { // 长度区间
+        				list($min,$max)   =  explode(',',$rule);
+        				return $length >= $min && $length <= $max;
+        			}else{// 指定长度
+        				return $length == $rule;
+        			}
+        		case 'expire':
+        			list($start,$end)   =  explode(',',$rule);
+        			if(!is_numeric($start)) $start   =  strtotime($start);
+        			if(!is_numeric($end)) $end   =  strtotime($end);
+        			return time() >= $start && time() <= $end;
+        		case 'ip_allow': // IP 操作许可验证
+        			return in_array(get_client_ip(),explode(',',$rule));
+        		case 'ip_deny': // IP 操作禁止验证
+        			return !in_array(get_client_ip(),explode(',',$rule));
+        		case 'regex':
+        		default:    // 默认使用正则验证 可以使用验证类中定义的验证名称
+        			// 检查附加规则
+        			return $this->regex($value,$rule);
+        	}
+        }
+        
+        /**
+        * 处理数据
+        * @param  array 
+        * @param  string 
+        * @return array 
+        * @author MaWei (http://www.phpyrb.com)
+        * @date 2015-2-8  下午10:43:53
+        */
         private function _disposeDate($_data){
             
         }
         
+        /**
+        * 
+        * @param  array 
+        * @param  string 
+        * @return array 
+        * @author MaWei (http://www.phpyrb.com)
+        * @date 2015-2-8  下午10:43:46
+        */
         private function _method($_method = array()){
             //操作方法合并
             if(is_array($_method))
@@ -140,27 +307,48 @@
             }
             return $this->linkID;
         }
+
+        /**
+        * 获取最近一次查询的sql语句 
+        * @return string 
+        * @author MaWei (http://www.phpyrb.com)
+        * @date 2015-2-8  下午10:29:25
+        */
+        public function getlastsql($_model = ''){
+        	return $this->Sql;
+        }
         
-        public function query($_sql){
-            if(! $this->linkID ) return 'DateBase Connent Fialure';
-            $this->Sql = $_sql;
-            //释放之前查询
-            $this->linkID && $this->free();
-            //查询sql
-            if($this->dbtype == 'mysqli'){
-                $this->queryID = $this->linkID->query($_sql);
-                // 对存储过程改进
-                if( $this->linkID->more_results() ){
-                    while (($res = $this->linkID->next_result()) != NULL) {
-                        $res->free_result();
-                    }
-                }
-                $this->numRows  = $this->queryID->num_rows;
-                $this->numCols    = $this->queryID->field_count;
-            }else{
-                $this->queryID = mysql_query($_sql, $this->linkID);
-                $this->numRows = mysql_num_rows($this->queryID);
-            }
+        /**
+        * 获取最近插入的ID
+        * @return int 
+        * @author MaWei (http://www.phpyrb.com)
+        * @date 2015-2-8  下午10:31:53
+        */
+        public function getlastid(){
+        	return $this->lastInsId;
+        }
+        
+        /**
+        * 获取最近的错误信息
+        * @return string
+        * @author MaWei (http://www.phpyrb.com)
+        * @date 2015-2-8  下午10:30:24
+        */
+        public function geterror(){
+        	return $this->error;
+        }
+        
+        /**
+        * 关闭数据库
+        * @return volid 
+        * @author MaWei (http://www.phpyrb.com)
+        * @date 2015-2-8  下午10:53:59
+        */
+        public function close(){
+        	if($this->linkID){
+        		$this->linkID->close();
+        	}
+        	$this->linkID = null;
         }
         
         /**

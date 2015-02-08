@@ -95,24 +95,24 @@
 		}
 		
 		/**
-		 * 
+		 * 采集列表
 		 * @param array
 		 * @param string 
 		 * @return array
 		 * @author MaWei (http://www.phpyrb.com)
 		 * @date 2014-12-10 下午3:53:18
 		 */
-		function getWebCate($_limit = 'count',$_where = array()){
+		function getWebCate($_limit = 'count',$_where = array(),$_field = '*'){
 		    $m = M('GatherWebCate');
 		    if($_limit == 'count'){
 		        $count = $m->where($_where)->count();
 		        return $count;
 		    }elseif($_limit == 'all'){
-		        $list = $m->where($_where)->order('id DESC')->select();
+		        $list = $m->field($_field)->where($_where)->order('id DESC')->select();
 		        return $list;
 		    }
-		    $list = $m->where($_where)->order('id DESC')->limit($_limit)->select();
-// 		    echo $m->getlastsql();
+		    $list = $m->field($_field)->where($_where)->order('id DESC')->limit($_limit)->select();
+		    echo $m->getlastsql();
 		    return $list;
 		}
 		
@@ -215,4 +215,7 @@
 		    return $list;
 		}
 		
+		function __destruct(){
+			unset($content);
+		}
 	}

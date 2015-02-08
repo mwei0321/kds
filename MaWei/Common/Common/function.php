@@ -1026,12 +1026,9 @@
         $charset = $_charset ? $_charset : mb_detect_encoding($html, array('ASCII', 'GB2312', 'GBK', 'UTF-8'));
         $phpquery = phpQuery::newDocumentFileHTML("$_url",$charset);
         $a = pq($_area[0])->find($_area[1]);
-        dump($a);exit;
         $data = array();
         if($_area){
             $area = is_array($_area) ? pq($_area[0])->find($_area[1]) : pq($_area);
-            dump($_area);
-            dump($area);exit;
             foreach ($area as $k => $v){
                 while (!!list($key,$value) = each($_filter)){
                     switch ($value[1]){
@@ -1056,7 +1053,7 @@
                         break;
                     case 'html' :
                         $data[$key] = pq('body')->find($value[0])->html();
-                        eval('$data[$key] = '.iconv($charset, 'UTF-8'.'//IGNORE', var_export($data[$key],TRUE)).';');
+                        ! in_array($_charset,array('UTF8,UTF-8')) && eval('$data[$key] = '.iconv($charset, 'UTF-8'.'//IGNORE', var_export($data[$key],TRUE)).';');
                         break;
                     default:
                         $data[$key] = pq('body')->find($value[0])->attr($value[1]);
