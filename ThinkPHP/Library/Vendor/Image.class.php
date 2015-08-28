@@ -302,7 +302,11 @@ class Image {
             // 对jpeg图形设置隔行扫描
             if ('jpg' == $type || 'jpeg' == $type)
                 imageinterlace($thumbImg, $interlace);
-
+			// 生成图片名称
+			$isexe = self::exname($thumbname);
+			if(empty($isexe)){
+				$thumbname = $thumbname.'.'.$type;
+			}
             // 生成图片
             $imageFun = 'image' . ($type == 'jpg' ? 'jpeg' : $type);
             $imageFun($thumbImg, $thumbname);
@@ -626,4 +630,21 @@ class Image {
         imagedestroy($im);
     }
 
+    
+	/**
+	* 获取文件扩展名
+	* @param  $_file 文件名 
+	* @return array 
+	* @author MaWei (http://www.kandianshu.com)
+	* @date 2015-8-28  下午3:31:02
+	*/
+	function exname($_file){
+		$file = basename($_file);
+		$postion = strrpos($file,'.');
+		if($postion === false){
+			return null;
+		}
+		$exname = substr($file,$postion + 1);
+		return  strtolower($exname);
+	}
 }

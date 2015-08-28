@@ -28,7 +28,7 @@ class UploadFile {//类定义开始
         'imageClassPath'    =>  'Image',    // 图库类包路径
         'thumbMaxWidth'     =>  '220',// 缩略图最大宽度
         'thumbMaxHeight'    =>  '240',// 缩略图最大高度
-        'thumbPrefix'       =>  'mwei',// 缩略图前缀
+        'thumbPrefix'       =>  'mw',// 缩略图前缀
         'thumbSuffix'       =>  '',//后缀
         'thumbPath'         =>  '',// 缩略图保存路径
         'thumbFile'         =>  '',// 缩略图文件名
@@ -373,7 +373,7 @@ class UploadFile {//类定义开始
     * @date 2014-5-24  下午4:00:29
     */
     private function getdiyname($_filename){
-    	$saveName = $this->diyname.'-'.date('YmdHms').substr(uniqid(),-3).".".$_filename['extension'];
+    	$saveName = $this->diyname.date('YmdHms').substr(uniqid(),-3).".".$_filename['extension'];
     	return $saveName;
     }
 
