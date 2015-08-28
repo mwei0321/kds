@@ -1,7 +1,7 @@
 /**
  *后台js
  * author : mawei
- * homepage : http://www.phpyrb.com
+ * homepage : http://www.kandianshu.com
  */
 $(function (){
 	//全选

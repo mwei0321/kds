@@ -28,7 +28,7 @@ class UploadFile {//类定义开始
         'imageClassPath'    =>  'Image',    // 图库类包路径
         'thumbMaxWidth'     =>  '220',// 缩略图最大宽度
         'thumbMaxHeight'    =>  '240',// 缩略图最大高度
-        'thumbPrefix'       =>  'phpyrb-',// 缩略图前缀
+        'thumbPrefix'       =>  'mwei',// 缩略图前缀
         'thumbSuffix'       =>  '',//后缀
         'thumbPath'         =>  '',// 缩略图保存路径
         'thumbFile'         =>  '',// 缩略图文件名
@@ -45,7 +45,7 @@ class UploadFile {//类定义开始
         'uploadReplace'     =>  false,// 存在同名是否覆盖
         'saveRule'          =>  'uniqid',// 上传文件命名规则
         'hashType'          =>  'md5_file',// 上传文件Hash规则函数名
-        'diyname'			=>  'www.phpyrb.com', //自定义文件名
+        'diyname'			=>  'mw', //自定义文件名
         'saveThumbPath'     =>  '', //缩略图保存路径
         'filename'			=>  '' //上传字段名称
         );

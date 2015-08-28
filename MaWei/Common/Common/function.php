@@ -205,16 +205,16 @@
 	* 生成多张缩略图
 	* @param  string $_path 原图路径 
 	* @param  string|array $_name 名字
-	* @param  2array $_info 宽高　array(array('width'=>100,'height'=>100,'name'=>'thumb'));
+	* @param  array $_info 宽高　array('width|height|name');
 	* @return array 
-	* @author MaWei (http://www.phpyrb.com)
+	* @author MaWei (http://www.kandianshu.com)
 	* @date 2014-10-18  下午12:00:57
 	*/
-	function multiThumb($_path,$_info = array('width'=>100,'height'=>100)){
+	function multiThumb($_path,$_info = array()){
 		$upload = new Vendor\UploadFile();
 		$upload -> maxSize = 300292200;
 		$upload -> allowExts = explode(',', C('ALLOW_IMAGE_EXTS'));
-		$upload -> savePath = './Uploads/'.$_path.'/'.date('Y-m').'/';
+		$upload -> savePath = '/Uploads/'.$_path.'/'.date('Y-m').'/';
 		$upload -> saveRule = 'uniqid';
 		$upload -> filename = C('UPLOAD_DIY_NAME');
 		//上传文件
@@ -228,8 +228,9 @@
 		$image = new Vendor\Image();
 		//生成多张缩略图
 		foreach ($_info as $k => $v){
-			$name = $v['name'] ? $v['name'] : $upload->savePath.$upload->filename.'-'.$v['width'].'_'.$v['height'].'.'.$info['info']['extension'];
-			$info[$k] = $image->thumb2($path, $name,'png',$v['width'],$v['height']);
+			$whn = explode('|', $v);
+			$name = $whn[3] ? $whn[3] : $upload->savePath.$upload->filename.'-'.$whn[1].'_'.$whn[2].'.'.$info['info']['extension'];
+			$info[$k] = $image->thumb2($path, $name,'png',$whn[1],$whn[2]);
 		}
 		return $info;
 	}
