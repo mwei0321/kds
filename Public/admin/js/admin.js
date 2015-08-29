@@ -22,25 +22,29 @@ var setstatus = function (Obj,id){
 	var url = Obj.attr('url');
 	var st = Obj.attr('status');
 	var ids = id ? id : getallval();
+	var rmclne = Obj.attr('removeclass');
+	var addclne = Obj.attr('addclass');
 	if(!ids){
 		layer.error('请选择要设置状态ID');
 	}
 	$.ajax({
 		type : 'post',
 		url  : url,
-		data : 'status='+st+'&ids='+ids,
+		data : 'status='+st+'&id='+ids,
 		dataType : 'json'
 	}).done(function (e){
-		if(e.status){
+		if(e){
 			Obj.parent('td').parent('tr').find('.upstat').text(e.msg);
 			if(st == 1){
 				Obj.attr('status',0);
-				Obj.find('i').removeClass('glyphicon-minus-sign').addClass('glyphicon-ok').css('color','green');
+				Obj.find('i').removeClass(rmclne).addClass(addclne).css('color','red');
 			}else{
 				Obj.attr('status',1);
-				Obj.find('i').removeClass('glyphicon-ok').addClass('glyphicon-minus-sign').css('color','red');
+				Obj.find('i').removeClass(rmclne).addClass(addclne).css('color','green');
 			}
-			layer.success(e.msg);
+			Obj.attr('removeclass',addclne);
+			Obj.attr('addclass',rmclne);
+			layer.success('设置成功！');
 		}else{
 			layer.error('设置失败！');
 		}
@@ -87,7 +91,7 @@ function getallval(){
 }
 
 //全局删除
-var delall = function (Obj,id){
+var delall = function (Obj,id,isrefresh){
 	var ids = id ? id : getallval();
 	if(ids.length < 1){
 		layer.error('请选择要删除ID');
@@ -101,7 +105,7 @@ var delall = function (Obj,id){
 		}).done(function (e){
 			if(e == 1){
 				layer.success('删除成功！');
-				if(ids == -1){location.reload();};
+				if(ids == -1 || isrefresh){setTimeout('location.reload()',1200);};
 				if(!$('#checkall').prop('checked')){
 					// var list = ids.split(',');
 					if(typeof(ids) == 'number'){
@@ -111,8 +115,6 @@ var delall = function (Obj,id){
 							$('#deleid_'+ids[i]).remove();
 						}
 					}
-				}else{
-					location.reload();
 				}
 			}else{
 				layer.error('删除失败！');
