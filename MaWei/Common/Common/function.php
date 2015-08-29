@@ -211,7 +211,7 @@
 	* @date 2014-10-18  下午12:00:57
 	*/
 	function multiThumb($_filename,$_info = array('100|100|thumb100')){
-		$path = '/Uploads/'.$_filename.'/'.date('Y-m').'/';
+		$path = './Uploads/'.$_filename.'/'.date('Y-m').'/';
 		$upload = new Vendor\UploadFile();
 		$upload -> maxSize = 300292200;
 		$upload -> allowExts = explode(',', C('ALLOW_IMAGE_EXTS'));
