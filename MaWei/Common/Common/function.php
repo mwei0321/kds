@@ -7,7 +7,7 @@
 	*  +----------------------------------------------------------------------------------------------+
 	*   | Creater Time : 2014-8-24 	
 	*  +----------------------------------------------------------------------------------------------+
-	*   | Link :		http://www.kandianshu.com	     
+	*   | Link :		http://www.phpyrb.com	     
 	*  +----------------------------------------------------------------------------------------------+
 	**/
 
@@ -16,7 +16,7 @@
 	* @param array $_data
 	* @param string $_field
 	* @return array $onearray
-	* @author MaWei ( http://www.kandianshu.com )
+	* @author MaWei ( http://www.phpyrb.com )
 	* @date 2014-4-17 下午1:50:15
 	*/
 	function arr2to1($_data = array(),$_key = 'id',$_field = null,$_unique = true){
@@ -36,7 +36,7 @@
 	 * 根据小说返回章节表名
 	 * @param  int $_id 小说ID
 	 * @return array
-	 * @author MaWei (http://www.kandianshu.com)
+	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2014-11-1  下午7:57:13
 	 */
 	function getChapterTable($_id){
@@ -54,7 +54,7 @@
 	 * @param string $_path 文件路径名称
 	 * @param int $_type 0为复写,1.为添写
 	 * @return int|boolean
-	 * @author MaWei (http://www.kandianshu.com)
+	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2015-1-8 下午4:48:29
 	 */
 	function writeFile($_str,$_path,$_type = 0){
@@ -74,7 +74,7 @@
 	 * @param string $_path 文件路径
 	 * @param string|int $_type 读取类型 'array'读r成数组,'0'读取全部为字符串,'2'读取多少
 	 * @return string
-	 * @author MaWei (http://www.kandianshu.com)
+	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2015-1-12 下午4:09:42
 	 */
 	function rFile($_path,$_type = 'array',$_charset = null){
@@ -101,7 +101,7 @@
 	 * @param array $_data
 	 * @param array $_field 要还原的KEY
 	 * @return array $_data
-	 * @author MaWei ( http://www.kandianshu.com )
+	 * @author MaWei ( http://www.phpyrb.com )
 	 * @date 2014-4-17 下午1:50:15
 	 */
 	function rehtml($_data,$_filed = array('content')){
@@ -120,7 +120,7 @@
 	 * @param string $_msg 提示信息
 	 * @param int $_status 状态
 	 * @param array 扩展
-	 * @author MaWei (http://www.kandianshu.com)
+	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2014-10-14 下午6:23:32
 	 */
 	function ejson($_msg,$_status = 1,$_extend = array()){
@@ -135,7 +135,7 @@
 	 * @param  array
 	 * @param  string
 	 * @return array
-	 * @author MaWei (http://www.kandianshu.com)
+	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2014-8-3  下午2:09:25
 	 */
 	function uploads( $config = array(),$thumb = FALSE) {
@@ -186,7 +186,7 @@
 	* 文件上传
 	* @param  string　$_file 
 	* @return array $info
-	* @author MaWei (http://www.kandianshu.com)
+	* @author MaWei (http://www.phpyrb.com)
 	* @date 2014-10-19  下午2:55:23
 	*/
 	function fileUpload($_path = 'file',$_file = null){
@@ -205,17 +205,16 @@
 	* 生成多张缩略图
 	* @param  string $_path 原图路径 
 	* @param  string|array $_name 名字
-	* @param  array $_info 宽高　array('width|height|name');
+	* @param  2array $_info 宽高　array(array('width'=>100,'height'=>100,'name'=>'thumb'));
 	* @return array 
-	* @author MaWei (http://www.kandianshu.com)
+	* @author MaWei (http://www.phpyrb.com)
 	* @date 2014-10-18  下午12:00:57
 	*/
-	function multiThumb($_filename,$_info = array('100|100|thumb100')){
-		$path = './Uploads/'.$_filename.'/'.date('Y-m').'/';
+	function multiThumb($_path,$_info = array('width'=>100,'height'=>100)){
 		$upload = new Vendor\UploadFile();
 		$upload -> maxSize = 300292200;
 		$upload -> allowExts = explode(',', C('ALLOW_IMAGE_EXTS'));
-		$upload -> savePath = $path;
+		$upload -> savePath = './Uploads/'.$_path.'/'.date('Y-m').'/';
 		$upload -> saveRule = 'uniqid';
 		$upload -> filename = C('UPLOAD_DIY_NAME');
 		//上传文件
@@ -224,52 +223,15 @@
 		$info = array();
 		$info['info'] = array_shift($upload->getUploadFileInfo());
 		//图片路径
-		$imgpath = $info['info']['path'];
-		$imgname = getFileName($imgpath);
-		$info['path'] = $imgpath;
+		$path = $info['info']['path'];
 		//生成缩略图
 		$image = new Vendor\Image();
 		//生成多张缩略图
 		foreach ($_info as $k => $v){
-			$whn = explode('|', $v);
-			$name = $whn[2] ? $path.$imgname.$whn[2] : $path.$imgname.'_'.$whn[0].'_'.$whn[1].'.'.$info['info']['extension'];
-			$info[$k] = $image->thumb2($imgpath, $name,'',$whn[0],$whn[1]);
+			$name = $v['name'] ? $v['name'] : $upload->savePath.$upload->filename.'-'.$v['width'].'_'.$v['height'].'.'.$info['info']['extension'];
+			$info[$k] = $image->thumb2($path, $name,'png',$v['width'],$v['height']);
 		}
 		return $info;
-	}
-	
-	/**
-	* 获取文件扩展名
-	* @param  $_file 文件名 
-	* @return array 
-	* @author MaWei (http://www.kandianshu.com)
-	* @date 2015-8-28  下午3:31:02
-	*/
-	function getFileExeName($_file){
-		$file = basename($_file);
-		$postion = strrpos($file,'.');
-		if($postion === false){
-			return null;
-		}
-		$exname = substr($file,$postion + 1);
-		return  strtolower($exname);
-	}
-	
-	/**
-	* 获取文件名
-	* @param  $_file 文件名 
-	* @return array 
-	* @author MaWei (http://www.kandianshu.com)
-	* @date 2015-8-28  下午3:38:02
-	*/
-	function getFileName($_file){
-		$file = basename($_file);
-		$postion = strrpos($file,'.');
-		if($postion === false){
-			return $file;
-		}
-		$exname = substr($file,0,$postion);
-		return  strtolower($exname);
 	}
 	
 	/**
@@ -278,7 +240,7 @@
 	 * @param array $_filter 采集过滤规则   array('title'=>'li','content'=>'.content');
 	 * @param string $_filter 采集区域 '#area'
 	 * @return array $data
-	 * @author MaWei (http://www.kandianshu.com)
+	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2014-12-11 上午10:39:33
 	 */
 // 	function gatherList($_url,$_filter,$_area = null,$_debug = null){
@@ -328,7 +290,7 @@
 	 * 下载文件
 	 * @param  string $_path 文件夹路径
 	 * @return array
-	 * @author MaWei (http://www.kandianshu.com)
+	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2014-8-3  下午2:10:22
 	 * @qq群号：341411327
 	 */
@@ -358,13 +320,25 @@
 	    return null;
 	}
 	
+	/**
+	 * 返回文件的后缀名
+	 * @param string $_file
+	 * @return string $exname
+	 * @author MaWei ( http://www.phpyrb.com )
+	 * @date 2014-4-17 下午1:50:15
+	 */
+	function getFileExeName($_file){
+        $file = basename($_file);
+        $exname = substr(strrchr($file,'.'), 1);
+        return  strtolower($exname);
+	}
 	
 	/**
 	 * 公共删除函数
 	 * @param  int | string $_idst
 	 * @param  model $_model 表名
 	 * @return array
-	 * @author MaWei (http://www.kandianshu.com)
+	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2014-8-7  下午11:01:39
 	 */
 	function delall($_ids,$_model){
@@ -385,7 +359,7 @@
 	 * @param array
 	 * @param string
 	 * @return array
-	 * @author MaWei (http://www.kandianshu.com)
+	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2014-8-5 下午6:35:39
 	 */
 	function setsort($_model,$_newsort,$_oldsort,$_field = 'sort'){
@@ -414,10 +388,10 @@
 	 * @param int|array $_ids 要修改的ID
 	 * @param string $_string 要修改的状态
 	 * @return array
-	 * @author MaWei (http://www.kandianshu.com)
+	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2014-8-6 上午10:23:32
 	 */
-	function setStatus($_model,$_ids,$_status = 0){
+	function status($_model,$_ids,$_status = 0){
 		if(empty($_ids)) return false;
 		$model = null;
 		if(strpos($_model,'|') === false){
@@ -439,7 +413,7 @@
 	* @param int|array $_ids 要修改的ID
 	* @param string $_string 要修改的状态
 	* @return array 
-	* @author MaWei (http://www.kandianshu.com)
+	* @author MaWei (http://www.phpyrb.com)
 	* @date 2014-10-4  下午11:38:37
 	*/
 	function recommend($_model,$_ids,$_recomm = 0){
@@ -462,7 +436,7 @@
 	* 返回两层层级分类
 	* @param  array $_catelist 
 	* @return array 
-	* @author MaWei (http://www.kandianshu.com)
+	* @author MaWei (http://www.phpyrb.com)
 	* @date 2014-10-7  下午10:32:38
 	*/
 	function getChildrenLevel($_catelist){
@@ -484,7 +458,7 @@
 	* @param  array $_list 
 	* @param  int $_level
 	* @return array 
-	* @author MaWei (http://www.kandianshu.com)
+	* @author MaWei (http://www.phpyrb.com)
 	* @date 2014-10-18  上午11:05:59
 	*/
 	function getTree($_list,$_level = 2){
@@ -497,9 +471,9 @@
 			}else{
 				if($_level == 2 || $v['level'] == 1){
 					$tree[$pid]['children'][$k] = $v;
-					$pid2 = $v['id'];
+					$pid2 = $v['pid'];
 				}elseif($_level == 3 || $v['level'] > 1){
-					$tree[$pid]['children'][$pid2]['children'][$k] = $v;
+					$tree[$pid]['children'][$pid2][$k] = $v;
 				}
 			}
 		}
@@ -507,32 +481,10 @@
 	}
 	
 	/**
-	 * 返回菜单层级
-	 * @param  int $_pid
-	 * @param  int $_level
-	 * @return array
-	 * @author MaWei (http://www.phpyrb.com)
-	 * @date 2014-10-19  上午10:08:55
-	 */
-	function level($list,$_pid = 0,$_level = 0){
-		static $level;
-		foreach ($list as $k => $v){
-			if($v['pid'] == $_pid){
-				$level[$k] = $v;
-				$level[$k]['level'] = $_level;
-				$level[$k]['levelstr'] = str_repeat('&nbsp;&nbsp;|----', $_level);
-				unset($list[$k]);
-				level($list,$v['id'],$_level+1);
-			}
-		}
-		return $level;
-	}
-	
-	/**
 	 * 创建文件夹
 	 * @param  string $_path 文件夹路径
 	 * @return array
-	 * @author MaWei (http://www.kandianshu.com)
+	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2014-8-3  下午2:10:22
 	 */
 	function createDir($_path){
@@ -546,7 +498,7 @@
 	 * 返回目录下的文件夹名称
 	 * @param string $_path 路径
 	 * @return array $filelist
-	 * @author MaWei (http://www.kandianshu.com)
+	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2014-10-8 下午2:48:38
 	 */
 	function getDirFile($_path){
@@ -566,20 +518,14 @@
 	/**
 	 * 把数组里的字符转换成全小、大写,暂时只支持一维数组
 	 * @param array $_arr 要转换的数组
-	 * @param int 类型，1为小写，0为大写
+	 * @param string 类型，1为小写，0为大写
 	 * @return array $_arr
-	 * @author MaWei (http://www.kandianshu.com)
+	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2014-10-8 下午5:06:43
 	 */
-	function arrtolower($_arr,$_type = 1){
-		if($_type == 1){
-			foreach ($_arr as $k => $v){
-				$_arr[$k] = strtolower($v);
-			}
-		}else{
-			foreach ($_arr as $k => $v){
-				$_arr[$k] = strtoupper($v);
-			}
+	function arrtolower($_arr){
+		foreach ($_arr as $k => $v){
+			$_arr[$k] = strtolower($v);
 		}
 		return $_arr;
 	}
@@ -590,7 +536,7 @@
 	 * @param string $_model 表名  表前缀用｜分隔
 	 * @param string $_upfiled 主键
 	 * @return string | boolean $reid
-	 * @author MaWei ( http://www.kandianshu.com )
+	 * @author MaWei ( http://www.phpyrb.com )
 	 * @date 2014-4-17 下午1:50:15
 	 */
 	function add_updata($_data = array(),$_model = 'Article',$_upfiled = 'id'){
@@ -609,6 +555,7 @@
 		}else{
 			$reid = $model->add($_data);
 		}
+		
 // 		dump($model);
 // 		dump($_data);
 // 		echo $model->getLastSql();
@@ -623,7 +570,7 @@
 	 * @param string $_key 共同点的下标
 	 * @param string $_mergeKey 需要合并的字段
 	 * @return array $new
-	 * @author MaWei (http://www.kandianshu.com)
+	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2014-6-11 下午3:38:27
 	 */
 	function merge_array($_data,$_key = 'id',$_mergeKey = array('description','path','thumb')){
@@ -725,7 +672,7 @@
 	 * 返回目录下的图片列表
 	 * @param string $_path
 	 * @return array
-	 * @author MaWei (http://www.kandianshu.com)
+	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2014-10-9 下午2:44:56
 	 */
 	function getDirImageList($_path = null){
@@ -748,7 +695,7 @@
 	 * @param array $_data
 	 * @param string $_field
 	 * @return array $newdata
-	 * @author MaWei ( http://www.kandianshu.com )
+	 * @author MaWei ( http://www.phpyrb.com )
 	 * @date 2014-4-17 下午1:50:15
 	 */
 	function fieldtokey($_data = array(),$_field = 'id'){
@@ -782,7 +729,7 @@
 	 * @param  string $str
 	 * @param  string
 	 * @return array
-	 * @author MaWei (http://www.kandianshu.com)
+	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2014-8-3  上午1:38:43
 	 */
 	function real_strip_tags($str, $allowable_tags="") {
@@ -822,11 +769,11 @@
 	}
 	
 	/**
-	 * 字符串自动剪切
+	 * 
 	 * @param array
 	 * @param string 
 	 * @return array
-	 * @author MaWei (http://www.kandianshu.com)
+	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2014-11-20 下午4:32:24
 	 */
 	function strCutOut($str, $length = 40, $ext = '……') {
@@ -1071,14 +1018,14 @@
 	 * @param array $_filter 采集过滤规则   filed$DOMEle-type|
 	 * @param string $_area 采集区域 '#area－mulitiele',区域－多个DOM
 	 * @return array $data
-	 * @author MaWei (http://www.kandianshu.com)
+	 * @author MaWei (http://www.phpyrb.com)
 	 * @date 2014-12-11 上午10:39:33
 	 */
 	function getUrlGather($_url,$_filter,$_area = null,$_charset = null){
 	    require_once ROOT_PATH.'/Library/phpQuery.php';
+	    $html = file_get_contents($_url);
         $charset = $_charset ? $_charset : mb_detect_encoding($html, array('ASCII', 'GB2312', 'GBK', 'UTF-8'));
-        $phpquery = phpQuery::newDocumentFileHTML("$_url",$charset);
-        $a = pq($_area[0])->find($_area[1]);
+        $phpquery = phpQuery::newDocumentHTML("$html",$charset);
         $data = array();
         if($_area){
             $area = is_array($_area) ? pq($_area[0])->find($_area[1]) : pq($_area);
@@ -1106,7 +1053,7 @@
                         break;
                     case 'html' :
                         $data[$key] = pq('body')->find($value[0])->html();
-                        ! in_array($_charset,array('UTF8,UTF-8')) && eval('$data[$key] = '.iconv($charset, 'UTF-8'.'//IGNORE', var_export($data[$key],TRUE)).';');
+                        eval('$data[$key] = '.iconv($charset, 'UTF-8'.'//IGNORE', var_export($data[$key],TRUE)).';');
                         break;
                     default:
                         $data[$key] = pq('body')->find($value[0])->attr($value[1]);

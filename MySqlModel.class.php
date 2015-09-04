@@ -111,6 +111,29 @@
         }
         
         /**
+        * 
+        * @param  string $_sql sql语句
+        * @return integer
+        * @author MaWei (http://www.phpyrb.com)
+        * @date 2015-2-25  上午12:48:44
+        */
+        public function execute($_sql) {
+        	if ( !$this->linkID ) return false;
+        	$this->Sql = $_sql;
+        	//释放前次的查询结果
+        	if ( $this->queryID ) $this->free();
+        	$result =   $this->linkID->query($_sql);
+        	if ( false === $result ) {
+        		$this->geterror();
+        		return false;
+        	} else {
+        		$this->numRows = $this->linkID->affected_rows;
+        		$this->lastInsID = $this->linkID->insert_id;
+        		return $this->numRows;
+        	}
+        }
+        
+        /**
         * 添加、更新数据
         * @param  array $_data 数据 
         * @param  string $_tableName 表名
