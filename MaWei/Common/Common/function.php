@@ -189,28 +189,28 @@
 	* @author MaWei (http://www.kandianshu.com)
 	* @date 2014-10-19  下午2:55:23
 	*/
-	function fileUpload($_path = 'file',$_file = null){
-		$file = $_file ? $_file : $_FILES['file'];
-		$upload = new Vendor\UploadFile();
-		$upload -> maxSize = C('ALLOW_FILE_SIZE') ? C('ALLOW_FILE_SIZE') : 300292200;
-		$upload -> allowExts = explode(',', C('ALLOW_FILE_EXTS'));
-		$upload -> savePath = './Uploads/'.$_path.'/'.date('Y-m').'/';
-		$upload -> saveRule = 'uniqid';
-		$upload -> filename = C('UPLOAD_DIY_NAME');
-		$info = $upload -> uploadOne($file);
-		return count($info) > 1 ? $info : array_shift($info);
+	function fileUpload($_path = 'file', $_file = null,$_name = null,$_isDate = 1) {
+		$file = $_file ? $_file : $_FILES ['file'];
+		$path = SITE_ROOT.'/Upload/'.$_path.'/';
+		$_isDate && $path .= date('Ym',time()).'/';
+		$filename = $_name ? $_name : $path.$file['name'];
+		createDir($path);
+	    if(!move_uploaded_file($file['tmp_name'], autoCharset($filename,'utf-8','gbk'))) {
+	        return false;
+	    }
+	    return $filename;
 	}
 	
 	/**
 	* 生成多张缩略图
 	* @param  string $_path 原图路径 
 	* @param  string|array $_name 名字
-	* @param  array $_info 宽高　array('width|height|name');
+	* @param  array $_info 宽高　array('width_height_name');
 	* @return array 
 	* @author MaWei (http://www.kandianshu.com)
 	* @date 2014-10-18  下午12:00:57
 	*/
-	function multiThumb($_filename,$_info = array('100|100|thumb100')){
+	function multiThumb($_filename,$_info = array('100_100_thumb100')){
 		$path = './Uploads/'.$_filename.'/'.date('Y-m').'/';
 		$upload = new Vendor\UploadFile();
 		$upload -> maxSize = 300292200;
@@ -231,7 +231,7 @@
 		$image = new Vendor\Image();
 		//生成多张缩略图
 		foreach ($_info as $k => $v){
-			$whn = explode('|', $v);
+			$whn = explode('_', $v);
 			$name = $whn[2] ? $path.$imgname.$whn[2] : $path.$imgname.'_'.$whn[0].'_'.$whn[1].'.'.$info['info']['extension'];
 			$info[$k] = $image->thumb2($imgpath, $name,'',$whn[0],$whn[1]);
 		}
