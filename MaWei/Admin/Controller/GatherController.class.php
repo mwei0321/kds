@@ -302,7 +302,7 @@
  				    $data['cateid'] = intval($_REQUEST['cateid']);
  				    $data['cate_url'] = text($_REQUEST['cateurl']);
  				    $data['web_url'] = text($_REQUEST['web_url']);
- 				    $data['countpage'] = text($_REQUEST['page']);
+ 				    $data['page_param'] = text($_REQUEST['page']);
  				    $data['name_area'] = text($_REQUEST['name_area']);
  				    $data['chapter_area'] = text($_REQUEST['chapter_area']);
  				    $data['content_area'] = text($_REQUEST['content_area']);
@@ -373,7 +373,6 @@
  			        echo '共采集了'.$good.' 条，其中采集失败的有'.count($bad).'条，ID为'.implode(',', arr2to1($list));
  			        break;
 			}
-			$this->success('操作成功！',U('Gather/index'));
 		}
 		
 		/**
@@ -390,118 +389,6 @@
 		    $this->assign('list',$list);
 		    $this->assign('page',$page->show());
 		    $this->display();
-		}
-		
-		function endBook(){
-			
-		    $filter_preg = array('cover'=>array('ul>.storelistbt5a>img','src'),'url'=>array('ul>.storelistbt5a>.top5>a','href'));
-		    $gather = getUrlGather('http://www.258wx.cc/', $filter_preg,array('.picul','.storelistbt5'),'gbk');
-		    dump($gather);exit;
-		}
-		
-		/**
-		* 17采集
-		* @author MaWei (http://www.phpyrb.com)
-		* @date 2015-2-8  下午4:43:06
-		*/
-		function n17k(){
-			$method = $_REQUEST['method'];
-// 			$a = getUrlGather('http://www.17k.com/list/605479.html', array('chapter'=>array('a','text'),'url'=>array('a','href')),array('.directory_con .con:eq(1) ul','li'),'utf8');
-// 			dump($a);exit;
-			
-			
-			
-			switch ($method){
-				case 'name':
-// 					$info = $this->gather->getWebCate(1,array('uptime'=>array('LT',(time() - 172800))));
-					$info = $this->gather->getWebCate(1);
-					$info = array_shift($info);dump($info);
-					$filter_preg = array('name'=>array('.td3 a','text'),'url'=>array('.td3 a','href'),'author'=>array('.td6 a','text'),'words_num'=>array('.td5','text'),'status'=>array('.td8','text'));
-					for($i = 3;$i > 1; $i--){
-						$url = $info['cate_url'].'4_2__1__'.$i.'.html';dump($url);
-						$gather = getUrlGather($url, $filter_preg,array('.alltable','tbody>tr'),'utf-8');
-						array_shift($gather);dump($gather);//exit;
-						foreach ($gather as $k => $v){
-							$data = $tmp = array();
-							$data['cateid'] = $tmp['cateid'] = $info['cateid'];
-							$data['name'] = $tmp['name'] = $v['name'];
-							$data['author'] = $v['author'];
-							$data['end_status'] = $tmp['status'] = $v['status'] == '连载' ? 0 : 1;
-							$data['uptime'] = $data['ctime'] = time();
-							$intro = getUrlGather($v['url'], array('intro'=>array('#tab91_div0 font','html')),null,'utf-8');
-							$data['intro'] = $intro['intro'];
-							$tmp['url'] = str_replace('/book/', '/list/', $v['url']);
-							//添加到小说主表
-							$m = M('Book');
-							$bookid = $m->add($data);
-							if(intval($bookid) == 0){
-								return false;
-							}
-// 							$tmp['chapter_area'] = '.directory_con .con:eq(1) ul-li';
-// 							$tmp['chapter_filter'] = 'chapter$a-text|url$a-href';
-// 							$tmp['content_filter'] = 'content$#chapterContentWapper-html';
-							$tmp['book_id'] = $bookid;
-							$tmp['uptime'] = time()-172800;
-							M('GatherWebName')->add($tmp);
-							M("GatherWebCate")->setField('uptime',time());
-						}
-					}
-					break;
-				case 'chapter':
-					$id = intval($_REQUEST['id']);
-					$info = $this->gather->getWebName(1,array('uptime'=>array('LT',time()-172800)));
-					$info = array_shift($info);
-					$filter = array('chapter'=>array('a','text'),'url'=>array('a','href'));
-					$gather = getUrlGather($info['url'], $filter,array('.directory_con .con:eq(1) ul','li'),'utf-8');
-// 					dump($gather);
-// 					exit;
-					foreach ($gather as $k => $v){
-						//写入章节名称
-						$data = $tmp = array();
-						$data['book_id'] = $tmp['book_id'] = $info['book_id'];
-						$data['title'] = $tmp['title'] = $v['title'];
-						$data['uptime'] = time()-17280000;
-						$tmp['url'] = $v['url'];
-						$tmp['cateid'] = $info['cateid'];
-						$data['sort'] = $k;
-						$m = M(getChapterTable($info['book_id']));
-						$m->add($data);
-						M('GatherWebChapter')->add($tmp);
-					}
-					break;
-				case 'content':
-					$filter = array('content'=>array('#chapterContentWapper','html'));
-					$list = $this->gather->getWebChapter(5,array('is_send'=>0));
-					foreach ($list as $k => $v){
-						//采集章节内容
-						$content = getUrlGather($v['url'], $filter,null,'utf-8');
-						dump($content);exit;
-						//创建小说存放目录
-						$fpath = NOVEL_PATH.'Cate-'.$v['cateid'].'/'.$bookid.'/';
-						createDir($fpath);
-						//保存章节内容
-						if(writeFile($content['content'], $fpath)){
-							M('GatherWebChapter')->where('id='.$v['id'])->setField('is_send','1');
-						}
-					}
-					break;
-				default:
-					return false;
-			}
-		}
-		
-		function biquge(){
-			$method = $_REQUEST['method'];
-			$id = intval($_REQUEST['ids']);
-			
-			switch ($method){
-				case 'name':
-					$list = $this->gather->getWebCate('all',array());
-					
-				default:
-					exit();
-			}
-				
 		}
 		
 		/**
