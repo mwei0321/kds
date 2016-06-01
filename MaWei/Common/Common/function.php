@@ -205,11 +205,7 @@
 	* 生成多张缩略图
 	* @param  string $_path 原图路径 
 	* @param  string|array $_name 名字
-<<<<<<< HEAD
-	* @param  array $_info 宽高　array('width_height_name');
-=======
 	* @param  2array $_info 宽高　array(array('width'=>100,'height'=>100,'name'=>'thumb'));
->>>>>>> 17ae079447c7119743847286884ba33d16d6855b
 	* @return array 
 	* @author MaWei (http://www.phpyrb.com)
 	* @date 2014-10-18  下午12:00:57
@@ -556,10 +552,17 @@
 			$model = M("$m[0]",$m['1']);
 		}
 		$reid = FALSE;
-		if($_upfiled && $_data["$_upfiled"]){
-			$where = array();
-			$where["$_upfiled"] = $_data["$_upfiled"];
-			unset($_data["$_upfiled"]);
+		if($_upfiled){
+			$where = [];
+			if(is_array($_upfiled)){
+				foreach($_upfiled as $k => $v){
+					$_data[$v] && $where[$v] = $_data[$v];
+					unset($_data[$v]);
+				}
+			}else{
+				$where["$_upfiled"] = $_data["$_upfiled"];
+				unset($_data["$_upfiled"]);
+			}
 			$reid = $model->where($where)->save($_data);
 		}else{
 			$reid = $model->add($_data);
@@ -721,7 +724,7 @@
 	}
 	
 	/**
-	 * t函数用于过滤标签，输出没有html的干净的文本
+	 * 函数用于过滤标签，输出没有html的干净的文本
 	 * @param string text 文本内容
 	 * @return string 处理后内容
 	 */
@@ -1076,15 +1079,11 @@
 	
 	/**
 	 * 加密函数
-	 *
-	 * @param string $txt
-	 *            需要加密的字符串
-	 * @param string $key
-	 *            密钥
+	 * @param string $txt 需要加密的字符串
+	 * @param string $key 密钥
 	 * @return string 返回加密结果
 	 */
-	protected function encrypt($txt, $key = '59e2b673ad709')
-	{
+	function encrypt($txt, $key = '59e2b673ad709'){
 		if (empty($txt))
 			return $txt;
 		if (empty($key))
@@ -1135,15 +1134,11 @@
 	
 	/**
 	 * 解密函数
-	 *
-	 * @param string $txt
-	 *            需要解密的字符串
-	 * @param string $key
-	 *            密匙
+	 * @param string $txt  需要解密的字符串
+	 * @param string $key 密匙
 	 * @return string 字符串类型的返回结果
 	 */
-	protected function decrypt($txt, $key = '59e2b673ad709', $ttl = 0)
-	{
+	function decrypt($txt, $key = '59e2b673ad709', $ttl = 0){
 		if (empty($txt))
 			return $txt;
 		if (empty($key))

@@ -1,7 +1,7 @@
 /**
  * 表单操作js
  * @author MaWei
- * @time 2014-0908
+ * @time 2014-09-08
  */
 
 var form = {};
